@@ -14,13 +14,32 @@
  */
 const YUZU_VERSION = '0.0.1';
 
-function yuzu_init() {}
+function is_yuzu() {
+    return true;
+}
 
 function yuzu_admin_enqueue_media() {
     wp_enqueue_media();
+    wp_enqueue_global_styles_css_custom_properties();
 }
 
 add_action('admin_enqueue_scripts', 'yuzu_admin_enqueue_media');
+
+/**
+ * Render a WordPress admin-panel horizontal divider
+ * @return void
+ */
+function yuzu_render_admin_hr() { ?>
+    <hr class="yuzu horizontal divider"/>
+<?php }
+
+/**
+ * Render a WordPress admin-panel vertical divider
+ * @return void
+ */
+function yuzu_render_admin_vr() { ?>
+    <hr class="yuzu vertical divider"/>
+<?php }
 
 /**
  * Render a WordPress color input field.
