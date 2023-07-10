@@ -28,7 +28,6 @@ add_action('admin_enqueue_scripts', 'yuzu_admin_enqueue_media');
 function yuzu_init() {
     if (is_admin()) {
         require_once plugin_dir_path(__FILE__) . 'admin/menu.php';
-        require_once plugin_dir_path(__FILE__) . 'admin/phosphor-icons.php';
     }
 }
 
