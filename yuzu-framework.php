@@ -14,18 +14,19 @@
  */
 const YUZU_VERSION = '0.0.1';
 
-function is_yuzu() {
+/**
+ *  Return true if on a page which uses Yuzu framework
+ * @return bool
+ */
+function is_yuzu(): bool {
     return true;
 }
 
-function yuzu_admin_enqueue_media() {
+add_action('admin_enqueue_scripts', function() {
     wp_enqueue_media();
-    wp_enqueue_global_styles_css_custom_properties();
-}
+});
 
-add_action('admin_enqueue_scripts', 'yuzu_admin_enqueue_media');
-
-function yuzu_init() {
+add_action('init', function() {
     require_once plugin_dir_path(__FILE__) . 'yuzu-icon.php';
 
     if (is_admin()) {
@@ -33,6 +34,4 @@ function yuzu_init() {
         require_once plugin_dir_path(__FILE__) . 'admin/layout.php';
         require_once plugin_dir_path(__FILE__) . 'admin/menu.php';
     }
-}
-
-add_action('init', 'yuzu_init', 0);
+}, 0);

@@ -58,7 +58,7 @@ function yuzu_add_admin_menu_page(
         $capability,
         $menu_slug,
         $function,
-        str_starts_with($icon_url, '<svg') ? yuzu_admin_encode_icon($icon_url) : $icon_url,
+        str_starts_with($icon_url, '<svg') ? yuzu_encode_admin_menu_icon($icon_url) : $icon_url,
         $position
     );
 }
@@ -68,6 +68,6 @@ function yuzu_add_admin_menu_page(
  * @param string $icon_svg
  * @return string
  */
-function yuzu_admin_encode_icon(string $icon_svg): string {
+function yuzu_encode_admin_menu_icon(string $icon_svg): string {
     return 'data:image/svg+xml;base64,' . base64_encode($icon_svg);
 }

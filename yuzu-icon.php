@@ -5,7 +5,10 @@
  * @return string
  */
 function yuzu_icon(string $icon_name, string $icon_appearance = 'regular'): string {
-    return file_get_contents(plugin_dir_path(__FILE__) . "icons/assets/$icon_appearance/$icon_name-$icon_appearance.svg");
+    $file_dir = plugin_dir_path(__FILE__) . "icons/assets/$icon_appearance/";
+    $file_name = ($icon_appearance === 'regular' ? $icon_name : "$icon_name-$icon_appearance") . '.svg';
+
+    return file_get_contents($file_dir . $file_name);
 }
 
 /**
