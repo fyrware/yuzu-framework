@@ -24,6 +24,7 @@ function is_yuzu(): bool {
 
 add_action('admin_enqueue_scripts', function() {
     wp_enqueue_media();
+    wp_enqueue_style('yuzu-admin-css', plugin_dir_url(__FILE__) . 'yuzu-admin.css');
 });
 
 add_action('init', function() {

@@ -1,0 +1,43 @@
+:root {
+    --yuzu-wordpress-sidebar-background-color: #1d2327;
+    --yuzu-wordpress-text-color: #1d2327;
+    --yuzu-wordpress-background-color: #f0f0f1;
+    --yuzu-wordpress-box-background-color: #ffffff;
+    --yuzu-wordpress-box-border-color: #c3c4c7;
+    --yuzu-wordpress-box-inner-border-color: #dcdcde;
+
+    --yuzu-woocommerce-product-data-divider-color: #eeeeee;
+
+    --yuzu-wordpress-transparent-background-image:
+        linear-gradient(
+            45deg,
+            var(--yuzu-wordpress-box-border-color) 25%,
+            var(--yuzu-wordpress-box-background-color) 25%,
+            var(--yuzu-wordpress-box-background-color) 75%,
+            var(--yuzu-wordpress-box-border-color) 75%,
+            var(--yuzu-wordpress-box-border-color)
+        ),
+        linear-gradient(
+            45deg,
+            var(--yuzu-wordpress-box-border-color) 25%,
+            var(--yuzu-wordpress-box-background-color) 25%,
+            var(--yuzu-wordpress-box-background-color) 75%,
+            var(--yuzu-wordpress-box-border-color) 75%,
+            var(--yuzu-wordpress-box-border-color)
+        );
+}
+
+nav.nav-tabs a.nav-tab {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+nav.nav-tabs a.nav-tab svg {
+    width: 20px;
+}
+
+hr.yuzu-woocommerce-product-data-divider {
+    border-top: none;
+    border-bottom-color: var(--yuzu-woocommerce-product-data-divider-color);
+}
