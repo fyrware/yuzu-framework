@@ -25,6 +25,64 @@ function yuzu_admin_enqueue_media() {
 
 add_action('admin_enqueue_scripts', 'yuzu_admin_enqueue_media');
 
+function yuzu_init() {
+    if (is_admin()) {
+        require_once plugin_dir_path(__FILE__) . 'admin/menu.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/phosphor-icons.php';
+    }
+}
+
+add_action('init', 'yuzu_init', 0);
+
+/**
+ * Return an SVG icon from the Phosphor icon set (phosphoricons.com)
+ * @return string
+ */
+function yuzu_icon(string $icon_name, string $icon_appearance = 'regular'): string {
+    return file_get_contents(plugin_dir_path(__FILE__) . "icons/assets/$icon_appearance/$icon_name-$icon_appearance.svg");
+}
+
+/**
+ * Render (echo) an SVG icon from the Phosphor icon set (phosphoricons.com)
+ * @return void
+ */
+function render_yuzu_icon(string $icon_name, string $icon_appearance = 'regular'): void {
+    echo yuzu_icon($icon_name, $icon_appearance);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Render a WordPress admin-panel horizontal divider
  * @return void
