@@ -27,13 +27,13 @@
         );
 }
 
-nav.nav-tabs a.nav-tab {
+nav.yuzu-nav-tabs a.nav-tab {
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
-nav.nav-tabs a.nav-tab svg {
+nav.yuzu-nav-tabs a.nav-tab svg {
     width: 20px;
 }
 

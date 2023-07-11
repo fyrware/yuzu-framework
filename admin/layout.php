@@ -43,7 +43,7 @@ function yuzu_render_admin_tabs(array $tabs): void {
     $current_page = $_GET['page'];
     $current_tab = $_GET['tab'] ?? array_key_first($tabs) ?>
 
-    <nav class="nav-tabs nav-tab-wrapper">
+    <nav class="yuzu-nav-tabs nav-tab-wrapper">
         <?php foreach ($tabs as $slug => $tab) { ?>
             <a href="?page=<?= $current_page ?>&tab=<?= $slug ?>" class="nav-tab <?= $current_tab === $slug ? 'nav-tab-active' : '' ?>">
                 <?= $tab['icon'] ?? '' ?>
@@ -51,7 +51,7 @@ function yuzu_render_admin_tabs(array $tabs): void {
             </a>
         <?php } ?>
     </nav>
-    <main class="nav-tab-content">
+    <main class="yuzu-nav-tab-content">
         <?= $tabs[$current_tab]['content']() ?>
     </main>
 <?php }

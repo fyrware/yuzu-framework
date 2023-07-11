@@ -49,4 +49,8 @@ class Yuzu_Admin_Page {
             }
         ]);
     }
+
+    public function render_table(string $table_name): void {
+        yuzu_render_admin_query_table($this->get_table($table_name));
+    }
 }
