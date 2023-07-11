@@ -8,9 +8,7 @@ function yuzu_render_admin_page_title(string $title): void { ?>
 
 function yuzu_render_admin_page_actions(array $actions): void { ?>
     <?php foreach ($actions as $action => $url) { ?>
-        <a href="<?= $url ?>" class="page-title-action">
-            <?= $action ?>
-        </a>
+        <a href="<?= $url ?>" class="page-title-action"><?= trim($action) ?></a>
     <?php } ?>
 <?php }
 
@@ -73,3 +71,46 @@ function yuzu_render_admin_hr() { ?>
 function yuzu_render_admin_vr() { ?>
     <hr class="yuzu vertical divider"/>
 <?php }
+
+function yuzu_render_admin_table(array $table): void { ?>
+    <div class="tablenav top">
+
+    </div>
+    <table class="wp-list-table widefat striped <?php if ($table['fixed']) echo 'fixed' ?>">
+        <thead>
+            <tr>
+                <?php if ($table['selectable']) { ?>
+                    <td class="check-column">
+                        <input type="checkbox" />
+                    </td>
+                <?php } ?>
+                <?php foreach ($table['columns'] as $column) { ?>
+                    <th scope="col" class="<?php if ($column['sortable']) echo 'sortable desc' ?>">
+                        <?php if (isset($column['content'])) $column['content']() ?>
+                    </th>
+                <?php } ?>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($table['rows'] as $row) { ?>
+                <tr id="<?= $row['id'] ?? '' ?>">
+                    <?php if ($table['selectable']) { ?>
+                        <th scope="row" class="check-column">
+                            <input type="checkbox" name="post[]" value="<?= $row['id'] ?? '' ?>">
+                        </th>
+                    <?php } ?>
+                    <?php foreach ($row as $cell) { ?>
+                        <td>
+                            <?= $cell ?>
+                        </td>
+                    <?php } ?>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+<?php }
+
+function yuzu_render_admin_query_table(Yuzu_Admin_Query_Table $table): void {
+    $table->prepare_items();
+    $table->display();
+}

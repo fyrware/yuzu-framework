@@ -34,33 +34,31 @@ function yuzu_add_admin_menu_separator(float $position): void {
 /**
  * Add admin menu page with automatic base64 encoding of SVG icons
  * (**NOTE**: This function should be used within the `'admin_menu'` action hook)
- * @param string $page_title
- * @param string $menu_title
- * @param string $capability
- * @param string $menu_slug
- * @param callable|null $function
- * @param string $icon_url
- * @param int|null $position
+ * @param array $admin_page_options
  * @return string
  */
-function yuzu_add_admin_menu_page(
-    string $page_title,
-    string $menu_title,
-    string $capability,
-    string $menu_slug,
-    callable $function = null,
-    string $icon_url = '',
-    float $position = null
-): string {
-    return add_menu_page(
-        $page_title,
-        $menu_title,
-        $capability,
-        $menu_slug,
-        $function,
-        str_starts_with($icon_url, '<svg') ? yuzu_encode_admin_menu_icon($icon_url) : $icon_url,
-        $position
+function yuzu_add_admin_menu_page(array $admin_page_options): string {
+    $admin_page = new Yuzu_Admin_Page($admin_page_options);
+
+    if ($admin_page->get_option('add_separator')) {
+        yuzu_add_admin_menu_separator($admin_page->get_option('position'));
+    }
+
+    $page_ref = add_menu_page(
+        $admin_page->get_option('title'),
+        $admin_page->get_option('menu_title'),
+        $admin_page->get_option('capability'),
+        $admin_page->get_option('menu_slug'),
+        $admin_page->get_option('content'),
+        yuzu_encode_admin_menu_icon($admin_page->get_option('icon')),
+        $admin_page->get_option('position')
     );
+
+    add_action('load-' . $page_ref, function() use ($admin_page) {
+
+    });
+
+    return $page_ref;
 }
 
 /**
