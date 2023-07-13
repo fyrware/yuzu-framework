@@ -1,0 +1,8 @@
+section.yuzu.metabox {}
+
+section.yuzu.metabox h2.yuzu.handle {
+    font-size: 14px;
+    padding: 8px 12px;
+    margin: 0;
+    line-height: 1.4;
+}

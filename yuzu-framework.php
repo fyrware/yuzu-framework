@@ -29,6 +29,14 @@ add_action('init', function() {
     require_once plugin_dir_path(__FILE__) . 'yuzu-icon.php';
 
     if (is_admin()) {
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/button.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/button-group.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/flex-layout.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/grid-layout.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/icon.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/meta-box.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/tab-group.php';
+
         require_once plugin_dir_path(__FILE__) . 'admin/input.php';
         require_once plugin_dir_path(__FILE__) . 'admin/layout.php';
         require_once plugin_dir_path(__FILE__) . 'admin/menu.php';

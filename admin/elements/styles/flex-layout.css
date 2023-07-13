@@ -1,0 +1,83 @@
+section.yuzu.flex-layout {
+    display: flex;
+}
+
+section.yuzu.flex-layout.flex-direction-row {
+    flex-direction: row;
+}
+
+section.yuzu.flex-layout.flex-direction-row-reverse {
+    flex-direction: row-reverse;
+}
+
+section.yuzu.flex-layout.flex-direction-column {
+    flex-direction: column;
+}
+
+section.yuzu.flex-layout.flex-direction-column-reverse {
+    flex-direction: column-reverse;
+}
+
+section.yuzu.flex-layout.flex-justification-start {
+    justify-content: flex-start;
+}
+
+section.yuzu.flex-layout.flex-justification-center {
+    justify-content: center;
+}
+
+section.yuzu.flex-layout.flex-justification-end {
+    justify-content: flex-end;
+}
+
+section.yuzu.flex-layout.flex-justification-space-between {
+    justify-content: space-between;
+}
+
+section.yuzu.flex-layout.flex-justification-space-around {
+    justify-content: space-around;
+}
+
+section.yuzu.flex-layout.flex-justification-space-evenly {
+    justify-content: space-evenly;
+}
+
+section.yuzu.flex-layout.flex-alignment-start {
+    align-items: flex-start;
+}
+
+section.yuzu.flex-layout.flex-alignment-center {
+    align-items: center;
+}
+
+section.yuzu.flex-layout.flex-alignment-end {
+    align-items: flex-end;
+}
+
+section.yuzu.flex-layout.flex-alignment-stretch {
+    align-items: stretch;
+}
+
+section.yuzu.flex-layout.flex-alignment-baseline {
+    align-items: baseline;
+}
+
+section.yuzu.flex-layout.flex-wrap {
+    flex-wrap: wrap;
+}
+
+section.yuzu.flex-layout.flex-wrap-reverse {
+    flex-wrap: wrap-reverse;
+}
+
+section.yuzu.flex-layout.flex-wrap-nowrap {
+    flex-wrap: nowrap;
+}
+
+.yuzu.flex-grow {
+    flex-grow: 1;
+}
+
+.yuzu.flex-shrink {
+    flex-shrink: 1;
+}
