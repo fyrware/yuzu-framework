@@ -74,10 +74,10 @@ section.yuzu.flex-layout.flex-wrap-nowrap {
     flex-wrap: nowrap;
 }
 
-.yuzu.flex-grow {
+div.yuzu.flex-item.flex-grow {
     flex-grow: 1;
 }
 
-.yuzu.flex-shrink {
+div.yuzu.flex-item.flex-shrink {
     flex-shrink: 1;
 }

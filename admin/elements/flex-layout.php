@@ -39,13 +39,21 @@ function yz_flex_layout(array $props): void {
                 'flex-item'
             ];
 
+            if (isset($item['grow']) && $item['grow']) {
+                $item_class_names[] = 'flex-grow';
+            }
+
+            if (isset($item['shrink']) && $item['shrink']) {
+                $item_class_names[] = 'flex-shrink';
+            }
+
             if (isset($item['class_name'])) {
                 $item_class_names[] = $item['class_name'];
             } ?>
 
-            <article id="<?= $item['id'] ?? '' ?>" class="<?= trim(implode(' ', $item_class_names)) ?>">
+            <div id="<?= $item['id'] ?? '' ?>" class="<?= trim(implode(' ', $item_class_names)) ?>">
                 <?= $item['content']() ?>
-            </article>
+            </div>
         <?php } ?>
     </section>
 <?php }
