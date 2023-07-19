@@ -1,0 +1,9 @@
+nav.yuzu.tab-group a.yuzu.tab {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+nav.yuzu.tab-group a.yuzu.tab svg {
+    width: 20px;
+}

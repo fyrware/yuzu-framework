@@ -1,5 +1,6 @@
 @import url('./admin/elements/styles/flex-layout.css');
 @import url('./admin/elements/styles/meta-box.css');
+@import url('./admin/elements/styles/tab-group.css');
 
 :root {
     --yuzu-wordpress-sidebar-background-color: #1d2327;
@@ -28,36 +29,6 @@
             var(--yuzu-wordpress-box-border-color) 75%,
             var(--yuzu-wordpress-box-border-color)
         );
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-nav.yuzu-nav-tabs a.nav-tab {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-nav.yuzu-nav-tabs a.nav-tab svg {
-    width: 20px;
 }
 
 hr.yuzu-woocommerce-product-data-divider {

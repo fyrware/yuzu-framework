@@ -1,6 +1,6 @@
 <?php
 
-function _yz_tab_group_find_current_tab(array $tabs): array {
+function yz_get_current_tab(array $tabs): array {
     $current_tab_slug = $_GET['tab'] ?? $tabs[0]['slug'];
 
     foreach ($tabs as $tab) {
@@ -24,7 +24,7 @@ function yz_tab_group(array $props): void {
     }
 
     $current_page = $_GET['page'];
-    $current_tab = _yz_tab_group_find_current_tab($props['tabs']) ?>
+    $current_tab = yz_get_current_tab($props['tabs']) ?>
 
     <nav class="<?= trim(implode(' ', $class_names)) ?>">
         <?php foreach ($props['tabs'] as $tab) {
