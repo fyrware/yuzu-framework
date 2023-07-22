@@ -23,7 +23,10 @@ function yz_notice(array $props): void {
     } ?>
 
     <div id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>">
-        <? if (isset($props['icon'])) echo $props['icon']; ?>
+        <?php if (isset($props['icon'])) echo $props['icon']; ?>
+        <?php if (isset($props['title'])) { ?>
+            <strong><?= $props['title'] ?>:</strong>
+        <?php } ?>
         <?= $props['content']() ?>
     </div>
 <?php }

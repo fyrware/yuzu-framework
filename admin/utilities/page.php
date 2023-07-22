@@ -1,5 +1,30 @@
 <?php
 
+function yz_add_menu_separator(float $position): void {
+    global $menu;
+
+    $index = 0;
+    foreach($menu as $offset => $section) {
+
+        if (str_starts_with($section[2], 'separator')) {
+            $index++;
+        }
+
+        if ($offset >= $position) {
+            $menu[$position] = [
+                '',
+                'read',
+                'separator' . $index,
+                '',
+                'wp-menu-separator'
+            ];
+            break;
+        }
+    }
+
+    ksort($menu);
+}
+
 function yz_add_page(array $page_settings): string {
     $page = '';
 
@@ -14,7 +39,11 @@ function yz_add_page(array $page_settings): string {
             $page_settings['title'],
             $page_settings['capability'],
             $page_settings['slug'],
-            fn() => $page_settings['content']($page_settings),
+            function() use ($page_settings) { ?>
+                <section class="wrap">
+                    <?php $page_settings['content']($page_settings) ?>
+                </section>
+            <?php },
             $page_settings['position']
         );
     } else {
@@ -23,7 +52,11 @@ function yz_add_page(array $page_settings): string {
             $page_settings['title'],
             $page_settings['capability'],
             $page_settings['slug'],
-            fn() => $page_settings['content']($page_settings),
+            function() use ($page_settings) { ?>
+                <section class="wrap">
+                    <?php $page_settings['content']($page_settings) ?>
+                </section>
+            <?php },
             $page_settings['icon'],
             $page_settings['position']
         );

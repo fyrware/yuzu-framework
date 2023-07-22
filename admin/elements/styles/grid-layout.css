@@ -1,0 +1,4 @@
+section.yuzu.grid-layout {
+    display: grid;
+    grid-auto-columns: 1fr;
+}

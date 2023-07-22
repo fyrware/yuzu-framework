@@ -1,0 +1,14 @@
+h1.yuzu.title {
+    display: flex;
+    align-items: center;
+}
+
+h1.yuzu.title.wp-heading-inline {
+    display: inline-flex;
+}
+
+h1.yuzu.title svg {
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: 0.25em;
+}

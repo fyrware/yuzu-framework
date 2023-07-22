@@ -31,6 +31,7 @@ add_action('init', function() {
     if (is_admin()) {
         require_once plugin_dir_path(__FILE__) . 'admin/elements/button.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/button-group.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/card.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/form.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/flex-layout.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/grid-layout.php';
@@ -43,6 +44,7 @@ add_action('init', function() {
         require_once plugin_dir_path(__FILE__) . 'admin/elements/tab-group.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/table.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/table-form.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/text.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/title.php';
 
         require_once plugin_dir_path(__FILE__) . 'admin/utilities/action.php';
