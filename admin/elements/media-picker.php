@@ -1,71 +1,15 @@
 <?php
 
-/**
- * Render a WordPress color input field.
- * Available Args:
- * - `string` id
- * - `string` name
- * - `string` label
- * - `string` description
- * - `string` value
- * - `string` display_as
- * @param array $args
- * @return void
- */
-function yuzu_render_admin_color_field(array $args): void {
-    $id = array_key_exists('id', $args) ? $args['id'] : null;
-    $name = array_key_exists('name', $args) ? $args['name'] : $id;
-    $label = array_key_exists('label', $args) ? $args['label'] : 'Form Field';
-    $description = array_key_exists('description', $args) ? $args['description'] : null;
-    $value = array_key_exists('value', $args) ? $args['value'] : '';
-    $display_as = array_key_exists('display_as', $args) ? $args['display_as'] : 'default';
+function yz_media_picker(array $props): void {
+    wp_enqueue_media();
 
-    assert(isset($id), 'Form field must have an id');
-
-    $wrapper_tag = $display_as === 'default' ? 'div' : 'tr';
-    $label_tag = $display_as === 'default' ? 'div' : 'th';
-    $contents_tag = $display_as === 'default' ? 'div' : 'td'; ?>
-
-    <<?php echo $wrapper_tag; ?> class="yuzu form-field">
-        <<?php echo $label_tag; ?> scope="row">
-            <label for="<?php echo $id; ?>">
-                <?php echo $label; ?>
-            </label>
-        </<?php echo $label_tag; ?>>
-        <<?php echo $contents_tag; ?>>
-            <input type="text" id="<?= $id ?>" name="<?= $name ?>" value="<?= $value ?>" data-coloris/>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
-            <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
-            <?php if (isset($description)) { ?>
-                <p class="description">
-                    <?php echo $description; ?>
-                </p>
-            <?php } ?>
-        </<?php echo $contents_tag; ?>>
-    </<?php echo $wrapper_tag; ?>>
-<?php }
-
-/**
- * Render a WordPress media picker button & modal.
- * Available Args:
- * - `string` id
- * - `string` name
- * - `string` label
- * - `string` description
- * - `string` value
- * - `string` preview
- * - `string` display_as (`default|table`)
- * @param array $args
- * @return void
- */
-function yuzu_render_admin_media_field(array $args): void {
-    $id = array_key_exists('id', $args) ? $args['id'] : null;
-    $name = array_key_exists('name', $args) ? $args['name'] : $id;
-    $label = array_key_exists('label', $args) ? $args['label'] : 'Form Field';
-    $description = array_key_exists('description', $args) ? $args['description'] : null;
-    $value = array_key_exists('value', $args) ? $args['value'] : '';
-    $preview = array_key_exists('preview', $args) ? $args['preview'] : null;
-    $display_as = array_key_exists('display_as', $args) ? $args['display_as'] : 'default';
+    $id = array_key_exists('id', $props) ? $props['id'] : null;
+    $name = array_key_exists('name', $props) ? $props['name'] : $id;
+    $label = array_key_exists('label', $props) ? $props['label'] : 'Form Field';
+    $description = array_key_exists('description', $props) ? $props['description'] : null;
+    $value = array_key_exists('value', $props) ? $props['value'] : '';
+    $preview = array_key_exists('preview', $props) ? $props['preview'] : null;
+    $display_as = array_key_exists('display_as', $props) ? $props['display_as'] : 'default';
 
     assert(isset($id), 'Form field must have an id');
 
@@ -146,13 +90,13 @@ function yuzu_render_admin_media_field(array $args): void {
                 });
 
                 <?php if (empty($value)) { ?>
-                    jQuery(document).ajaxComplete((event, response, options) => {
-                        if (response.status === 200 && options.data.includes('add')) {
-                            mediaIdInput.value = '';
-                            mediaPreview.src = '<?php echo esc_url(wc_placeholder_img_src()); ?>';
-                            removeButton.hidden = true;
-                        }
-                    });
+                jQuery(document).ajaxComplete((event, response, options) => {
+                    if (response.status === 200 && options.data.includes('add')) {
+                        mediaIdInput.value = '';
+                        mediaPreview.src = '<?php echo esc_url(wc_placeholder_img_src()); ?>';
+                        removeButton.hidden = true;
+                    }
+                });
                 <?php } ?>
             </script>
         </<?php echo $contents_tag; ?>>
