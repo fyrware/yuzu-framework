@@ -8,9 +8,11 @@ function yz_text(string $text, array $props = []): void {
 
     if (isset($props['class_name'])) {
         $class_names[] = $props['class_name'];
-    } ?>
+    }
 
-    <span id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>">
+    $tag = $props['variant'] ?? 'span'; ?>
+
+    <<?= $tag ?> id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>">
         <?= $text ?>
-    </span>
+    </<?= $tag ?>>
 <?php }

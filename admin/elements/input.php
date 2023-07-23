@@ -14,29 +14,31 @@ function yz_input(array $props): void {
     $name = $props['name'] ?? $id;
     $type = $props['type'] ?? 'text';
     $label = $props['label'] ?? '';
+    $checked = $props['checked'] ?? false;
     $required = $props['required'] ?? false;
     $default_value = $props['value'] ?? '';
     $class = trim(implode(' ', $class_names));
 
     switch ($type) {
         case 'checkbox': ?>
-            <label for="<?= $id ?>">
-                <input id="<?= $id ?>" name="<?= $name ?>" class="<?= $class ?>" type="checkbox"/>
+            <label for="<?= $id ?>" class="yuzu input-label checkbox-label <?php if ($required) echo 'required' ?>">
+                <input id="<?= $id ?>" name="<?= $name ?>" class="<?= $class ?>" type="checkbox" <?php if ($checked) echo 'checked' ?>/>
                 <?= $props['label'] ?>
             </label>
         <?php break;
         case 'radio': ?>
-            <label for="<?= $id ?>">
-                <input id="<?= $id ?>" name="<?= $name ?>" class="<?= $class ?>" type="radio"/>
+            <label for="<?= $id ?>" class="yuzu input-label radio-label <?php if ($required) echo 'required' ?>">
+                <input id="<?= $id ?>" name="<?= $name ?>" class="<?= $class ?>" type="radio" <?php if ($checked) echo 'checked' ?>/>
                 <?= $props['label'] ?>
             </label>
         <?php break;
         default: ?>
             <?php yz_flex_layout([
+                'gap' => 5,
                 'direction' => 'column',
                 'items' => [
-                    ['content' => function() use($id, $label) { ?>
-                        <label for="<?= $id ?>">
+                    ['content' => function() use($id, $label, $required) { ?>
+                        <label for="<?= $id ?>" class="yuzu input-label <?php if ($required) echo 'required' ?>">
                             <?= $label ?>
                         </label>
                     <?php }],

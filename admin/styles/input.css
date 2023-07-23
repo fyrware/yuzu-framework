@@ -1,0 +1,14 @@
+label.yuzu.input-label {
+    display: inline-flex;
+}
+
+label.yuzu.input-label.checkbox-label,
+label.yuzu.input-label.radio-label {
+    display: inline-block;
+}
+
+label.yuzu.input-label.required::after {
+    content: '*';
+    color: #d63638;
+    font-weight: bold;
+}

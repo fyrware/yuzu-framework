@@ -37,13 +37,14 @@ add_action('init', function() {
         require_once plugin_dir_path(__FILE__) . 'admin/elements/table.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/table-form.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/text.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/textarea.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/title.php';
         require_once plugin_dir_path(__FILE__) . 'admin/utilities/action.php';
         require_once plugin_dir_path(__FILE__) . 'admin/utilities/capture.php';
         require_once plugin_dir_path(__FILE__) . 'admin/utilities/svg.php';
         require_once plugin_dir_path(__FILE__) . 'admin/utilities/page.php';
     }
-}, 0);
+}, -1);
 
 add_action('admin_enqueue_scripts', function() {
     wp_enqueue_style('yuzu-framework-css', plugin_dir_url(__FILE__) . 'yuzu-framework.css');
