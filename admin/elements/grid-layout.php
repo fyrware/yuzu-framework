@@ -30,7 +30,7 @@ function yz_grid_layout(array $props): void {
     } ?>
 
     <section id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>" style="<?= trim(implode(' ', $styles)) ?>">
-        <?php foreach ($props['items'] as $item) {
+        <?php foreach ($props['items'] ?? [] as $item) {
             $item_class_names = [
                 'yuzu',
                 'grid-item',

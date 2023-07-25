@@ -26,23 +26,16 @@ function yz_icon_picker(array $props): void {
         ]);
     }
 
-    $icon_urls = array_map(function($icon) use($appearance) {
-        return yz_icon_url([
-            'glyph' => str_replace('.svg', '', $icon),
-            'appearance' => $appearance
-        ]);
-    }, $icon_glyphs);
-
-    yz_container(['class_name' => $class, 'content' => function() use($id, $name, $appearance, $icon_urls) {
+    yz_container(['class_name' => $class, 'content' => function() use($id, $name, $appearance) {
         yz_input(['id' => $id, 'name' => $name, 'hidden' => true]);
         yz_flex_layout(['inline' => true, 'alignment' => 'stretch', 'items' => [
-            ['content' => function() use($appearance) {
-                yz_icon([
-                    'class_name' => 'selected-icon',
-                    'glyph' => 'crown-simple',
-                    'appearance' => $appearance
-                ]);
-            }],
+            ['content' => function() use($appearance) { ?>
+                <img
+                    alt="selected icon"
+                    class="yuzu selected-icon"
+                    src="<?= yz_icon_url(['glyph' => 'question', 'appearance' => $appearance]) ?>"
+                />
+            <?php }],
             ['content' => function() {
                 yz_button([
                     'class_name' => 'select-icon',
@@ -53,10 +46,20 @@ function yz_icon_picker(array $props): void {
                 ]);
             }]
         ]]);
-    }]);
+    }]); ?>
+    <script>
+        globalThis.addEventListener('load', () => {
+            const dialog = document.getElementById('<?= $id . '_dialog' ?>');
+            const selectIconButton = document.querySelector('#<?= $id ?> + .flex-layout .select-icon');
 
-    yz_dialog([
-        'open' => true,
+            selectIconButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                dialog.showModal();
+                dialog.dispatchEvent(new Event('open'));
+            });
+        });
+    </script>
+    <?php yz_dialog([
         'fixed' => true,
         'id' => $id . '_dialog',
         'class_name' => 'yuzu icon-picker-dialog',
@@ -69,29 +72,53 @@ function yz_icon_picker(array $props): void {
                 ]) ?>
             </aside>
             <?php yz_grid_layout([
+                'id' => $id . '_dialog_layout',
                 'gap' => 15,
-                'columns' => 10,
-                'items' => []
+                'columns' => 10
             ]); ?>
             <script>
                 globalThis.phosphorIcons ??= {};
                 globalThis.phosphorIcons.<?= $appearance ?> ??= <?= json_encode($icons) ?>;
-                globalThis.debounce ??= function debounce(fn, delay = 250) {
-                    let timeout;
 
-                    return (...args) => {
-                        clearTimeout(timeout)
-                        timeout = setTimeout(() => fn(...args), delay);
-                    };
-                }
-
-                window.addEventListener('load', () => {
+                globalThis.addEventListener('load', () => {
+                    const icons = globalThis.phosphorIcons.<?= $appearance ?>;
                     const dialog = document.getElementById('<?= $id . '_dialog' ?>');
                     const searchInput = document.getElementById('<?= $id . '_dialog_search' ?>');
-                    const gridLayout = dialog.querySelector('.yuzu.grid-layout');
-                    const icons = globalThis.phosphorIcons['<?= $appearance ?>'];
+                    const gridLayout = document.getElementById('<?= $id . '_dialog_layout' ?>');
+                    const submitButton = document.getElementById('<?= $id . '_submit' ?>');
 
-                    searchInput.addEventListener('input', window.debounce(() => {
+                    dialog.addEventListener('open', () => {
+                        for (const [glyph, url] of Object.entries(icons)) {
+                            const icon = document.createElement('label');
+                            icon.htmlFor = '<?= $id ?>_option_' + glyph;
+                            icon.className = 'yuzu icon-picker-option';
+                            icon.dataset.glyph = glyph;
+                            icon.dataset.iconUrl = url;
+
+                            const image = document.createElement('img');
+                            image.className = 'yuzu icon-picker-image';
+                            image.src = url;
+
+                            const radio = document.createElement('input');
+                            radio.id = '<?= $id ?>_option_' + glyph;
+                            radio.className = 'yuzu icon-picker-radio';
+                            radio.type = 'radio';
+                            radio.name = '<?= $id ?>_option';
+                            radio.value = glyph;
+
+                            radio.addEventListener('change', () => {
+                                if (submitButton.disabled) {
+                                    submitButton.disabled = false;
+                                }
+                            });
+
+                            icon.appendChild(image);
+                            icon.appendChild(radio);
+                            gridLayout.appendChild(icon);
+                        }
+                    });
+
+                    searchInput.addEventListener('input', yz.debounce(() => {
                         const query = searchInput.value.toLowerCase();
 
                         for (const icon of gridLayout.children) {
@@ -103,34 +130,37 @@ function yz_icon_picker(array $props): void {
                         }
                     }));
 
-                    for (const [glyph, url] of Object.entries(icons)) {
-                        const icon = document.createElement('label');
-                        icon.htmlFor = '<?= $id ?>_option_' + glyph;
-                        icon.className = 'yuzu icon-picker-option';
-                        icon.dataset.glyph = glyph;
-                        icon.style.backgroundImage = `url(${url})`;
+                    dialog.querySelector('form').addEventListener('submit', (event) => {
+                        const selectedGlyph = document.querySelector('input[name="<?= $id ?>_option"]:checked').value;
+                        const selectedIcon = document.querySelector('label[for="<?= $id ?>_option_' + selectedGlyph + '"]');
 
-                        const radio = document.createElement('input');
-                        radio.id = '<?= $id ?>_option_' + glyph;
-                        radio.classList.add('icon-radio');
-                        radio.type = 'radio';
-                        radio.name = '<?= $id ?>_option';
-                        radio.value = glyph;
+                        document.getElementById('<?= $id ?>').value = selectedIcon.dataset.glyph;
+                        document.querySelector('.selected-icon').src = selectedIcon.dataset.iconUrl;
 
-                        icon.appendChild(radio);
-                        gridLayout.appendChild(icon);
-                    }
+                        event.preventDefault();
+                        dialog.close();
+                    });
 
-                    window.requestAnimationFrame(() => {
+                    submitButton.addEventListener('click', () => {
+                        const selectedGlyph = document.querySelector('input[name="<?= $id ?>_option"]:checked').value;
+                        const selectedIcon = document.querySelector('label[for="<?= $id ?>_option_' + selectedGlyph + '"]');
+
+                        document.getElementById('<?= $id ?>').value = selectedIcon.dataset.glyph;
+                        document.querySelector('.selected-icon').src = selectedIcon.dataset.iconUrl;
+
+                        dialog.close();
+                    });
+
+                    globalThis.requestAnimationFrame(() => {
                         dialog.style.minWidth = dialog.offsetWidth + 'px';
                         dialog.style.minHeight = dialog.offsetHeight + 'px';
                     });
                 });
             </script>
         <?php },
-        'footer' => function() {
+        'footer' => function() use($id) {
             yz_button(['label' => 'Cancel']);
-            yz_button(['variant' => 'primary', 'label' => 'Use icon']);
+            yz_button(['id' => $id . '_submit', 'disabled' => true, 'variant' => 'primary', 'label' => 'Use icon']);
         }
     ]);
 }

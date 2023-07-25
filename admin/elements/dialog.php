@@ -46,9 +46,10 @@ function yz_dialog(array $props): void {
             }]) ?>
         </dialog>
         <script>
-            window.addEventListener('load', () => {
+            globalThis.addEventListener('load', () => {
                 <?php if (isset($props['open']) && $props['open']) { ?>
                     document.getElementById('<?= $id ?>').showModal();
+                    document.getElementById('<?= $id ?>').dispatchEvent(new Event('open'));
                 <?php } ?>
             });
         </script>

@@ -24,7 +24,12 @@
             </a>
         <?php break;
         default: ?>
-            <button id="<?= $props['id'] ?? '' ?>" <?php if (isset($props['type'])) echo 'type="' . $props['type'] . '"' ?> class="<?= trim(implode(' ', $class_names)) ?>">
+            <button
+                id="<?= $props['id'] ?? '' ?>"
+                class="<?= trim(implode(' ', $class_names)) ?>"
+                <?php if (isset($props['type'])) echo 'type="' . $props['type'] . '"' ?>
+                <?php if (isset($props['disabled'])) echo 'disabled' ?>
+            >
                 <?= $props['icon'] ?? '' ?>
                 <?= $props['label'] ?? '' ?>
             </button>

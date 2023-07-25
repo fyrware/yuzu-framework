@@ -32,14 +32,23 @@
 }
 
 .yuzu.icon-picker-dialog .yuzu.icon-picker-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     width: 80px;
     height: 80px;
     border: 1px solid #c3c4c7;
-    background-size: 48px;
-    background-position: center;
-    background-repeat: no-repeat;
     position: relative;
-    opacity: 0.66;
+}
+
+.yuzu.icon-picker-dialog .yuzu.icon-picker-option::after {
+    content: attr(data-glyph);
+    padding: 0 2px;
+    font-size: 8px;
+    line-height: 8px;
+    height: 8px;
+    text-align: center;
 }
 
 .yuzu.icon-picker-dialog .yuzu.icon-picker-option:hover {
@@ -50,12 +59,24 @@
 .yuzu.icon-picker-dialog .yuzu.icon-picker-option:focus-within,
 .yuzu.icon-picker-dialog .yuzu.icon-picker-option:has(input[type="radio"]:checked) {
     background-color: #fff;
+    border: 1px solid #fff;
     box-shadow: 0 0 0 3px #2271b1;
+}
+
+.yuzu.icon-picker-dialog .yuzu.icon-picker-option img {
+    display: block;
+    width: 48px;
+    height: 48px;
+    opacity: 0.66;
+}
+
+.yuzu.icon-picker-dialog .yuzu.icon-picker-option:focus-within img,
+.yuzu.icon-picker-dialog .yuzu.icon-picker-option:has(input[type="radio"]:checked) img  {
     opacity: 1;
 }
 
 .yuzu.icon-picker-dialog .yuzu.icon-picker-option input[type="radio"] {
-    /*opacity: 0;*/
+    opacity: 0;
     position: absolute;
     top: -8px;
     right: -8px;

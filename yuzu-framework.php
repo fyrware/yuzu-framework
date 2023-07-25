@@ -51,5 +51,6 @@ add_action('init', function() {
 }, -1);
 
 add_action('admin_enqueue_scripts', function() {
+    wp_enqueue_script('yuzu-debounce-js', plugin_dir_url(__FILE__) . 'admin/scripts/debounce.js');
     wp_enqueue_style('yuzu-framework-css', plugin_dir_url(__FILE__) . 'yuzu-framework.css');
 });
