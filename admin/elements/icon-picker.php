@@ -41,7 +41,7 @@ function yz_icon_picker(array $props): void {
                 yz_button([
                     'class_name' => 'select-icon',
                     'icon' => yz_icon_svg([
-                        'glyph' => 'images-square',
+                        'glyph' => 'hand-tap',
                         'appearance' => 'duotone'
                     ])
                 ]);
