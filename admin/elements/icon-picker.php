@@ -14,6 +14,7 @@ function yz_icon_picker(array $props): void {
     $name = $props['name'] ?? $id;
     $class = trim(implode(' ', $class_names));
     $appearance = $props['appearance'] ?? 'regular';
+
     $file_dir = plugin_dir_path(__FILE__) . '../../icons/assets/' . $appearance;
     $icon_files = array_filter(scandir($file_dir), fn($icon) => $icon !== '.' && $icon !== '..');
     $icon_glyphs = array_map(fn($icon) => str_replace('.svg', '', $icon), $icon_files);
@@ -86,6 +87,7 @@ function yz_icon_picker(array $props): void {
                     const searchInput = document.getElementById('<?= $id . '_dialog_search' ?>');
                     const gridLayout = document.getElementById('<?= $id . '_dialog_layout' ?>');
                     const submitButton = document.getElementById('<?= $id . '_submit' ?>');
+                    const cancelButton = document.getElementById('<?= $id . '_cancel' ?>');
 
                     dialog.addEventListener('open', () => {
                         for (const [glyph, url] of Object.entries(icons)) {
@@ -133,21 +135,31 @@ function yz_icon_picker(array $props): void {
                     dialog.querySelector('form').addEventListener('submit', (event) => {
                         const selectedGlyph = document.querySelector('input[name="<?= $id ?>_option"]:checked').value;
                         const selectedIcon = document.querySelector('label[for="<?= $id ?>_option_' + selectedGlyph + '"]');
+                        const iconPickerInput = document.getElementById('<?= $id ?>');
+                        const selectedIconImage = document.querySelector('#<?= $id ?> + .flex-layout .selected-icon');
 
-                        document.getElementById('<?= $id ?>').value = selectedIcon.dataset.glyph;
-                        document.querySelector('.selected-icon').src = selectedIcon.dataset.iconUrl;
+                        iconPickerInput.value = selectedIcon.dataset.glyph;
+                        selectedIconImage.src = selectedIcon.dataset.iconUrl;
 
                         event.preventDefault();
                         dialog.close();
                     });
 
-                    submitButton.addEventListener('click', () => {
+                    submitButton.addEventListener('click', (event) => {
                         const selectedGlyph = document.querySelector('input[name="<?= $id ?>_option"]:checked').value;
                         const selectedIcon = document.querySelector('label[for="<?= $id ?>_option_' + selectedGlyph + '"]');
+                        const iconPickerInput = document.getElementById('<?= $id ?>');
+                        const selectedIconImage = document.querySelector('#<?= $id ?> + .flex-layout .selected-icon');
 
-                        document.getElementById('<?= $id ?>').value = selectedIcon.dataset.glyph;
-                        document.querySelector('.selected-icon').src = selectedIcon.dataset.iconUrl;
+                        iconPickerInput.value = selectedIcon.dataset.glyph;
+                        selectedIconImage.src = selectedIcon.dataset.iconUrl;
 
+                        event.preventDefault();
+                        dialog.close();
+                    });
+
+                    cancelButton.addEventListener('click', (event) => {
+                        event.preventDefault();
                         dialog.close();
                     });
 
@@ -159,7 +171,7 @@ function yz_icon_picker(array $props): void {
             </script>
         <?php },
         'footer' => function() use($id) {
-            yz_button(['label' => 'Cancel']);
+            yz_button(['id' => $id . '_cancel', 'label' => 'Cancel']);
             yz_button(['id' => $id . '_submit', 'disabled' => true, 'variant' => 'primary', 'label' => 'Use icon']);
         }
     ]);
