@@ -6,6 +6,10 @@ function yz_flex_layout(array $props): void {
         'flex-layout'
     ];
 
+    if (isset($props['inline']) && $props['inline']) {
+        $class_names[] = 'flex-inline';
+    }
+
     if (isset($props['direction'])) {
         $class_names[] = 'flex-direction-' . $props['direction'];
     }

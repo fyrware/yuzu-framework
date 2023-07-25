@@ -16,7 +16,7 @@
         $class_names[] = $props['class_name'];
     }
 
-    switch ($props['type'] ?? 'button') {
+    switch ($props['type'] ?? null) {
         case 'link': ?>
             <a id="<?= $props['id'] ?? '' ?>" href="<?= $props['href'] ?>" class="<?= trim(implode(' ', $class_names)) ?>">
                 <? if (isset($props['icon'])) echo $props['icon']; ?>
@@ -24,9 +24,9 @@
             </a>
         <?php break;
         default: ?>
-            <button id="<?= $props['id'] ?? '' ?>" type="<?= $props['type'] ?? 'button' ?>" class="<?= trim(implode(' ', $class_names)) ?>">
-                <? if (isset($props['icon'])) echo $props['icon']; ?>
-                <?= $props['label'] ?>
+            <button id="<?= $props['id'] ?? '' ?>" <?php if (isset($props['type'])) echo 'type="' . $props['type'] . '"' ?> class="<?= trim(implode(' ', $class_names)) ?>">
+                <?= $props['icon'] ?? '' ?>
+                <?= $props['label'] ?? '' ?>
             </button>
         <?php break;
     }

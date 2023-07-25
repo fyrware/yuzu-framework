@@ -42,9 +42,10 @@ function yz_add_page(array $page_settings): string {
             function() use ($page_settings) { ?>
                 <section class="wrap">
                     <?php $page_settings['content']($page_settings) ?>
+                    <?php yz_portal('default') ?>
                 </section>
             <?php },
-            $page_settings['position']
+            $page_settings['position'] ?? null
         );
     } else {
         $page = add_menu_page(
@@ -55,6 +56,7 @@ function yz_add_page(array $page_settings): string {
             function() use ($page_settings) { ?>
                 <section class="wrap">
                     <?php $page_settings['content']($page_settings) ?>
+                    <?php yz_portal('default') ?>
                 </section>
             <?php },
             $page_settings['icon'],

@@ -14,9 +14,11 @@ function yz_title(array $props): void {
 
     if (isset($props['class_name'])) {
         $class_names[] = $props['class_name'];
-    } ?>
+    }
 
-    <h1 id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>">
+    $level = $props['level'] ?? 1; ?>
+
+    <h<?= $level ?> id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>">
         <?= $props['content']() ?>
-    </h1>
+    </h<?= $level ?>>
 <?php }

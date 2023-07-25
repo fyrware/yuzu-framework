@@ -12,11 +12,16 @@ function yz_form(array $props): void {
 
     <form
         class="<?= trim(implode(' ', $class_names)) ?>"
-        method="<?= $props['method'] ?? 'POST' ?>"
-        action="<?= esc_url(admin_url('admin-post.php')) ?>">
+        method="<?= $props['method'] ?? 'post' ?>"
+        <?php if (isset($props['action'])) { ?>
+            action="<?= esc_url(admin_url('admin-post.php')) ?>"
+        <?php } ?>
+    >
 
-        <input type="hidden" name="action" value="<?= $props['action'] ?>"/>
-        <?php wp_nonce_field($props['action'], 'nonce') ?>
+        <?php if (isset($props['action'])) { ?>
+            <input type="hidden" name="action" value="<?= $props['action'] ?>"/>
+            <?php wp_nonce_field($props['action'], 'nonce') ?>
+        <?php } ?>
 
         <?php if (isset($props['content'])) {
             $props['content']();

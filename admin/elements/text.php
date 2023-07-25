@@ -1,6 +1,6 @@
 <?php
 
-function yz_text(string $text, array $props = []): void {
+function yz_text(string $content = '', array $props = []): void {
     $class_names = [
         'yuzu',
         'text',
@@ -13,6 +13,6 @@ function yz_text(string $text, array $props = []): void {
     $tag = $props['variant'] ?? 'span'; ?>
 
     <<?= $tag ?> id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>">
-        <?= $text ?>
+        <?= $content ?>
     </<?= $tag ?>>
 <?php }

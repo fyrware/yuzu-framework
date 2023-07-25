@@ -1,0 +1,68 @@
+.yuzu.dialog {
+    min-width: 240px;
+    max-height: calc(100% - 60px);
+    background: none;
+    border: none;
+    border-radius: 5px;
+    padding: 0;
+    inset: 0;
+    z-index: 9991;
+}
+
+.yuzu.dialog::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.yuzu.dialog.dialog-fixed {
+    position: fixed;
+}
+
+.yuzu.dialog.dialog-full-size {
+    width: calc(100% - 60px);
+    height: calc(100% - 60px);
+}
+
+.yuzu.dialog .yuzu.card {
+    height: 100%;
+    border: none;
+    background: #f0f0f1;
+    padding: 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,.7);
+    border-radius: 5px;
+}
+
+.yuzu.dialog .yuzu.dialog-header {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 0 20px;
+    height: 48px;
+    border-bottom: 1px solid #dcdcde;
+    border-radius: 5px 5px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.yuzu.dialog .yuzu.dialog-header .yuzu.title {
+    margin: 0;
+}
+
+.yuzu.dialog .yuzu.dialog-content {
+    padding: 20px;
+}
+
+.yuzu.dialog .yuzu.dialog-footer {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    background: #fff;
+    gap: 5px;
+    height: 48px;
+    padding: 0 20px;
+    border-top: 1px solid #dcdcde;
+    border-radius: 0 0 5px 5px;
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+}

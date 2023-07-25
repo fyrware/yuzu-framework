@@ -2,6 +2,10 @@ section.yuzu.flex-layout {
     display: flex;
 }
 
+section.yuzu.flex-layout.flex-inline {
+    display: inline-flex;
+}
+
 section.yuzu.flex-layout.flex-direction-row {
     flex-direction: row;
 }

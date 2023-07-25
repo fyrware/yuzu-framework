@@ -16,6 +16,8 @@ function yz_input(array $props): void {
     $label = $props['label'] ?? '';
     $checked = $props['checked'] ?? false;
     $required = $props['required'] ?? false;
+    $hidden = $props['hidden'] ?? false;
+    $placeholder = $props['placeholder'] ?? null;
     $default_value = $props['value'] ?? '';
     $class = trim(implode(' ', $class_names));
 
@@ -33,7 +35,7 @@ function yz_input(array $props): void {
             </label>
         <?php break;
         default: ?>
-            <?php yz_flex_layout([
+            <?php if (isset($props['label'])) yz_flex_layout([
                 'gap' => 5,
                 'direction' => 'column',
                 'items' => [
@@ -42,7 +44,7 @@ function yz_input(array $props): void {
                             <?= $label ?>
                         </label>
                     <?php }],
-                    ['content' => function() use($id, $name, $class, $type, $required, $default_value) { ?>
+                    ['content' => function() use($id, $name, $class, $type, $required, $placeholder, $hidden, $default_value) { ?>
                         <input
                             id="<?= $id ?>"
                             name="<?= $name ?>"
@@ -51,13 +53,39 @@ function yz_input(array $props): void {
                             <?php if (isset($default_value)) { ?>
                                 value="<?= $default_value ?>"
                             <?php } ?>
+                            <?php if (isset($placeholder)) { ?>
+                                placeholder="<?= $placeholder ?>"
+                            <?php } ?>
                             <?php if ($required) { ?>
                                 required
+                            <?php } ?>
+                            <?php if ($hidden) { ?>
+                                hidden
                             <?php } ?>
                         />
                     <?php }]
                 ]
             ]) ?>
+            <?php if (!isset($props['label'])) { ?>
+                <input
+                    id="<?= $id ?>"
+                    name="<?= $name ?>"
+                    class="<?= $class ?>"
+                    type="<?= $type ?>"
+                    <?php if (isset($default_value)) { ?>
+                        value="<?= $default_value ?>"
+                    <?php } ?>
+                    <?php if (isset($placeholder)) { ?>
+                        placeholder="<?= $placeholder ?>"
+                    <?php } ?>
+                    <?php if ($required) { ?>
+                        required
+                    <?php } ?>
+                    <?php if ($hidden) { ?>
+                        hidden
+                    <?php } ?>
+                />
+            <?php } ?>
         <?php break;
     } ?>
 <?php }
