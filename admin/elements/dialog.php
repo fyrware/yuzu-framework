@@ -3,7 +3,6 @@
 function yz_dialog(array $props): void {
     yz_open_portal($props['portal'] ?? 'default', function() use($props) {
         $class_names = [
-            'yuzu',
             'dialog'
         ];
 
@@ -20,38 +19,38 @@ function yz_dialog(array $props): void {
         }
 
         $id = $props['id'] ?? '';
-        $class = trim(implode(' ', $class_names)); ?>
+        $class = trim(implode(' ', $class_names));
 
-        <dialog id="<?= $id ?>" class="<?= $class ?>">
-            <?php yz_card(['content' => function() use($props) {
+        yz_container(['variant' => 'dialog', 'id' => $id, 'class_name' => $class, 'content' => function() use($props) {
+            yz_card(['content' => function() use($props) {
                 yz_form(['method' => 'dialog', 'content' => function() use($props) {
-                    if (isset($props['title'])) { ?>
-                        <header class="yuzu dialog-header">
-                            <?php yz_title(['level' => 2, 'content' => function() use($props) {
+                    if (isset($props['title'])) {
+                        yz_container(['variant' => 'header', 'class_name' => 'dialog-header', 'content' => function() use($props) {
+                            yz_title(['level' => 2, 'content' => function() use($props) {
                                 yz_text($props['title']);
-                            }]); ?>
-                        </header>
-                    <?php }
-                    if (isset($props['content'])) { ?>
-                        <div class="yuzu dialog-content">
-                            <?php $props['content'](); ?>
-                        </div>
-                    <?php }
-                    if (isset($props['footer'])) { ?>
-                        <footer class="yuzu dialog-footer">
-                            <?php $props['footer'](); ?>
-                        </footer>
-                    <?php }
+                            }]);
+                        }]);
+                    }
+                    if (isset($props['content'])) {
+                        yz_container(['variant' => 'content', 'class_name' => 'dialog-content', 'content' => function() use($props) {
+                            $props['content']();
+                        }]);
+                    }
+                    if (isset($props['footer'])) {
+                        yz_container(['variant' => 'footer', 'class_name' => 'dialog-footer', 'content' => function() use($props) {
+                            $props['footer']();
+                        }]);
+                    }
                 }]);
-            }]) ?>
-        </dialog>
-        <script>
-            globalThis.addEventListener('load', () => {
-                <?php if (isset($props['open']) && $props['open']) { ?>
-                    document.getElementById('<?= $id ?>').showModal();
-                    document.getElementById('<?= $id ?>').dispatchEvent(new Event('open'));
-                <?php } ?>
-            });
-        </script>
+            }]);
+        }]);
+
+        if (isset($props['open']) && $props['open']) { ?>
+            <script>
+                yz.ready().then(() => {
+                    yz.openDialog(document.getElementById('<?= $id ?>'), { modal: true });
+                });
+            </script>
+        <?php } ?>
     <?php });
 }

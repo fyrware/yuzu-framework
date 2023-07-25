@@ -30,6 +30,7 @@ add_action('init', function() {
         require_once plugin_dir_path(__FILE__) . 'admin/elements/grid-layout.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/icon.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/icon-picker.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/image.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/input.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/media-picker.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/meta-box.php';
@@ -52,5 +53,8 @@ add_action('init', function() {
 
 add_action('admin_enqueue_scripts', function() {
     wp_enqueue_script('yuzu-debounce-js', plugin_dir_url(__FILE__) . 'admin/scripts/debounce.js');
+    wp_enqueue_script('yuzu-dialog-js', plugin_dir_url(__FILE__) . 'admin/scripts/dialog.js');
+    wp_enqueue_script('yuzu-icon-js', plugin_dir_url(__FILE__) . 'admin/scripts/icon.js');
+    wp_enqueue_script('yuzu-ready-js', plugin_dir_url(__FILE__) . 'admin/scripts/ready.js');
     wp_enqueue_style('yuzu-framework-css', plugin_dir_url(__FILE__) . 'yuzu-framework.css');
 });

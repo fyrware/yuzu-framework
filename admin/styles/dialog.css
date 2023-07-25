@@ -11,6 +11,7 @@
 
 .yuzu.dialog::backdrop {
     background: rgba(0, 0, 0, 0.7);
+    /*backdrop-filter: blur(10px);*/
 }
 
 .yuzu.dialog.dialog-fixed {
@@ -23,12 +24,20 @@
 }
 
 .yuzu.dialog .yuzu.card {
+    display: flex;
+    flex-direction: column;
     height: 100%;
     border: none;
     background: #f0f0f1;
     padding: 0;
     box-shadow: 0 5px 15px rgba(0,0,0,.7);
     border-radius: 5px;
+}
+
+.yuzu.dialog .yuzu.form {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .yuzu.dialog .yuzu.dialog-header {
@@ -49,6 +58,7 @@
 }
 
 .yuzu.dialog .yuzu.dialog-content {
+    flex-grow: 1;
     padding: 20px;
 }
 
