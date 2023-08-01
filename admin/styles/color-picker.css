@@ -1,0 +1,37 @@
+.yuzu.color-picker div {
+    width: 162px;
+}
+
+.yuzu.color-picker input {
+    width: 100%;
+}
+
+.yuzu.color-picker button {
+    width: 64px;
+    border: 1px solid #8c8f94;
+    border-radius: 0 4px 4px 0;
+    background-position: 0 0, 8px 8px;
+    background-size: 16px 16px;
+    background-image:
+        repeating-linear-gradient(
+            45deg,
+            #f0f0f1 25%,
+            transparent 25%,
+            transparent 75%,
+            #f0f0f1 75%,
+            #f0f0f1
+        ),
+        repeating-linear-gradient(
+            45deg,
+            #f0f0f1 25%,
+            #ffffff 25%,
+            #ffffff 75%,
+            #f0f0f1 75%,
+            #f0f0f1
+        );
+}
+
+.yuzu.color-picker button::after {
+    border-radius: 0;
+    box-shadow: none;
+}

@@ -23,9 +23,8 @@ function yz_color_picker(array $props): void {
 
     $input = yz_capture(fn() =>
         yz_element([
-            'id' => $id,
             'class' => yz_join($classes),
-            'children' => function() use($name, $value) {
+            'children' => function() use($id, $name, $value) {
                 yz_element('link', [
                     'attributes' => [
                         'rel' => 'stylesheet',
@@ -38,6 +37,7 @@ function yz_color_picker(array $props): void {
                     ]
                 ]);
                 yz_element('input', [
+                    'id' => $id,
                     'attributes' => [
                         'type' => 'text',
                         'name' => $name,

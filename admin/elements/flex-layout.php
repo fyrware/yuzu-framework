@@ -1,18 +1,50 @@
 <?php
 
+const YUZU_FLEX_LAYOUT_VALID_DIRECTIONS = [
+    'row',
+    'row-reverse',
+    'column',
+    'column-reverse'
+];
+
+const YUZU_FLEX_LAYOUT_VALID_JUSTIFICATIONS = [
+    'start',
+    'end',
+    'center',
+    'between',
+    'around',
+    'evenly'
+];
+
+const YUZU_FLEX_LAYOUT_VALID_ALIGNMENTS = [
+    'start',
+    'end',
+    'center',
+    'baseline',
+    'stretch'
+];
+
 function yz_flex_layout(array $props): void {
+    $as            = yz_prop($props, 'as', 'section');
     $id            = yz_prop($props, 'id', '');
     $inline        = yz_prop($props, 'inline', false);
-    $direction     = yz_prop($props, 'direction', '');
-    $justification = yz_prop($props, 'justification', '');
-    $alignment     = yz_prop($props, 'alignment', '');
+    $direction     = yz_prop($props, 'direction', 'row');
+    $justification = yz_prop($props, 'justification', 'start');
+    $alignment     = yz_prop($props, 'alignment', 'center');
     $wrap          = yz_prop($props, 'wrap', '');
     $class_name    = yz_prop($props, 'class', '');
     $gap           = yz_prop($props, 'gap', 0);
     $children      = yz_prop($props, 'children');
     $items         = yz_prop($props, 'items', []);
 
-    if (is_int($gap) || is_double($gap)) {
+    assert(is_string($as));
+    assert(is_bool($inline));
+    assert(in_array($direction,     YUZU_FLEX_LAYOUT_VALID_DIRECTIONS));
+    assert(in_array($justification, YUZU_FLEX_LAYOUT_VALID_JUSTIFICATIONS));
+    assert(in_array($alignment,     YUZU_FLEX_LAYOUT_VALID_ALIGNMENTS));
+    assert(is_array($items));
+
+    if ($gap && (is_int($gap) || is_double($gap))) {
         $gap .= 'px';
     }
 
@@ -45,10 +77,10 @@ function yz_flex_layout(array $props): void {
         $classes[] = $class_name;
     }
 
-    yz_element('section', [
+    yz_element($as, [
         'id'       => $id,
         'class'    => trim(implode(' ', $classes)),
-        'style'    => yz_format_css(['gap' => $gap]),
+        'style'    => $gap ? yz_format_css(['gap' => $gap]) : '',
         'children' => function() use($children, $items) {
             if ($children) $children();
             foreach ($items as $item_props) {

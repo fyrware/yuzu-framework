@@ -26,7 +26,7 @@ function yz_media_picker(array $props): void {
             'value'  => $value,
         ]);
         yz_element(['id' => $id . '_preview', 'class' => 'yuzu media-picker-preview', 'children' => function() use($value, $label, $preview) {
-            if (isset($value)) {
+            if ($value) {
                 yz_image($value, ['alt' => $label, 'src' => $preview]);
             } else {
                 yz_element(['class' => 'yuzu media-picker-placeholder', 'children' => function() {
