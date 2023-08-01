@@ -1,34 +1,86 @@
 <?php
 
 function yz_color_picker(array $props): void {
-    $id = array_key_exists('id', $props) ? $props['id'] : null;
-    $name = array_key_exists('name', $props) ? $props['name'] : $id;
-    $label = array_key_exists('label', $props) ? $props['label'] : 'Form Field';
-    $description = array_key_exists('description', $props) ? $props['description'] : null;
-    $value = array_key_exists('value', $props) ? $props['value'] : '';
-    $display_as = array_key_exists('display_as', $props) ? $props['display_as'] : 'default';
+    $id          = yz_prop($props, 'id', '');
+    $name        = yz_prop($props, 'name', $id);
+    $class       = yz_prop($props, 'class', '');
+    $label       = yz_prop($props, 'label', '');
+    $description = yz_prop($props, 'description', '');
+    $value       = yz_prop($props, 'value', '');
 
-    assert(isset($id), 'Form field must have an id');
+    assert(is_string($label));
+    assert(is_string($description));
+    assert(is_string($value));
 
-    $wrapper_tag = $display_as === 'default' ? 'div' : 'tr';
-    $label_tag = $display_as === 'default' ? 'div' : 'th';
-    $contents_tag = $display_as === 'default' ? 'div' : 'td'; ?>
+    $classes = [
+        'yuzu',
+        'color-picker'
+    ];
 
-    <<?php echo $wrapper_tag; ?> class="yuzu form-field">
-        <<?php echo $label_tag; ?> scope="row">
-            <label for="<?php echo $id; ?>">
-                <?php echo $label; ?>
-            </label>
-            </<?php echo $label_tag; ?>>
-            <<?php echo $contents_tag; ?>>
-            <input type="text" id="<?= $id ?>" name="<?= $name ?>" value="<?= $value ?>" data-coloris/>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
-            <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
-            <?php if (isset($description)) { ?>
-                <p class="description">
-                    <?php echo $description; ?>
-                </p>
-            <?php } ?>
-        </<?php echo $contents_tag; ?>>
-    </<?php echo $wrapper_tag; ?>>
-<?php }
+    if ($class) {
+        $classes[] = $class;
+    }
+
+    $input = yz_capture(fn() =>
+        yz_element([
+            'id' => $id,
+            'class' => yz_join($classes),
+            'children' => function() use($name, $value) {
+                yz_element('link', [
+                    'attributes' => [
+                        'rel' => 'stylesheet',
+                        'href' => 'https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css'
+                    ]
+                ]);
+                yz_element('script', [
+                    'attributes' => [
+                        'src' => 'https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js'
+                    ]
+                ]);
+                yz_element('input', [
+                    'attributes' => [
+                        'type' => 'text',
+                        'name' => $name,
+                        'value' => $value
+                    ],
+                    'data_set' => [
+                        'coloris' => true
+                    ]
+                ]);
+            }
+        ])
+    );
+
+    if ($label) {
+        yz_flex_layout([
+            'direction' => 'column',
+            'items' => [
+                ['children' => function() use($id, $label, $description) {
+                    if ($label) {
+                        yz_element('label', [
+                            'attributes' => [
+                                'for' => $id
+                            ],
+                            'children' => function() use($label) {
+                                yz_text($label);
+                            }
+                        ]);
+                    }
+                    if ($description) {
+                        yz_paragraph([
+                            'variant' => 'description',
+                            'children' => function() use($description) {
+                                yz_text($description);
+                            }
+                        ]);
+                    }
+                }],
+                ['children' => function() use($input) {
+                    echo $input;
+                }]
+            ]
+        ]);
+    } else {
+        echo $input;
+    }
+}

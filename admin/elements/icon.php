@@ -1,27 +1,38 @@
 <?php
 
-function yz_icon(array $props) {
+function yz_icon(array $props): void {
+    $id         = yz_prop($props, 'id', '');
+    $class      = yz_prop($props, 'class', '');
+    $appearance = yz_prop($props, 'appearance', 'regular');
 
-    $class_names = [
+    $classes = [
         'yuzu',
         'icon'
     ];
 
-    if (isset($props['class_name'])) {
-        $class_names[] = $props['class_name'];
+    if ($appearance) {
+        $classes[] = 'icon-' . $appearance;
     }
 
-    $class = trim(implode(' ', $class_names));
-    $svg_url = yz_icon_url($props);
-    $svg_icon = file_get_contents($svg_url);
+    if ($class) {
+        $classes[] = $class;
+    }
 
-    echo str_replace('<svg', '<svg class="' . $class . '"', $svg_icon);
+    $svg_url  = yz_icon_url($props);
+    $svg_icon = file_get_contents($svg_url);
+    $svg_icon = str_replace('<svg', '<svg class="' . yz_join($classes) . '"', $svg_icon);
+
+    if ($id) {
+        $svg_icon = str_replace('<svg', '<svg id="' . $id . '"', $svg_icon);
+    }
+
+    echo $svg_icon;
 }
 
 function yz_icon_url(array $props): string {
     $appearance = $props['appearance'] ?? 'regular';
-    $file_dir = plugin_dir_url(__FILE__) . '../../icons/assets/' . $appearance;
-    $file_name = ($appearance === 'regular' ? $props['glyph'] : $props['glyph'] . '-' . $props['appearance']) . '.svg';
+    $file_dir   = plugin_dir_url(__FILE__) . '../../icons/assets/' . $appearance;
+    $file_name  = ($appearance === 'regular' ? $props['glyph'] : $props['glyph'] . '-' . $props['appearance']) . '.svg';
 
     return $file_dir . '/' . $file_name;
 }

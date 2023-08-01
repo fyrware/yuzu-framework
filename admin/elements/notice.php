@@ -1,32 +1,53 @@
 <?php
 
+const YUZU_NOTICE_VALID_VARIANTS = [
+    'success',
+    'warning',
+    'error',
+    'info'
+];
+
 function yz_notice(array $props): void {
-    $class_names = [
+    $id          = yz_prop($props, 'id', '');
+    $class       = yz_prop($props, 'class', '');
+    $alt         = yz_prop($props, 'alt', false);
+    $dismissible = yz_prop($props, 'dismissible', false);
+    $variant     = yz_prop($props, 'variant', '');
+    $title       = yz_prop($props, 'title', '');
+    $icon        = yz_prop($props, 'icon', '');
+    $children    = yz_prop($props, 'children');
+
+    assert(in_array($variant, YUZU_NOTICE_VALID_VARIANTS), 'Invalid variant');
+    assert(is_string($title), 'Title must be a string');
+
+    $classes = [
         'yuzu',
         'notice'
     ];
 
-    if (isset($props['alt']) && $props['alt']) {
-        $class_names[] = 'notice-alt';
+    if ($alt) {
+        $classes[] = 'notice-alt';
     }
 
-    if (isset($props['dismissible']) && $props['dismissible']) {
-        $class_names[] = 'is-dismissible';
+    if ($dismissible) {
+        $classes[] = 'is-dismissible';
     }
 
-    if (isset($props['variant'])) {
-        $class_names[] = 'notice-' . $props['variant'];
+    if ($variant) {
+        $classes[] = 'notice-' . $props['variant'];
     }
 
-    if (isset($props['class_name'])) {
-        $class_names[] = $props['class_name'];
-    } ?>
+    if ($class) {
+        $classes[] = $props['class'];
+    }
 
-    <div id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>">
-        <?php if (isset($props['icon'])) echo $props['icon']; ?>
-        <?php if (isset($props['title'])) { ?>
-            <strong><?= $props['title'] ?>:</strong>
-        <?php } ?>
-        <?= $props['content']() ?>
-    </div>
-<?php }
+    yz_element([
+        'id' => $id,
+        'class' => yz_join($classes),
+        'children' => function() use($icon, $title, $children) {
+            if ($icon) echo $icon;
+            if ($title) yz_text($title, ['variant' => 'strong']);
+            if ($children) $children();
+        }
+    ]);
+}

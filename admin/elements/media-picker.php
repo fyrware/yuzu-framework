@@ -1,104 +1,134 @@
 <?php
 
 function yz_media_picker(array $props): void {
+    $id          = yz_prop($props, 'id', yz_prop($props, 'name'));
+    $name        = yz_prop($props, 'name', $id);
+    $label       = yz_prop($props, 'label');
+    $description = yz_prop($props, 'description');
+    $value       = yz_prop($props, 'value');
+    $preview     = yz_prop($props, 'preview');
+
+    $class_names = [
+        'yuzu',
+        'media-picker',
+    ];
+
+    if (isset($props['class'])) {
+        $class_names[] = $props['class'];
+    }
+
     wp_enqueue_media();
+    yz_element(['class' => trim(implode(' ', $class_names)), 'children' => function() use($id, $name, $value, $label, $preview) {
+        yz_input([
+            'hidden' => true,
+            'id'     => $id,
+            'name'   => $name,
+            'value'  => $value,
+        ]);
+        yz_element(['id' => $id . '_preview', 'class' => 'yuzu media-picker-preview', 'children' => function() use($value, $label, $preview) {
+            if (isset($value)) {
+                yz_image($value, ['alt' => $label, 'src' => $preview]);
+            } else {
+                yz_element(['class' => 'yuzu media-picker-placeholder', 'children' => function() {
+                    yz_icon(['glyph' => 'park', 'appearance' => 'light']);
+                }]);
+            }
+        }]);
+        yz_flex_layout(['class' => 'yuzu media-picker-actions', 'items' => [
+            ['grow' => true, 'children' => function() use($id) {
+                yz_button([
+                    'id'         => $id . '_select',
+                    'class' => 'yuzu select-media-button',
+                    'label'      => __('Select Media', 'yuzu')
+                ]);
+            }],
+            ['children' => function() use($id) {
+                yz_button([
+                    'id'         => $id . '_remove',
+                    'color'      => 'danger',
+                    'class' => 'yuzu remove-media-button',
+                    'icon'       => yz_icon_svg(['glyph' => 'x-circle', 'appearance' => 'duotone'])
+                ]);
+            }]
+        ]]);
+    }]); ?>
 
-    $id = array_key_exists('id', $props) ? $props['id'] : null;
-    $name = array_key_exists('name', $props) ? $props['name'] : $id;
-    $label = array_key_exists('label', $props) ? $props['label'] : 'Form Field';
-    $description = array_key_exists('description', $props) ? $props['description'] : null;
-    $value = array_key_exists('value', $props) ? $props['value'] : '';
-    $preview = array_key_exists('preview', $props) ? $props['preview'] : null;
-    $display_as = array_key_exists('display_as', $props) ? $props['display_as'] : 'default';
+    <script>
+        yz.ready().then(() => {
+            const mediaIdInput = document.getElementById('<?= $id ?>');
+            const mediaPreview = document.getElementById('<?= $id ?>_preview');
+            const uploadButton = document.getElementById('<?= $id ?>_select');
+            const removeButton = document.getElementById('<?= $id ?>_remove');
 
-    assert(isset($id), 'Form field must have an id');
+            const mediaFrame = wp.media.frames.file_frame = wp.media({
+                title: '<?= __('Choose an image', 'yuzu') ?>',
+                button: {
+                    text: '<?= __('Use image', 'yuzu') ?>',
+                },
+                multiple: false
+            });
 
-    $wrapper_tag = $display_as === 'default' ? 'div' : 'tr';
-    $label_tag = $display_as === 'default' ? 'div' : 'th';
-    $contents_tag = $display_as === 'default' ? 'div' : 'td'; ?>
-
-    <<?php echo $wrapper_tag; ?> class="yuzu form-field">
-        <<?php echo $label_tag; ?> scope="row">
-            <label for="<?php echo $id; ?>">
-                <?php echo $label; ?>
-            </label>
-        </<?php echo $label_tag; ?>>
-        <<?php echo $contents_tag; ?>>
-            <?php if (isset($description)) { ?>
-                <p class="description">
-                    <?php echo $description; ?>
-                </p>
-            <?php } ?>
-            <div id="<?php echo $name; ?>_preview">
-                <?php if (!empty($preview)) { ?>
-                    <img id="<?php echo $name; ?>_preview" src="<?php echo esc_url($preview); ?>" alt="<?php echo $label; ?>" width="160">
-                <?php } else { ?>
-                    <img id="<?php echo $name; ?>_preview" src="<?php echo esc_url(wc_placeholder_img_src()); ?>" width="160" alt="No image"/>
-                <?php } ?>
-            </div>
-            <div>
-                <input type="hidden" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
-                <button id="logo_upload" type="button" class="upload_image_button button">
-                    <?php esc_html_e( 'Upload/Add image', 'yuzu' ); ?>
-                </button>
-                <button id="logo_remove" type="button" class="remove_image_button button">
-                    <?php esc_html_e( 'Remove image', 'yuzu' ); ?>
-                </button>
-            </div>
-            <script>
-                const mediaIdInput = document.getElementById('<?php echo $id; ?>');
-                const mediaPreview = document.getElementById('<?php echo $name; ?>_preview').querySelector('img');
-                const uploadButton = document.getElementById('logo_upload');
-                const removeButton = document.getElementById('logo_remove');
-
-                uploadButton.addEventListener('click', (event) => {
-                    event.preventDefault();
-
-                    if (wp.media.frames.downloadable_file) {
-                        wp.media.frames.downloadable_file.open();
-                        return;
-                    }
-
-                    const mediaFrame = wp.media.frames.file_frame = wp.media({
-                        title: '<?php echo __('Choose an image', 'yuzu') ?>',
-                        button: {
-                            text: '<?php echo __('Use image', 'yuzu') ?>',
-                        },
-                        multiple: false
-                    });
-
-                    mediaFrame.on('select', () => {
-                        const attachment = mediaFrame.state().get('selection').first().toJSON();
-                        const attachmentThumbnail = attachment.sizes.thumbnail || attachment.sizes.full;
-
-                        mediaIdInput.value = attachment.id;
-                        mediaPreview.src = attachmentThumbnail.url;
-                        removeButton.hidden = false;
-                    });
-
+            const openMediaFrame = () => {
+                if (wp.media.frames.downloadable_file) {
+                    wp.media.frames.downloadable_file.open();
+                } else {
                     mediaFrame.open();
-                });
+                }
+            }
 
-                removeButton.addEventListener('click', (event) => {
-                    event.preventDefault();
+            const selectMedia = () => {
+                const placeholder         = mediaPreview.querySelector('svg');
+                const preview             = mediaPreview.querySelector('img') ?? document.createElement('img');
+                const attachment          = mediaFrame.state().get('selection').first().toJSON();
+                const attachmentThumbnail = attachment.sizes.thumbnail || attachment.sizes.full;
 
-                    mediaIdInput.value = '';
-                    mediaPreview.src = '<?php echo esc_url(wc_placeholder_img_src()); ?>';
-                    removeButton.hidden = true;
+                if (preview.parentElement !== mediaPreview) {
+                    mediaPreview.appendChild(preview);
+                }
 
-                    return false;
-                });
+                placeholder.style.display = 'none';
+                mediaIdInput.value        = attachment.id;
+                preview.src               = attachmentThumbnail.url;
+            }
 
-                <?php if (empty($value)) { ?>
+            const clearMedia = () => {
+                const placeholder = mediaPreview.querySelector('svg');
+                const preview     = mediaPreview.querySelector('img');
+
+                if (preview) {
+                    preview.remove();
+                }
+
+                placeholder.style.display = 'block';
+                mediaIdInput.value        = '';
+            }
+
+            mediaPreview.addEventListener('click', (event) => {
+                event.preventDefault();
+                openMediaFrame();
+            });
+
+            uploadButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                openMediaFrame();
+            });
+
+            removeButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                clearMedia();
+            });
+
+            mediaFrame.on('select', () => {
+                selectMedia();
+            });
+
+            <?php if (empty($value)) { ?>
                 jQuery(document).ajaxComplete((event, response, options) => {
                     if (response.status === 200 && options.data.includes('add')) {
-                        mediaIdInput.value = '';
-                        mediaPreview.src = '<?php echo esc_url(wc_placeholder_img_src()); ?>';
-                        removeButton.hidden = true;
+                        clearMedia();
                     }
                 });
-                <?php } ?>
-            </script>
-        </<?php echo $contents_tag; ?>>
-    </<?php echo $wrapper_tag; ?>>
+            <?php } ?>
+        });
+    </script>
 <?php }

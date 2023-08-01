@@ -1,18 +1,26 @@
 <?php
 
-function yz_image(array $props): void {
-    $class_names = [
+function yz_image(string $src, array $props): void {
+    $id    = yz_prop($props, 'id');
+    $class = yz_prop($props, 'class');
+    $alt   = yz_prop($props, 'alt', '');
+
+    $classes = [
         'yuzu',
         'image'
     ];
 
-    if (isset($props['class_name'])) {
-        $class_names[] = $props['class_name'];
-    } ?>
+    if ($class) {
+        $classes[] = $class;
+    }
 
-    <img
-        class="<?= trim(implode(' ', $class_names)) ?>"
-        src="<?= $props['src'] ?>"
-        alt="<?= $props['alt'] ?? '' ?>"
-    />
-<?php }
+    yz_element([
+        'tag'        => 'img',
+        'id'         => $id,
+        'class'      => yz_join($classes),
+        'attributes' => [
+            'src' => $src,
+            'alt' => $alt
+        ]
+    ]);
+}

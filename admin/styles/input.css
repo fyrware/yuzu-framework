@@ -1,14 +1,44 @@
-label.yuzu.input-label {
+.yuzu.input-container.input-container-hidden {
+    display: none;
+}
+
+.yuzu.input-label {
     display: inline-flex;
 }
 
-label.yuzu.input-label.checkbox-label,
-label.yuzu.input-label.radio-label {
+.yuzu.input-label.input-checkbox-label,
+.yuzu.input-label.input-radio-label {
     display: inline-block;
 }
 
-label.yuzu.input-label.required::after {
+.yuzu.input-label.required::after {
     content: '*';
     color: #d63638;
     font-weight: bold;
+}
+
+.yuzu.input-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #8c8f94;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    box-sizing: border-box;
+}
+
+.yuzu.input-decoration .yuzu.icon {
+    width: 20px;
+    height: 20px;
+}
+
+.yuzu.input-decoration + .yuzu.flex-item {
+    flex-grow: 1;
+}
+
+.yuzu.input-decoration + .yuzu.flex-item input {
+    border-radius: 0 4px 4px 0;
+    margin: 0;
 }

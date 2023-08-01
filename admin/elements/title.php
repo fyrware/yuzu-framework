@@ -1,24 +1,30 @@
 <?php
 
 function yz_title(array $props): void {
-    $class_names = [
+    $id       = yz_prop($props, 'id', '');
+    $class    = yz_prop($props, 'class', '');
+    $level    = yz_prop($props, 'level', 1);
+    $inline   = yz_prop($props, 'inline', false);
+    $children = yz_prop($props, 'children');
+
+    $classes = [
         'yuzu',
         'title',
     ];
 
-    if (isset($props['inline']) && $props['inline']) {
-        $class_names[] = 'wp-heading-inline';
+    if ($inline) {
+        $classes[] = 'wp-heading-inline';
     } else {
-        $class_names[] = 'wp-heading';
+        $classes[] = 'wp-heading';
     }
 
-    if (isset($props['class_name'])) {
-        $class_names[] = $props['class_name'];
+    if ($class) {
+        $classes[] = $class;
     }
 
-    $level = $props['level'] ?? 1; ?>
-
-    <h<?= $level ?> id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>">
-        <?= $props['content']() ?>
-    </h<?= $level ?>>
-<?php }
+    yz_element('h' . $level, [
+        'id' => $id,
+        'class' => yz_join($classes),
+        'children' => $children
+    ]);
+}

@@ -1,9 +1,32 @@
-nav.yuzu.tab-group a.yuzu.tab {
-    display: flex;
-    align-items: center;
-    gap: 4px;
+.yuzu.tab-group .yuzu.tab {
+    display:       flex;
+    align-items:   center;
+    gap:           4px;
+    border-radius: 4px 4px 0 0;
 }
 
-nav.yuzu.tab-group a.yuzu.tab svg {
+.yuzu.tab-group .yuzu.tab svg {
     width: 20px;
+}
+
+.yuzu.tab-group {
+    border-bottom: 0;
+}
+
+.yuzu.tab-content {
+    border:        1px solid #c3c4c7;
+    border-radius: 4px;
+    padding:       20px;
+}
+
+.yuzu.tab-group-divider-vertical {
+    border-left: 1px solid #c3c4c7;
+    margin:      -20px 0;
+    height:      calc(100% + 40px);
+}
+
+.yuzu.tab-group-divider-horizontal {
+    border-top: 1px solid #c3c4c7;
+    margin:     0 -20px;
+    width:      calc(100% + 40px);
 }

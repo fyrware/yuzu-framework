@@ -1,6 +1,6 @@
 globalThis.yz ??= {};
 
-yz.openDialog = function yzOpenDialog(dialog, options = {}) {
+yz.openDialog = function yzOpenDialog(dialog, options = { modal: true }) {
     if (options.modal) {
         dialog.showModal();
     } else {

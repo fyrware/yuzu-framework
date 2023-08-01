@@ -1,18 +1,22 @@
 <?php
 
 function yz_card(array $props): void {
-    $class_names = [
+    $id       = yz_prop($props, 'id', '');
+    $class    = yz_prop($props, 'class', '');
+    $children = yz_prop($props, 'children');
+
+    $classes = [
         'yuzu',
         'card'
     ];
 
-    if (isset($props['class_name'])) {
-        $class_names[] = $props['class_name'];
-    } ?>
+    if ($class) {
+        $classes[] = $class;
+    }
 
-    <section class="<?= trim(implode(' ', $class_names)) ?>">
-        <?php if (isset($props['content'])) { ?>
-            <?php $props['content'](); ?>
-        <?php } ?>
-    </section>
- <?php }
+    yz_element('section', [
+        'id' => $id,
+        'class' => yz_join($classes),
+        'children' => $children
+    ]);
+}

@@ -8,3 +8,8 @@
     width: 22px;
     height: 22px;
 }
+
+.yuzu.button.button-color-danger {
+    color: #d63638;
+    border: 1px solid #d63638;
+}

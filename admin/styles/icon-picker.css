@@ -4,12 +4,36 @@
     display: block;
     width: 48px;
     height: 48px;
-    /*color: #2271b1;*/
-    padding: 5px;
-    background: white;
+    padding: 8px;
     border: 1px solid #8c8f94;
     border-right: none;
     border-radius: 4px 0 0 4px;
+    background-color: #ffffff;
+    background-image:
+        repeating-linear-gradient(
+            45deg,
+            #f0f0f1 25%,
+            transparent 25%,
+            transparent 75%,
+            #f0f0f1 75%,
+            #f0f0f1
+        ),
+        repeating-linear-gradient(
+            45deg,
+            #f0f0f1 25%,
+            #ffffff 25%,
+            #ffffff 75%,
+            #f0f0f1 75%,
+            #f0f0f1
+        );
+    background-position: 0 0, 8px 8px;
+    background-size: 16px 16px;
+}
+
+[data-darkreader-scheme="dark"] .yuzu.icon-picker .yuzu.selected-icon {
+    background: none;
+    filter: invert(100%);
+    opacity: 0.66;
 }
 
 .yuzu.icon-picker .yuzu.select-icon {
@@ -39,6 +63,7 @@
     width: 80px;
     height: 80px;
     border: 1px solid #c3c4c7;
+    border-radius: 4px;
     position: relative;
 }
 
@@ -70,6 +95,10 @@
     opacity: 0.66;
 }
 
+[data-darkreader-scheme="dark"] .yuzu.icon-picker-dialog .yuzu.icon-picker-option img {
+    filter: invert(100%);
+}
+
 .yuzu.icon-picker-dialog .yuzu.icon-picker-option:focus-within img,
 .yuzu.icon-picker-dialog .yuzu.icon-picker-option:has(input[type="radio"]:checked) img  {
     opacity: 1;
@@ -90,8 +119,6 @@
     height: 10px;
     margin: 4px;
 }
-
-/* inset 0 0 0 3px #fff, inset 0 0 0 7px #2271b1 */
 
 .yuzu.icon-picker-dialog .yuzu.icon-picker-option:hover input[type="radio"],
 .yuzu.icon-picker-dialog .yuzu.icon-picker-option:focus-within input[type="radio"],

@@ -1,0 +1,15 @@
+.yuzu.empty-state {
+    padding: 80px 0;
+    opacity: 0.4;
+}
+
+.yuzu.empty-state svg {
+    width:   112px;
+    height:  112px;
+    opacity: 0.6;
+}
+
+.yuzu.empty-state .yuzu.empty-state-title {
+    margin:    0;
+    font-size: 1.75em;
+}

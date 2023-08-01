@@ -1,63 +1,86 @@
 <?php
 
 function yz_flex_layout(array $props): void {
-    $class_names = [
+    $id            = yz_prop($props, 'id', '');
+    $inline        = yz_prop($props, 'inline', false);
+    $direction     = yz_prop($props, 'direction', '');
+    $justification = yz_prop($props, 'justification', '');
+    $alignment     = yz_prop($props, 'alignment', '');
+    $wrap          = yz_prop($props, 'wrap', '');
+    $class_name    = yz_prop($props, 'class', '');
+    $gap           = yz_prop($props, 'gap', 0);
+    $children      = yz_prop($props, 'children');
+    $items         = yz_prop($props, 'items', []);
+
+    if (is_int($gap) || is_double($gap)) {
+        $gap .= 'px';
+    }
+
+    $classes = [
         'yuzu',
         'flex-layout'
     ];
 
-    if (isset($props['inline']) && $props['inline']) {
-        $class_names[] = 'flex-inline';
+    if ($inline) {
+        $classes[] = 'flex-inline';
     }
 
-    if (isset($props['direction'])) {
-        $class_names[] = 'flex-direction-' . $props['direction'];
+    if ($direction) {
+        $classes[] = 'flex-direction-' . $direction;
     }
 
-    if (isset($props['justification'])) {
-        $class_names[] = 'flex-justification-' . $props['justification'];
+    if ($justification) {
+        $classes[] = 'flex-justification-' . $justification;
     }
 
-    if (isset($props['alignment'])) {
-        $class_names[] = 'flex-alignment-' . $props['alignment'];
+    if ($alignment) {
+        $classes[] = 'flex-alignment-' . $alignment;
     }
 
-    if (isset($props['wrap'])) {
-        $class_names[] = 'flex-wrap-' . $props['wrap'];
+    if ($wrap) {
+        $classes[] = 'flex-wrap-' . $wrap;
     }
 
-    if (isset($props['class_name'])) {
-        $class_names[] = $props['class_name'];
+    if ($class_name) {
+        $classes[] = $class_name;
     }
 
-    if (isset($props['gap']) && (gettype($props['gap']) === 'integer' || gettype($props['gap']) === 'double')) {
-        $props['gap'] .= 'px';
-    } else {
-        $props['gap'] = 0;
-    } ?>
+    yz_element('section', [
+        'id'       => $id,
+        'class'    => trim(implode(' ', $classes)),
+        'style'    => yz_format_css(['gap' => $gap]),
+        'children' => function() use($children, $items) {
+            if ($children) $children();
+            foreach ($items as $item_props) {
+                $item_id       = yz_prop($item_props, 'id', '');
+                $item_grow     = yz_prop($item_props, 'grow', false);
+                $item_shrink   = yz_prop($item_props, 'shrink', false);
+                $item_class    = yz_prop($item_props, 'class', '');
+                $item_children = yz_prop($item_props, 'children');
 
-    <section id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>" style="gap: <?= $props['gap'] ?>">
-        <?php foreach ($props['items'] as $item) {
-            $item_class_names = [
-                'yuzu',
-                'flex-item'
-            ];
+                $item_class_names = [
+                    'yuzu',
+                    'flex-item'
+                ];
 
-            if (isset($item['grow']) && $item['grow']) {
-                $item_class_names[] = 'flex-grow';
+                if ($item_grow) {
+                    $item_class_names[] = 'flex-grow';
+                }
+
+                if ($item_shrink) {
+                    $item_class_names[] = 'flex-shrink';
+                }
+
+                if ($item_class) {
+                    $item_class_names[] = $item_class;
+                }
+
+                yz_element([
+                    'id'       => $item_id,
+                    'class'    => trim(implode(' ', $item_class_names)),
+                    'children' => $item_children
+                ]);
             }
-
-            if (isset($item['shrink']) && $item['shrink']) {
-                $item_class_names[] = 'flex-shrink';
-            }
-
-            if (isset($item['class_name'])) {
-                $item_class_names[] = $item['class_name'];
-            } ?>
-
-            <div id="<?= $item['id'] ?? '' ?>" class="<?= trim(implode(' ', $item_class_names)) ?>">
-                <?= $item['content']() ?>
-            </div>
-        <?php } ?>
-    </section>
-<?php }
+        }
+    ]);
+}

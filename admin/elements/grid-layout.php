@@ -1,54 +1,83 @@
 <?php
 
 function yz_grid_layout(array $props): void {
+    $id       = yz_prop($props, 'id', '');
+    $class    = yz_prop($props, 'class', '');
+    $columns  = yz_prop($props, 'columns', 0);
+    $gap      = yz_prop($props, 'gap', 0);
+    $children = yz_prop($props, 'children');
+    $items    = yz_prop($props, 'items', []);
+
+    assert(is_array($items), 'Items must be an array');
+
+    if (is_int($gap) || is_double($gap)) {
+        $gap .= 'px';
+    }
+
     $styles = [];
-    $class_names = [
+    $classes = [
         'yuzu',
         'grid-layout'
     ];
 
-    if (isset($props['class_name'])) {
-        $class_names[] = $props['class_name'];
+    if ($class) {
+        $classes[] = $class;
     }
 
-    if (isset($props['columns'])) {
-        if (gettype($props['columns']) === 'integer' || gettype($props['columns']) === 'double') {
-            $styles[] = 'grid-template-columns: repeat(' . $props['columns'] . ', 1fr);';
-        } else if (gettype($props['columns']) === 'string') {
-            $styles[] = 'grid-template-columns: ' . $props['columns'] . ';';
-        } else if (gettype($props['columns']) === 'array') {
-            $styles[] = 'grid-template-columns: ' . implode(' ', $props['columns']) . ';';
+    if ($columns) {
+        if (is_string($columns)) {
+            $styles['grid_template_columns'] = $columns;
+        } else if (is_array($columns)) {
+            $styles['grid_template_columns'] = implode(' ', $columns);
+        } else {
+            $styles['grid_template_columns'] = 'repeat(' . $columns . ', 1fr)';
         }
     }
 
     if (isset($props['gap'])) {
-        if (gettype($props['gap']) === 'integer' || gettype($props['gap']) === 'double') {
-            $styles[] = 'gap: ' . $props['gap'] . 'px;';
+        if (is_string($gap)) {
+            $styles['gap'] = $gap;
+        } else if (is_array($gap)) {
+            $styles['row_gap'] = $gap[0];
+            $styles['column_gap'] = $gap[1];
         } else {
-            $styles[] = 'gap: ' . $props['gap'] . ';';
+            $styles['gap'] = $gap . 'px';
         }
-    } ?>
+    }
 
-    <section id="<?= $props['id'] ?? '' ?>" class="<?= trim(implode(' ', $class_names)) ?>" style="<?= trim(implode(' ', $styles)) ?>">
-        <?php foreach ($props['items'] ?? [] as $item) {
-            $item_class_names = [
-                'yuzu',
-                'grid-item',
-            ];
-
-            if (isset($item['shape'])) {
-                $item_class_names[] = 'grid-item-shape-' . $item['shape'];
+    yz_element('section', [
+        'id'       => $id,
+        'class'    => yz_join($classes),
+        'style'    => yz_format_css($styles),
+        'children' => function() use($children, $items) {
+            if ($children) {
+                $children();
             }
+            foreach ($items as $item) {
+                $item_id       = yz_prop($item, 'id', '');
+                $item_class    = yz_prop($item, 'class', '');
+                $item_shape    = yz_prop($item, 'shape', '');
+                $item_children = yz_prop($item, 'children');
 
-            if (isset($item['class_name'])) {
-                $item_class_names[] = $item['class_name'];
-            } ?>
+                $item_classes = [
+                    'yuzu',
+                    'grid-item'
+                ];
 
-            <div id="<?= $item['id'] ?? '' ?>" class="<?= trim(implode(' ', $item_class_names)) ?>">
-                <div class="yuzu grid-item-content">
-                    <?= $item['content']() ?>
-                </div>
-            </div>
-        <?php } ?>
-    </section>
-<?php }
+                if ($item_class) {
+                    $item_classes[] = $item_class;
+                }
+
+                if ($item_shape) {
+                    $item_classes[] = 'grid-item-shape-' . $item_shape;
+                }
+
+                yz_element([
+                    'id'       => $item_id,
+                    'class'    => yz_join($item_classes),
+                    'children' => $item_children
+                ]);
+            }
+        }
+    ]);
+}
