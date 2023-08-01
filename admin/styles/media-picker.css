@@ -69,3 +69,8 @@
 .yuzu.media-picker-actions .yuzu.remove-media-button {
     border-bottom-left-radius: 0;
 }
+
+.media-modal-content {
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
