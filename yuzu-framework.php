@@ -9,6 +9,8 @@
  * Text Domain: yuzu
  */
 
+CONST YUZU = 'yuzu';
+
 /**
  *  Return true if on a page which uses Yuzu framework
  * @return bool
@@ -18,7 +20,7 @@ function is_yuzu(): bool {
 }
 
 add_action('init', function() {
-    if (is_admin()) {
+    if (is_admin() || is_login()) {
         require_once plugin_dir_path(__FILE__) . 'admin/elements/button.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/button-group.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/card.php';

@@ -30,7 +30,7 @@ function yz_flex_layout(array $props): void {
     $inline        = yz_prop($props, 'inline', false);
     $direction     = yz_prop($props, 'direction', 'row');
     $justification = yz_prop($props, 'justification', 'start');
-    $alignment     = yz_prop($props, 'alignment', 'center');
+    $alignment     = yz_prop($props, 'alignment', 'stretch');
     $wrap          = yz_prop($props, 'wrap', '');
     $class_name    = yz_prop($props, 'class', '');
     $gap           = yz_prop($props, 'gap', 0);
