@@ -23,28 +23,26 @@ function yz_color_picker(array $props): void {
 
     $input = yz_capture(fn() =>
         yz_element([
+            'id' => $id . '_container',
             'class' => yz_join($classes),
             'children' => function() use($id, $name, $value) {
-                yz_element('link', [
-                    'attributes' => [
-                        'rel' => 'stylesheet',
-                        'href' => 'https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css'
-                    ]
-                ]);
-                yz_element('script', [
-                    'attributes' => [
-                        'src' => 'https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js'
-                    ]
-                ]);
+//                yz_element('link', [
+//                    'attributes' => [
+//                        'rel' => 'stylesheet',
+//                        'href' => 'https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css'
+//                    ]
+//                ]);
+//                yz_element('script', [
+//                    'attributes' => [
+//                        'src' => 'https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js'
+//                    ]
+//                ]);
                 yz_element('input', [
-                    'id' => $id,
+                    'id'   => $id,
+                    'name' => $name,
                     'attributes' => [
-                        'type' => 'text',
-                        'name' => $name,
-                        'value' => $value
-                    ],
-                    'data_set' => [
-                        'coloris' => true
+                        'type'   => 'color',
+                        'value'  => $value
                     ]
                 ]);
             }
@@ -82,5 +80,10 @@ function yz_color_picker(array $props): void {
         ]);
     } else {
         echo $input;
-    }
-}
+    } ?>
+    <script>
+        //yz.ready().then(() => {
+        //    yz.colorPicker.attach('<?php //= $id ?>//', { parent: '<?php //= $id ?>//_container' });
+        //});
+    </script>
+<?php }

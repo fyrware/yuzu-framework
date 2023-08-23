@@ -12,10 +12,11 @@ function yz_notice(array $props): void {
     $class       = yz_prop($props, 'class', '');
     $alt         = yz_prop($props, 'alt', false);
     $dismissible = yz_prop($props, 'dismissible', false);
-    $variant     = yz_prop($props, 'variant', '');
+    $variant     = yz_prop($props, 'variant', 'info');
     $title       = yz_prop($props, 'title', '');
     $icon        = yz_prop($props, 'icon', '');
     $children    = yz_prop($props, 'children');
+    $inline      = yz_prop($props, 'inline', false);
 
     assert(in_array($variant, YUZU_NOTICE_VALID_VARIANTS), 'Invalid variant');
     assert(is_string($title), 'Title must be a string');
@@ -33,6 +34,10 @@ function yz_notice(array $props): void {
         $classes[] = 'is-dismissible';
     }
 
+    if ($inline) {
+        $classes[] = 'inline';
+    }
+
     if ($variant) {
         $classes[] = 'notice-' . $props['variant'];
     }
@@ -45,9 +50,13 @@ function yz_notice(array $props): void {
         'id' => $id,
         'class' => yz_join($classes),
         'children' => function() use($icon, $title, $children) {
-            if ($icon) echo $icon;
-            if ($title) yz_text($title, ['variant' => 'strong']);
-            if ($children) $children();
+            yz_paragraph([
+                'children' => function() use($icon, $title, $children) {
+                    if ($icon) echo $icon;
+                    if ($title) yz_text($title, ['variant' => 'strong']);
+                    if ($children) $children();
+                }
+            ]);
         }
     ]);
 }

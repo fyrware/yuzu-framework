@@ -1,12 +1,16 @@
 .yuzu.empty-state {
     padding: 80px 0;
-    opacity: 0.4;
 }
 
-.yuzu.empty-state svg {
+.yuzu.empty-state .yuzu.empty-state-icon svg {
     width:   112px;
     height:  112px;
-    opacity: 0.6;
+    opacity: 0.5;
+}
+
+.yuzu.empty-state h2,
+.yuzu.empty-state p {
+    opacity: 0.5;
 }
 
 .yuzu.empty-state .yuzu.empty-state-title {

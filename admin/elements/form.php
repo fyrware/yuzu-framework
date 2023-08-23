@@ -70,26 +70,31 @@ function yz_form(array $props): void {
 }
 
 function yz_form_field(array $props): void {
-    $id          = yz_prop($props, 'id', '');
+    $id          = yz_prop($props, 'id', uniqid('form_field_'));
     $name        = yz_prop($props, 'name', $id);
     $class       = yz_prop($props, 'class', '');
+    $style       = yz_prop($props, 'style', []);
     $required    = yz_prop($props, 'required', false);
     $description = yz_prop($props, 'description', '');
     $form_entity = yz_prop($props, 'form_entity', 'form');
     $label       = yz_prop($props, 'label', '');
     $type        = yz_prop($props, 'type', 'text');
+    $rows        = yz_prop($props, 'rows', 3);
     $value       = yz_prop($props, 'value', '');
+    $placeholder = yz_prop($props, 'placeholder', '');
+    $hint        = yz_prop($props, 'hint', '');
+    $portal      = yz_prop($props, 'portal');
 
     $classes = [
         'form-field',
     ];
 
-    if ($name) {
-        $classes[] = $form_entity . '-' . $name . '-wrap';
+    if ($required) {
+        $classes[] = 'form-field-required';
     }
 
-    if ($required) {
-        $classes[] = 'form-required';
+    if ($name) {
+        $classes[] = $form_entity . '-' . $name . '-wrap';
     }
 
     if ($class) {
@@ -100,7 +105,8 @@ function yz_form_field(array $props): void {
         'as'        => 'div',
         'direction' => 'column',
         'class'     => yz_join($classes),
-        'children'  => function() use($id, $name, $required, $form_entity, $description, $label, $type, $value) {
+        'style'     => $style,
+        'children'  => function() use($id, $name, $required, $form_entity, $description, $label, $placeholder, $hint, $type, $rows, $value, $portal) {
             if ($label) {
                 yz_element('label', [
                     'attributes' => [
@@ -126,7 +132,8 @@ function yz_form_field(array $props): void {
                     'id'       => $id,
                     'name'     => $name,
                     'required' => $required,
-                    'value'    => $value,
+                    'value'    => !empty($value) ? $value : null,
+                    'portal'   => $portal,
                     'aria'     => [
                         'describedby' => $id . '-description'
                     ]
@@ -157,6 +164,17 @@ function yz_form_field(array $props): void {
                     'name'     => $name,
                     'required' => $required,
                     'value'    => $value,
+                    'rows'     => $rows,
+                    'aria'     => [
+                        'describedby' => $id . '-description'
+                    ]
+                ]);
+            } else if ($type === 'checkbox') {
+                yz_input([
+                    'id'       => $id,
+                    'name'     => $name,
+                    'type'     => 'checkbox',
+                    'label'    => $hint,
                     'aria'     => [
                         'describedby' => $id . '-description'
                     ]
@@ -167,6 +185,8 @@ function yz_form_field(array $props): void {
                     'name'     => $name,
                     'required' => $required,
                     'value'    => $value,
+                    'type'     => $type,
+                    'placeholder' => $placeholder,
                     'aria'     => [
                         'describedby' => $id . '-description'
                     ]

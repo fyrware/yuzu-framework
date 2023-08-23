@@ -17,11 +17,12 @@ function yz_get_current_tab(array $tabs): array {
 }
 
 function yz_tab_group(array $props): void {
-    $id           = yz_prop($props, 'id', '');
-    $class        = yz_prop($props, 'class', '');
-    $tabs         = yz_prop($props, 'tabs', []);
-    $current_tab  = yz_get_current_tab($tabs);
-    $current_page = yz_get_current_tab_page();
+    $id               = yz_prop($props, 'id', uniqid('tab-group-'));
+    $class            = yz_prop($props, 'class', '');
+    $tabs             = yz_prop($props, 'tabs', []);
+    $current_page     = yz_get_current_tab_page();
+    $current_tab      = yz_get_current_tab($tabs);
+    $current_tab_href = yz_prop($current_tab, 'href');
 
     assert(is_array($tabs), 'Tabs must be an array');
 
@@ -73,10 +74,66 @@ function yz_tab_group(array $props): void {
             }
         }
     ]);
-    yz_element('main', [
-        'class'    => 'yuzu tab-content nav-tab-content',
-        'children' => $current_tab['children']
-    ]);
+
+    if (str_starts_with($current_tab_href, '#')) {
+        yz_element('main', [
+            'children' => function() use ($tabs, $current_tab) {
+                foreach ($tabs as $tab) {
+                    $tab_content_classes = [
+                        'yuzu',
+                        'tab-content',
+                        'nav-tab-content'
+                    ];
+
+                    if ($current_tab['slug'] === $tab['slug']) {
+                        $tab_content_classes[] = 'tab-content-active';
+                    }
+
+                    yz_element('section', [
+                        'class' => yz_join($tab_content_classes),
+                        'children' => $tab['children'],
+                        'data_set' => [
+                            'hash' => $tab['href']
+                        ]
+                    ]);
+                }
+            }
+        ]); ?>
+        <script>
+            yz.ready().then(() => {
+                const tabGroup = yz('#<?= $id ?>').item();
+
+                window.addEventListener('hashchange', () => {
+                    const currentTab = yz(`#<?= $id ?> .yuzu.tab.nav-tab-active`).item();
+                    const nextTab    = yz(`#<?= $id ?> .yuzu.tab[href="${window.location.hash}"]`).item();
+
+                    if (nextTab) {
+                        nextTab.classList.add('nav-tab-active');
+
+                        if (currentTab) {
+                            currentTab.classList.remove('nav-tab-active');
+                        }
+                    }
+
+                    const currentTabContent = yz(`#<?= $id ?> + main .yuzu.tab-content.tab-content-active`).item();
+                    const nextTabContent    = yz(`#<?= $id ?> + main .yuzu.tab-content[data-hash="${window.location.hash}"]`).item();
+
+                    if (nextTabContent) {
+                        nextTabContent.classList.add('tab-content-active');
+
+                        if (currentTabContent) {
+                            currentTabContent.classList.remove('tab-content-active');
+                        }
+                    }
+                });
+            });
+        </script>
+    <?php } else {
+        yz_element('main', [
+            'class'    => 'yuzu tab-content nav-tab-content',
+            'children' => $current_tab['children']
+        ]);
+    }
 }
 
 function yz_tab_group_divider(array $props = []): void {

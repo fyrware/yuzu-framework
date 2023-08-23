@@ -1,0 +1,4 @@
+.yuzu.settings-table input:not([type="checkbox"]):not([type="radio"]),
+.yuzu.settings-table textarea {
+    width: 100%;
+}

@@ -25,17 +25,20 @@ function yz_settings_table(array $props): void {
             foreach ($fields as $field) {
                 $field_label   = yz_prop($field, 'label', '');
                 $field_content = yz_prop($field, 'children');
+                $field_for     = yz_prop($field, 'for', '');
 
                 yz_element('tr', [
-                    'children' => function() use($field_label, $field_content) {
+                    'children' => function() use($field_label, $field_content, $field_for) {
                         yz_element('th', [
                             'attributes' => ['scope' => 'row'],
-                            'children'    => function() use($field_label) {
-                                yz_text($field_label, [
-                                    'variant'    => 'label',
+                            'children'    => function() use($field_label, $field_for) {
+                                yz_element('label', [
                                     'attributes' => [
-                                        'for' => $field_label
-                                    ]
+                                        'for' => $field_for
+                                    ],
+                                    'children' => function() use($field_label) {
+                                        yz_text($field_label, ['variant'    => 'strong']);
+                                    }
                                 ]);
                             }
                         ]);

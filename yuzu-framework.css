@@ -4,13 +4,17 @@
 @import url('admin/styles/dialog.css');
 @import url('admin/styles/empty-state.css');
 @import url('admin/styles/flex-layout.css');
+@import url('admin/styles/form-field.css');
 @import url('admin/styles/grid-layout.css');
 @import url('admin/styles/icon-picker.css');
 @import url('admin/styles/input.css');
 @import url('admin/styles/media-picker.css');
 @import url('admin/styles/meta-box.css');
+@import url('admin/styles/notice.css');
+@import url('admin/styles/settings-table.css');
 @import url('admin/styles/tab-group.css');
 @import url('admin/styles/title.css');
+@import url('admin/styles/patterns/stat-card.css');
 
 :root {
     --yuzu-wordpress-sidebar-background-color: #1d2327;

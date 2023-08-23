@@ -15,6 +15,7 @@ function yz_icon_picker(array $props): void {
     $name       = yz_prop($props, 'name', $id);
     $value      = yz_prop($props, 'value', 'puzzle-piece');
     $appearance = yz_prop($props, 'appearance', 'regular');
+    $portal     = yz_prop($props, 'portal');
 
     assert(is_string($value), 'Icon picker value must be a string');
     assert(in_array($appearance, YUZU_ICON_PICKER_VALID_APPEARANCES), 'Icon picker appearance must be one of: ' . yz_join(YUZU_ICON_PICKER_VALID_APPEARANCES, ', '));
@@ -58,24 +59,11 @@ function yz_icon_picker(array $props): void {
         ]);
     } ?>
 
-    <script>
-        yz.setIconSet('<?= $appearance ?>',  <?= json_encode($icons) ?>);
-
-        yz.ready().then(() => {
-            const dialog = yz('#<?= $id . '_dialog' ?>').item();
-            const button = yz('#<?= $id ?> + .flex-layout .select-icon').item();
-
-            button.addEventListener('click', (event) => {
-                event.preventDefault();
-                yz.openDialog(dialog);
-            });
-        });
-    </script>
-
     <?php yz_dialog([
         'id'       => $id . '_dialog',
         'class'    => 'icon-picker-dialog',
         'fixed'    => true,
+        'portal'   => $portal,
         'title'    => 'Select an icon',
         'children' => function() use($id, $appearance, $icons) {
             yz_element('aside', ['class' => 'yuzu icon-picker-toolbar', 'children' => function() use($id) {
@@ -105,6 +93,8 @@ function yz_icon_picker(array $props): void {
                         gridLayout.innerHTML  = '';
                         submitButton.disabled = true;
 
+                        const docFragment = new DocumentFragment();
+
                         for (const [glyph, url] of Object.entries(yz.getIconSet('<?= $appearance ?>'))) {
                             const label           = document.createElement('label');
                             label.htmlFor         = '<?= $id ?>_option_' + glyph;
@@ -131,8 +121,10 @@ function yz_icon_picker(array $props): void {
 
                             label.appendChild(image);
                             label.appendChild(radio);
-                            gridLayout.appendChild(label);
+                            docFragment.appendChild(label);
                         }
+
+                        gridLayout.appendChild(docFragment);
 
                         yz.nextFrame().then(() => {
                             const dialogCard           = dialog.querySelector('.yuzu.card');
@@ -155,7 +147,7 @@ function yz_icon_picker(array $props): void {
 
                     cancelButton.addEventListener('click', (event) => {
                         event.preventDefault();
-                        yz.closeDialog(dialog);
+                        yz.dialog.close(dialog);
                     });
 
                     dialog.querySelector('form').addEventListener('submit', (event) => {
@@ -168,15 +160,28 @@ function yz_icon_picker(array $props): void {
                         selectedIconImage.src = selectedIcon.dataset.iconUrl;
 
                         event.preventDefault();
-                        yz.closeDialog(dialog);
+                        event.stopPropagation();
+
+                        yz.dialog.close(dialog);
                     });
                 });
             </script>
-
         <?php },
         'footer' => function() use($id) {
             yz_button(['id' => $id . '_cancel', 'label' => 'Cancel', 'type' => 'reset']);
             yz_button(['id' => $id . '_submit', 'disabled' => true, 'variant' => 'primary', 'type' => 'submit', 'label' => 'Use icon']);
         }
-    ]);
-}
+    ]); ?>
+    <script>
+        yz.setIconSet('<?= $appearance ?>',  <?= json_encode($icons) ?>);
+        yz.ready().then(() => {
+            const dialog = yz('#<?= $id . '_dialog' ?>').item();
+            const button = yz('#<?= $id ?> + .yuzu.flex-layout .select-icon').item();
+
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                yz.dialog.open(dialog);
+            });
+        });
+    </script>
+<?php }

@@ -30,7 +30,7 @@ function yz_grid_layout(array $props): void {
         } else if (is_array($columns)) {
             $styles['grid_template_columns'] = implode(' ', $columns);
         } else {
-            $styles['grid_template_columns'] = 'repeat(' . $columns . ', 1fr)';
+            $styles['grid_template_columns'] = 'repeat(' . $columns . ', minmax(0, 1fr))';
         }
     }
 

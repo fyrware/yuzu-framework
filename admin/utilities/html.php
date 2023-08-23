@@ -36,29 +36,41 @@ const YUZU_NAMED_ELEMENTS = [
     'param'
 ];
 
-function yz_html(string $tag, array $attributes = [], ?callable $children = null): void {
-    echo YUZU_TAG_START . $tag;
+function yz_css(array $style): string {
+    $css = '';
 
-    if (!empty($attributes)) foreach ($attributes as $name => $value) {
-        if ($value !== false) echo ' ' . $name . '="' . $value . '"';
+    foreach ($style as $property => $value) {
+        $css .= str_replace('_', '-', $property) . ':' . $value . ';';
     }
 
-    echo YUZU_TAG_STOP;
+    return $css;
+}
+
+function yz_html(string $tag, array $attributes = [], ?callable $children = null): string {
+    $html = YUZU_TAG_START . $tag;
+
+    if (!empty($attributes)) foreach ($attributes as $name => $value) {
+        if ($value !== false) $html .= ' ' . $name . '="' . $value . '"';
+    }
+
+    $html .= YUZU_TAG_STOP;
 
     if (in_array($tag, YUZU_SELF_CLOSING_TAGS)) {
-        return;
+        return $html;
     }
 
     if ($children) {
-        $children();
+        $html .= yz_capture(fn() => $children());
     }
 
-    echo YUZU_TAG_START . YUZU_TAG_CLOSE . $tag . YUZU_TAG_STOP;
+    $html .= YUZU_TAG_START . YUZU_TAG_CLOSE . $tag . YUZU_TAG_STOP;
+
+    return $html;
 }
 
-function yz_element(mixed $tag_or_props, ?array $props = null): void {
-    $props = is_array($tag_or_props)  ? $tag_or_props : $props;
-    $tag   = is_string($tag_or_props) ? $tag_or_props : yz_prop($props, 'tag', 'div');
+function yz_element(mixed $tag, ?array $props = null): void {
+    $props = is_array($tag)  ? $tag : $props;
+    $tag   = is_string($tag) ? $tag : yz_prop($props, 'tag', 'div');
 
     $id         = yz_prop($props, 'id', '');
     $name       = yz_prop($props, 'name', $id);
@@ -111,5 +123,13 @@ function yz_element(mixed $tag_or_props, ?array $props = null): void {
 
     $attributes['class'] = yz_join($classes);
 
-    yz_html($tag, $attributes, $children);
+    echo yz_html($tag, $attributes, $children);
+}
+
+function yz_js_log(mixed ...$values): void {
+    yz_element('script', [
+        'children' => function() use($values) {
+            echo 'console.log(...' . json_encode($values) . ');';
+        }
+    ]);
 }

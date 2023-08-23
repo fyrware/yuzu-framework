@@ -1,0 +1,14 @@
+.yuzu.form-field input:not([type="checkbox"]):not([type="radio"]),
+.yuzu.form-field select,
+.yuzu.form-field textarea {
+    width: 100%;
+}
+
+.yuzu.form-field label {
+    font-weight: bold;
+}
+
+.yuzu.form-field.form-field-required label span::after {
+    content: '*';
+    color: #d63638;
+}

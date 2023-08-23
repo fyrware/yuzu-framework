@@ -15,7 +15,8 @@ const YUZU_BUTTON_VALID_VARIANTS = [
 const YUZU_BUTTON_VALID_SIZES = [
     'small',
     'medium',
-    'large'
+    'large',
+    'hero'
 ];
 
 const YUZU_BUTTON_VALID_COLORS = [
@@ -67,10 +68,10 @@ function yz_button(array $props): void {
 
     if ($type === 'link') {
         yz_element('a', [
-            'id'       => $id,
-            'href'     => $href,
-            'class'    => yz_join($class_names),
-            'children' => function() use($icon, $label) {
+            'id'         => $id,
+            'class'      => yz_join($class_names),
+            'attributes' => ['href' => $href],
+            'children'   => function() use($icon, $label) {
                 echo $icon;
                 echo $label;
             }

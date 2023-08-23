@@ -3,7 +3,8 @@
 }
 
 .yuzu.color-picker input {
-    width: 100%;
+    width: 109px !important;
+    height: 30px;
 }
 
 .yuzu.color-picker button {
@@ -34,9 +35,4 @@
 .yuzu.color-picker button::after {
     border-radius: 0;
     box-shadow: none;
-}
-
-#clr-picker {
-    border: 1px solid #8c8f94;
-    border-radius: 4px;
 }

@@ -40,7 +40,7 @@ function yz_input(array $props): void {
                         'checked' => $checked
                     ]
                 ]);
-                yz_text($label, ['class' => 'yuzu input-label checkbox-label']);
+                yz_text($label);
             }
         ]);
     } else {
@@ -51,6 +51,7 @@ function yz_input(array $props): void {
                 case 'number':   yz_icon(['glyph' => 'hash', 'appearance' => 'duotone']); break;
                 case 'password': yz_icon(['glyph' => 'keyhole', 'appearance' => 'duotone']); break;
                 case 'phone':    yz_icon(['glyph' => 'phone', 'appearance' => 'duotone']); break;
+                case 'tel':      yz_icon(['glyph' => 'phone', 'appearance' => 'duotone']); break;
                 case 'search':   yz_icon(['glyph' => 'magnifying-glass', 'appearance' => 'duotone']); break;
                 case 'url':      yz_icon(['glyph' => 'globe-simple', 'appearance' => 'duotone']); break;
                 default:         yz_icon(['glyph' => 'text-aa', 'appearance' => 'duotone']); break;

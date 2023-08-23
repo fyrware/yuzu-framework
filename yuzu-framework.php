@@ -19,8 +19,21 @@ function is_yuzu(): bool {
     return true;
 }
 
-add_action('init', function() {
+add_action('plugins_loaded', function() {
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/action.php';
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/array.php';
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/capture.php';
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/debug.php';
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/format.php';
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/html.php';
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/logic.php';
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/misc.php';
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/page.php';
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/post-type.php';
+    require_once plugin_dir_path(__FILE__) . 'admin/utilities/svg.php';
+
     if (is_admin() || is_login()) {
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/avatar.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/button.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/button-group.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/card.php';
@@ -46,14 +59,8 @@ add_action('init', function() {
         require_once plugin_dir_path(__FILE__) . 'admin/elements/text.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/textarea.php';
         require_once plugin_dir_path(__FILE__) . 'admin/elements/title.php';
-        require_once plugin_dir_path(__FILE__) . 'admin/utilities/action.php';
-        require_once plugin_dir_path(__FILE__) . 'admin/utilities/capture.php';
-        require_once plugin_dir_path(__FILE__) . 'admin/utilities/format.php';
-        require_once plugin_dir_path(__FILE__) . 'admin/utilities/html.php';
-        require_once plugin_dir_path(__FILE__) . 'admin/utilities/logic.php';
-        require_once plugin_dir_path(__FILE__) . 'admin/utilities/page.php';
-        require_once plugin_dir_path(__FILE__) . 'admin/utilities/post-type.php';
-        require_once plugin_dir_path(__FILE__) . 'admin/utilities/svg.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/toolbar.php';
+        require_once plugin_dir_path(__FILE__) . 'admin/elements/patterns/stat-card.php';
     }
 }, -1);
 
@@ -62,6 +69,7 @@ add_action('admin_enqueue_scripts', function() {
     wp_enqueue_script('yuzu-util-dialog-js',   plugin_dir_url(__FILE__) . 'admin/scripts/utilities/dialog.js');
     wp_enqueue_script('yuzu-util-element-js',  plugin_dir_url(__FILE__) . 'admin/scripts/utilities/element.js');
     wp_enqueue_script('yuzu-util-icon-js',     plugin_dir_url(__FILE__) . 'admin/scripts/utilities/icon.js');
+    wp_enqueue_script('yuzu-util-picker-js',     plugin_dir_url(__FILE__) . 'admin/scripts/utilities/picker.js');
     wp_enqueue_script('yuzu-util-ready-js',    plugin_dir_url(__FILE__) . 'admin/scripts/utilities/ready.js');
     wp_enqueue_style('yuzu-framework-css',     plugin_dir_url(__FILE__) . 'yuzu-framework.css');
 });

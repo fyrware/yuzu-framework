@@ -6,6 +6,7 @@ function yz_empty_state(array $props): void {
     $title       = yz_prop($props, 'title');
     $description = yz_prop($props, 'description');
     $icon        = yz_prop($props, 'icon', yz_icon_svg(['glyph' => 'database', 'appearance' => 'duotone']));
+    $actions     = yz_prop($props, 'actions', []);
 
     $class_names = [
         'yuzu',
@@ -24,10 +25,10 @@ function yz_empty_state(array $props): void {
         'alignment'     => 'center',
         'justification' => 'center',
         'items' => [
-            ['children' => function() use ($icon) {
+            ['class' => 'empty-state-icon', 'children' => function() use ($icon) {
                 echo $icon;
             }],
-            ['children' => function() use ($title, $description) {
+            ['children' => function() use ($title, $description, $actions) {
                 yz_flex_layout([
                     'class'         => 'empty-state-content',
                     'direction'     => 'column',
@@ -52,6 +53,22 @@ function yz_empty_state(array $props): void {
                                 'children' => function() use($description) {
                                     yz_text($description);
                                 }
+                            ]);
+                        }],
+                        ['children' => function() use ($actions) {
+                            yz_flex_layout([
+                                'class'         => 'empty-state-actions',
+                                'direction'     => 'row',
+                                'alignment'     => 'center',
+                                'justification' => 'center',
+                                'gap'           => 20,
+                                'items'         => array_map(function($action) {
+                                    return [
+                                        'children' => function() use ($action) {
+                                            yz_button($action);
+                                        }
+                                    ];
+                                }, $actions)
                             ]);
                         }]
                     ]

@@ -4,6 +4,7 @@ function yz_card(array $props): void {
     $id       = yz_prop($props, 'id', '');
     $class    = yz_prop($props, 'class', '');
     $children = yz_prop($props, 'children');
+    $style    = yz_prop($props, 'style', []);
 
     $classes = [
         'yuzu',
@@ -17,6 +18,7 @@ function yz_card(array $props): void {
     yz_element('section', [
         'id' => $id,
         'class' => yz_join($classes),
-        'children' => $children
+        'children' => $children,
+        'style' => yz_css($style)
     ]);
 }

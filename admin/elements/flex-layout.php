@@ -33,6 +33,7 @@ function yz_flex_layout(array $props): void {
     $alignment     = yz_prop($props, 'alignment', 'stretch');
     $wrap          = yz_prop($props, 'wrap', '');
     $class_name    = yz_prop($props, 'class', '');
+    $style         = yz_prop($props, 'style', []);
     $gap           = yz_prop($props, 'gap', 0);
     $children      = yz_prop($props, 'children');
     $items         = yz_prop($props, 'items', []);
@@ -46,6 +47,10 @@ function yz_flex_layout(array $props): void {
 
     if ($gap && (is_int($gap) || is_double($gap))) {
         $gap .= 'px';
+    }
+
+    if ($gap) {
+        $style['gap'] = $gap;
     }
 
     $classes = [
@@ -80,36 +85,42 @@ function yz_flex_layout(array $props): void {
     yz_element($as, [
         'id'       => $id,
         'class'    => trim(implode(' ', $classes)),
-        'style'    => $gap ? yz_format_css(['gap' => $gap]) : '',
+        'style'    => yz_format_css($style),
         'children' => function() use($children, $items) {
             if ($children) $children();
             foreach ($items as $item_props) {
                 $item_id       = yz_prop($item_props, 'id', '');
-                $item_grow     = yz_prop($item_props, 'grow', false);
-                $item_shrink   = yz_prop($item_props, 'shrink', false);
+                $item_grow     = yz_prop($item_props, 'grow', null);
+                $item_shrink   = yz_prop($item_props, 'shrink', null);
                 $item_class    = yz_prop($item_props, 'class', '');
                 $item_children = yz_prop($item_props, 'children');
+                $item_style    = yz_prop($item_props, 'style', []);
 
                 $item_class_names = [
                     'yuzu',
                     'flex-item'
                 ];
 
-                if ($item_grow) {
-                    $item_class_names[] = 'flex-grow';
-                }
-
-                if ($item_shrink) {
-                    $item_class_names[] = 'flex-shrink';
-                }
-
                 if ($item_class) {
                     $item_class_names[] = $item_class;
+                }
+
+                if (isset($item_shrink)) {
+                    $item_style['flex_shrink'] = $item_shrink;
+                }
+
+                if (isset($item_grow)) {
+                    $item_style['flex_grow'] = $item_grow;
+                }
+
+                if (isset($item_shrink) && $item_shrink && isset($item_grow) && $item_grow) {
+                    $item_style['width'] = 0;
                 }
 
                 yz_element([
                     'id'       => $item_id,
                     'class'    => trim(implode(' ', $item_class_names)),
+                    'style'    => yz_format_css($item_style),
                     'children' => $item_children
                 ]);
             }

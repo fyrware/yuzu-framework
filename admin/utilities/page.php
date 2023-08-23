@@ -3,26 +3,19 @@
 function yz_add_menu_separator(float $position): void {
     global $menu;
 
-    $index = 0;
-    foreach($menu as $offset => $section) {
+    $separator = [
+        0 => '',
+        1 => 'read',
+        2 => 'separator' . $position,
+        3 => '',
+        4 => 'wp-menu-separator'
+    ];
 
-        if (str_starts_with($section[2], 'separator')) {
-            $index++;
-        }
-
-        if ($offset >= $position) {
-            $menu[$position] = [
-                '',
-                'read',
-                'separator' . $index,
-                '',
-                'wp-menu-separator'
-            ];
-            break;
-        }
+    if (isset($menu[$position])) {
+        $menu = array_splice($menu, $position, 0, $separator);
+    } else {
+        $menu[$position] = $separator;
     }
-
-    ksort($menu);
 }
 
 function yz_add_page(array $page_settings): string {
@@ -39,10 +32,10 @@ function yz_add_page(array $page_settings): string {
             $page_settings['title'],
             $page_settings['capability'],
             $page_settings['slug'],
-            function() use ($page_settings) { ?>
+            function() use($page_settings) { ?>
                 <section class="wrap">
-                    <?php $page_settings['content']($page_settings) ?>
-                    <?php yz_portal('default') ?>
+                    <?php $page_settings['children']($page_settings) ?>
+                    <?php yz_portal() ?>
                 </section>
             <?php },
             $page_settings['position'] ?? null
@@ -53,10 +46,10 @@ function yz_add_page(array $page_settings): string {
             $page_settings['title'],
             $page_settings['capability'],
             $page_settings['slug'],
-            function() use ($page_settings) { ?>
+            function() use($page_settings) { ?>
                 <section class="wrap">
-                    <?php $page_settings['content']($page_settings) ?>
-                    <?php yz_portal('default') ?>
+                    <?php $page_settings['children']($page_settings) ?>
+                    <?php yz_portal() ?>
                 </section>
             <?php },
             $page_settings['icon'],

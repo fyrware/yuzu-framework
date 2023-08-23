@@ -1,6 +1,6 @@
 <?php
 
-function yz_image(string $src, array $props): void {
+function yz_image(string $src, array $props = []): void {
     $id    = yz_prop($props, 'id');
     $class = yz_prop($props, 'class');
     $alt   = yz_prop($props, 'alt', '');
