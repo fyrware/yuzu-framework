@@ -50,7 +50,8 @@ function yz_html(string $tag, array $attributes = [], ?callable $children = null
     $html = YUZU_TAG_START . $tag;
 
     if (!empty($attributes)) foreach ($attributes as $name => $value) {
-        if ($value !== false) $html .= ' ' . $name . '="' . $value . '"';
+        if ($value !== false) $html .= ' ' . $name;
+        if ($value !== true) $html .= '="' . $value . '"';
     }
 
     $html .= YUZU_TAG_STOP;
@@ -68,7 +69,7 @@ function yz_html(string $tag, array $attributes = [], ?callable $children = null
     return $html;
 }
 
-function yz_element(mixed $tag, ?array $props = null): void {
+function yz_element(mixed $tag, ?array $props = null): string {
     $props = is_array($tag)  ? $tag : $props;
     $tag   = is_string($tag) ? $tag : yz_prop($props, 'tag', 'div');
 
@@ -123,7 +124,7 @@ function yz_element(mixed $tag, ?array $props = null): void {
 
     $attributes['class'] = yz_join($classes);
 
-    echo yz_html($tag, $attributes, $children);
+    return yz_html($tag, $attributes, $children);
 }
 
 function yz_js_log(mixed ...$values): void {
