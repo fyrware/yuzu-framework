@@ -23,13 +23,13 @@ require_once plugin_dir_path(__FILE__) . 'includes/yuzu.php';
 
 CONST YZ = 'yz';
 
-class Yz_Framework {
+class Yz_Plugin_Framework {
     public const TEXT_DOMAIN  = YZ;
     public const READY_ACTION = YZ . '_ready';
 }
 
 add_action('plugins_loaded', function() {
-    do_action(Yz_Framework::READY_ACTION);
+    do_action(Yz_Plugin_Framework::READY_ACTION);
 });
 
 
@@ -100,10 +100,10 @@ add_action('plugins_loaded', function() {
 
 add_action('admin_enqueue_scripts', function() {
     wp_enqueue_script('yuzu-util-debounce-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/debounce.js');
-    wp_enqueue_script('yuzu-util-dialog-js',   plugin_dir_url(__FILE__) . 'admin/scripts/utilities/dialog.js');
-    wp_enqueue_script('yuzu-util-element-js',  plugin_dir_url(__FILE__) . 'admin/scripts/utilities/element.js');
-    wp_enqueue_script('yuzu-util-icon-js',     plugin_dir_url(__FILE__) . 'admin/scripts/utilities/icon.js');
-    wp_enqueue_script('yuzu-util-picker-js',   plugin_dir_url(__FILE__) . 'admin/scripts/utilities/picker.js');
-    wp_enqueue_script('yuzu-util-ready-js',    plugin_dir_url(__FILE__) . 'admin/scripts/utilities/ready.js');
-    wp_enqueue_style('yuzu-framework-css',     plugin_dir_url(__FILE__) . 'yuzu-framework.css');
+    wp_enqueue_script('yuzu-util-dialog-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/dialog.js');
+    wp_enqueue_script('yuzu-util-element-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/element.js');
+    wp_enqueue_script('yuzu-util-icon-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/icon.js');
+    wp_enqueue_script('yuzu-util-picker-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/picker.js');
+    wp_enqueue_script('yuzu-util-ready-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/ready.js');
+    wp_enqueue_style('yuzu-framework-css', plugin_dir_url(__FILE__) . 'yz-plugin.css');
 });
