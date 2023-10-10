@@ -21,6 +21,7 @@ class Yz_Icon {
         $appearance = Yz_Array::value_or($props, 'appearance', 'regular');
 
         $classes = [
+            'yz',
             'yuzu',
             'icon'
         ];

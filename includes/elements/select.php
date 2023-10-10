@@ -29,7 +29,7 @@ class Yz_Select {
             'children' => function() use($value, $options) {
                 foreach ($options as $option) {
                     $opt_value    = Yz_Array::value_or($option, 'value', '');
-                    $opt_label    = Yz_Array::value_or($option, 'label', '');
+                    $opt_label    = Yz_Array::value_or($option, 'label', $opt_value);
                     $opt_selected = Yz_Array::value_or($option, 'selected', false);
 
                     Yz::Element('option', [

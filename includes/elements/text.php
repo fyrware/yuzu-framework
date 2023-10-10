@@ -21,6 +21,7 @@ class Yz_Text {
         assert(in_array($variant, Yz_Text::VALID_VARIANTS), 'Invalid text variant');
 
         $classes = [
+            'yz',
             'yuzu',
             'text',
         ];

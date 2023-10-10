@@ -45,7 +45,7 @@ class Yz_Page {
                 function() use($children) { ?>
                     <section class="wrap">
                         <?php if (is_callable($children)) echo $children() ?>
-                        <?php yz_portal() ?>
+                        <?php Yz::Portal(); ?>
                     </section>
                 <?php },
                 $position ?? null
@@ -59,7 +59,7 @@ class Yz_Page {
                 function() use($children) { ?>
                     <section class="wrap">
                         <?php if (is_callable($children)) echo $children() ?>
-                        <?php yz_portal() ?>
+                        <?php Yz::Portal(); ?>
                     </section>
                 <?php },
                 $icon,

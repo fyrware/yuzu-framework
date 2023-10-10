@@ -203,7 +203,7 @@ class Yz_Tab_Group {
 
     public static function render_script() { ?>
         <script>
-            yz.ready().then(() => {
+            yz.ready().observe(() => {
                 function syncTabGroup() {
                     yz('.yuzu.tab-group').forEach((tabGroup) => {
                         const activeTab = yz('.yuzu.tab.tab-active', tabGroup).item();

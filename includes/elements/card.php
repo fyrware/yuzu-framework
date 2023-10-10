@@ -7,6 +7,7 @@ class Yz_Card {
         $class      = Yz_Array::value_or($props, 'class');
         $alignment  = Yz_Array::value_or($props, 'alignment', 'start');
         $children   = Yz_Array::value_or($props, 'children');
+        $padding    = Yz_Array::value_or($props, 'padding');
 
         $classes = [
             'yuzu',
@@ -21,6 +22,10 @@ class Yz_Card {
 
         if ($alignment) {
             $style[ 'justify_content' ] = $alignment;
+        }
+
+        if ($padding) {
+            $style[ 'padding' ] = is_string($padding) ? $padding : $padding . 'px';
         }
 
         Yz::Element('section', [

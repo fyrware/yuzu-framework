@@ -20,7 +20,6 @@ class Yz_Button {
         'small',
         'medium',
         'large',
-        'hero'
     ];
 
     private const VALID_COLORS = [
@@ -60,7 +59,7 @@ class Yz_Button {
         }
 
         if ($variant) {
-            $classes[] = 'button-variant-' . $variant;
+            $classes[] = 'button-' . $variant;
         }
 
         if ($color) {
@@ -109,6 +108,30 @@ class Yz_Button {
             .yuzu.button .yuzu.icon {
                 width: 22px;
                 height: 22px;
+            }
+
+            .yuzu.button.button-size-small {
+                min-height: 24px;
+                line-height: 2;
+                padding: 0 6px;
+                font-size: 11px;
+            }
+
+            .yuzu.button.button-size-small .icon {
+                width: 16px;
+                height: 16px;
+            }
+
+            .yuzu.button.button-size-large {
+                min-height: 36px;
+                line-height: 2;
+                padding: 4px 12px;
+                font-size: 16px;
+            }
+
+            .yuzu.button.button-size-large .icon {
+                width: 24px;
+                height: 24px;
             }
         </style>
     <?php }

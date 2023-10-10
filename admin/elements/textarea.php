@@ -20,20 +20,18 @@ function yz_textarea(array $props): void {
         $classes[] = $class;
     }
 
-    $textarea = yz_capture(fn() =>
-        yz_element('textarea', [
-            'id'         => $id,
-            'name'       => $name,
-            'class'      => yz_join($classes),
-            'attributes' => [
-                'type'        => $type,
-                'rows'        => $rows,
-                'placeholder' => $placeholder,
-                'value'       => $default_value,
-                'required'    => $required
-            ]
-        ])
-    );
+    $textarea = yz_element('textarea', [
+        'id'         => $id,
+        'name'       => $name,
+        'class'      => yz_join($classes),
+        'attributes' => [
+            'type'        => $type,
+            'rows'        => $rows,
+            'placeholder' => $placeholder,
+            'value'       => $default_value,
+            'required'    => $required
+        ]
+    ]);
 
     if ($label) {
         yz_flex_layout([

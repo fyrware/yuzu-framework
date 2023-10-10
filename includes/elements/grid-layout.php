@@ -5,10 +5,12 @@ class Yz_Grid_Layout {
     public static function render(array $props): void {
         $id       = Yz_Array::value_or($props, 'id');
         $class    = Yz_Array::value_or($props, 'class');
+        $data     = Yz_Array::value_or($props, 'data', []);
         $rows     = Yz_Array::value_or($props, 'rows', 0);
         $columns  = Yz_Array::value_or($props, 'columns', 0);
         $gap      = Yz_Array::value_or($props, 'gap');
         $children = Yz_Array::value_or($props, 'children');
+        $as       = Yz_Array::value_or($props, 'as', 'section');
 
         if (is_int($gap) || is_double($gap)) {
             $gap .= 'px';
@@ -48,7 +50,7 @@ class Yz_Grid_Layout {
         }
 
         $classes = [
-            'yuzu',
+            'yz',
             'grid-layout'
         ];
 
@@ -56,8 +58,9 @@ class Yz_Grid_Layout {
             $classes[] = $class;
         }
 
-        Yz::Element('section', [
+        Yz::Element($as, [
             'id'       => $id,
+            'data'     => $data,
             'class'    => Yz_Array::join($classes),
             'style'    => Yz_Array::join_key_value($styles),
             'children' => function() use($children) {
@@ -70,7 +73,7 @@ class Yz_Grid_Layout {
 
     public static function render_style(): void { ?>
         <style>
-            .yuzu.grid-layout {
+            .yz.grid-layout {
                 display: grid;
                 grid-auto-columns: 1fr;
                 grid-auto-rows: 1fr;

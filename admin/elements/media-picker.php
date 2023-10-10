@@ -54,7 +54,7 @@ function yz_media_picker(array $props): void {
     }]); ?>
 
     <script>
-        yz.ready().then(() => {
+        yz.ready().observe(() => {
             const mediaIdInput = document.getElementById('<?= $id ?>');
             const mediaPreview = document.getElementById('<?= $id ?>_preview');
             const uploadButton = document.getElementById('<?= $id ?>_select');

@@ -7,8 +7,9 @@ class Yz_Input {
         'currency'       => 'coins',
         'date'           => 'calendar',
         'datetime-local' => 'calendar',
+        'location'       => 'map-pin',
         'email'          => 'envelope',
-        'file'            => 'folder-notch-open',
+        'file'           => 'folder-notch-open',
         'month'          => 'calendar',
         'number'         => 'hash',
         'password'       => 'keyhole',
@@ -32,14 +33,17 @@ class Yz_Input {
         $type          = Yz_Array::value_or($props, 'type', 'text');
         $checked       = Yz_Array::value_or($props, 'checked', false);
         $required      = Yz_Array::value_or($props, 'required', false);
+        $disabled      = Yz_Array::value_or($props, 'disabled', false);
         $hidden        = Yz_Array::value_or($props, 'hidden', false);
+        $layout        = Yz_Array::value_or($props, 'layout', 'column');
+        $width         = Yz_Array::value_or($props, 'width');
 
         if ($type === 'currency') {
             $step = 'any';
         }
 
         $classes = [
-            'yuzu',
+            'yz',
             'input'
         ];
 
@@ -49,21 +53,22 @@ class Yz_Input {
 
         if ($type === 'checkbox' || $type === 'radio' || $type === 'range') {
             $label_classes = [
-                'yuzu',
+                'yz',
                 'input-label',
             ];
 
             Yz::Element('label', [
                 'class'    => Yz_Array::join($label_classes),
                 'attr'     => [ 'for' => $id ],
-                'children' => function() use($id, $name, $classes, $type, $checked, $label) {
+                'children' => function() use($id, $name, $classes, $type, $checked, $label, $disabled) {
                     Yz::Element('input', [
                         'id'    => $id,
                         'name'  => $name,
                         'class' => Yz_Array::join($classes),
                         'attr'  => [
-                            'type'    => $type,
-                            'checked' => $checked
+                            'type'     => $type,
+                            'checked'  => $checked,
+                            'disabled' => $disabled
                         ]
                     ]);
                     Yz::Text($label);
@@ -76,18 +81,20 @@ class Yz_Input {
         $decoration = $type;
 
         if ($decoration === 'currency') $type = 'number';
+        if ($decoration === 'location') $type = 'text';
         if ($decoration === 'title')    $type = 'text';
 
         $input = Yz_Buffer::capture(fn() =>
             Yz::Element('input', [
                 'id'         => $id,
                 'name'       => $name,
-                'class'      => $class,
-                'attributes' => [
+                'class'      => Yz_Array::join($classes),
+                'attr' => [
                     'type'        => $type,
                     'value'       => $value,
                     'placeholder' => $placeholder,
                     'required'    => $required,
+                    'disabled'    => $disabled,
                     'hidden'      => $hidden,
                     'step'        => $step
                 ]
@@ -99,73 +106,81 @@ class Yz_Input {
             return;
         }
 
-        if ($label) {
-            $input_container_classes = [
-                'yuzu',
-                'input-container'
-            ];
+        $input_container_classes = [
+            'yz',
+            'input-container'
+        ];
 
-            Yz::Flex_Layout([
-                'gap'       => 5,
-                'direction' => 'column',
-                'class'     => Yz_Array::join($input_container_classes),
-                'children'  => function() use($id, $label, $decoration, $input, $required) {
-                    if ($label) {
-                        $label_classes = [
-                            'yuzu',
-                            'input-label',
-                        ];
+        $input_container_style = [];
 
-                        if ($required) {
-                            $label_classes[] = 'input-label-required';
-                        }
+//        if ($width) {
+//            $input_container_style['width'] = is_string($width) ? $width : $width . 'px';
+//        }
 
-                        Yz::Text($label, [
-                            'class'   => Yz_Array::join($label_classes),
-                            'variant' => 'label',
-                            'attr'    => [ 'for' => $id ]
-                        ]);
+        Yz::Flex_Layout([
+            'gap'       => $layout === 'column' ? 5 : 10,
+            'direction' => $layout,
+            'class'     => Yz_Array::join($input_container_classes),
+            'width'     => $layout === 'column' ? $width : 'auto',
+            'children'  => function() use($id, $label, $decoration, $input, $required, $width) {
+                if ($label) {
+                    $label_classes = [
+                        'yz',
+                        'input-label',
+                    ];
+
+                    if ($required) {
+                        $label_classes[] = 'input-label-required';
                     }
-                    Yz::Flex_Layout([
-                        'alignment' => 'center',
-                        'children'  => function() use($decoration, $input) {
-                            $input_decoration = Yz_Array::value_or(Yz_Input::INPUT_DECORATIONS, $decoration, 'text-aa');
-                            $input_decoration_classes = [
-                                'yuzu',
-                                'input-decoration'
-                            ];
 
-                            Yz::Element('div', [
-                                'class' => Yz_Array::join($input_decoration_classes),
-                                'children' => function() use($input_decoration) {
-                                    Yz::Icon($input_decoration, [
-                                        'appearance' => 'duotone'
-                                    ]);
-                                }
-                            ]);
-
-                            echo $input;
-                        }
+                    Yz::Text($label, [
+                        'class'   => Yz_Array::join($label_classes),
+                        'variant' => 'label',
+                        'attr'    => [ 'for' => $id ]
                     ]);
                 }
-            ]);
-        }
+                Yz::Flex_Layout([
+                    'alignment' => 'center',
+                    'class'     => 'input-container-inner',
+                    'width'     => $width,
+                    'children'  => function() use($decoration, $input) {
+                        $input_decoration = Yz_Array::value_or(Yz_Input::INPUT_DECORATIONS, $decoration, 'text-aa');
+                        $input_decoration_classes = [
+                            'yz',
+                            'input-decoration'
+                        ];
+
+                        Yz::Element('div', [
+                            'class' => Yz_Array::join($input_decoration_classes),
+                            'children' => function() use($input_decoration) {
+                                Yz::Icon($input_decoration, [
+                                    'appearance' => 'duotone'
+                                ]);
+                            }
+                        ]);
+
+                        echo $input;
+                    }
+                ]);
+            }
+        ]);
     }
 
     public static function render_style() { ?>
         <style>
-            .yuzu.input-label {
+            .yz.input-label {
                 display: inline-flex;
-                width: 100%;
+                white-space: nowrap;
                 align-items: center;
                 gap: 5px;
+                font-weight: 700;
             }
-            .yuzu.input-label input[type="checkbox"],
-            .yuzu.input-label input[type="radio"] {
+            .yz.input-label input[type="checkbox"],
+            .yz.input-label input[type="radio"] {
                 margin: 0;
             }
-            .yuzu.input-label input[type="checkbox"] + span,
-            .yuzu.input-label input[type="radio"] + span {
+            .yz.input-label input[type="checkbox"] + span,
+            .yz.input-label input[type="radio"] + span {
                 flex-shrink: 1;
                 flex-grow: 0;
                 white-space: nowrap;
@@ -173,12 +188,17 @@ class Yz_Input {
                 overflow: hidden;
                 font-weight: normal;
             }
-            .yuzu.input-label.input-label-required::after {
+            .yz.input-label.input-label-required::after {
                 content: '*';
                 color: #d63638;
                 font-weight: bold;
             }
-            .yuzu.input-decoration {
+            .yz.input-container-inner {
+                flex-grow: 1;
+                width: 100%;
+            }
+            .yz.input-decoration {
+                flex-shrink: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -189,14 +209,23 @@ class Yz_Input {
                 border-radius: 4px 0 0 4px;
                 box-sizing: border-box;
             }
-            .yuzu.input-decoration .yuzu.icon {
+            .yz.input-decoration svg {
                 width: 20px;
                 height: 20px;
             }
-            .yuzu.input-decoration + input {
+            .yz.input-decoration + input {
                 flex-grow: 1;
+                flex-shrink: 1;
+                width: 0;
                 border-radius: 0 4px 4px 0;
                 margin: 0;
+            }
+            .yz.input[disabled] {
+                border: 1px solid #8c8f94;
+                background: white;
+            }
+            .yz.input-container:has([disabled]) {
+                opacity: 0.55;
             }
         </style>
     <?php }

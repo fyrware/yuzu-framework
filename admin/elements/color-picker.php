@@ -82,7 +82,7 @@ function yz_color_picker(array $props): void {
         echo $input;
     } ?>
     <script>
-        //yz.ready().then(() => {
+        //yz.ready().observe(() => {
         //    yz.colorPicker.attach('<?php //= $id ?>//', { parent: '<?php //= $id ?>//_container' });
         //});
     </script>

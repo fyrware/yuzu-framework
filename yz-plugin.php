@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Yuzu Framework
+ * Plugin Name: Yz Plugin Framework
  * Plugin URI: https://fyrware.com/
  * Description: Quickly and elegantly build WordPress plugins
  * Author: Fyrware
@@ -19,6 +19,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/utilities/post.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/schema.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/script.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/string.php';
+require_once plugin_dir_path(__FILE__) . 'includes/utilities/style.php';
 require_once plugin_dir_path(__FILE__) . 'includes/yuzu.php';
 
 CONST YZ = 'yz';
@@ -30,7 +31,21 @@ class Yz_Plugin_Framework {
 
 add_action('plugins_loaded', function() {
     do_action(Yz_Plugin_Framework::READY_ACTION);
+}, 0);
+
+add_action('admin_enqueue_scripts', function() {
+    wp_enqueue_script('d3js',  'https://cdn.jsdelivr.net/npm/d3@7');
+    wp_enqueue_script('dayjs', 'https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js');
 });
+
+add_action('admin_head', function() { ?>
+    <style>
+        :root {
+            <?= Yz_Style::load_admin_style_variables(); ?>
+            --yz-highlight-color-alt: #38b56d;
+        }
+    </style>
+<?php });
 
 
 
@@ -105,5 +120,7 @@ add_action('admin_enqueue_scripts', function() {
     wp_enqueue_script('yuzu-util-icon-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/icon.js');
     wp_enqueue_script('yuzu-util-picker-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/picker.js');
     wp_enqueue_script('yuzu-util-ready-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/ready.js');
+
     wp_enqueue_style('yuzu-framework-css', plugin_dir_url(__FILE__) . 'yz-plugin.css');
+    wp_enqueue_script('yuzu-framework-js', plugin_dir_url(__FILE__) . 'yz-plugin.js');
 });

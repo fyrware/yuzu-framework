@@ -32,20 +32,25 @@ class Yz_Form {
         $children   = Yz_Array::value_or($props, 'children');
         $attributes = Yz_Array::value_or($props, 'attr', []);
         $data_set   = Yz_Array::value_or($props, 'data', []);
+        $class      = Yz_Array::value_or($props, 'class');
 
-        assert(in_array($method, Yz_Form::VALID_METHODS), 'Invalid form method');
+        assert(in_array(strtolower($method), Yz_Form::VALID_METHODS), 'Invalid form method');
 
         $classes = [
             'yuzu',
             'form'
         ];
 
+        if ($class) {
+            $classes[] = $class;
+        }
+
         if ($action) {
             $attributes['action'] = $action;
         }
 
         if ($method) {
-            $attributes['method'] = $method;
+            $attributes['method'] = strtolower($method);
         }
 
         Yz::Element('form', [

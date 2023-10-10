@@ -100,7 +100,7 @@ function yz_tab_group(array $props): void {
             }
         ]); ?>
         <script>
-            yz.ready().then(() => {
+            yz.ready().observe(() => {
                 const tabGroup = yz('#<?= $id ?>').item();
 
                 window.addEventListener('hashchange', () => {

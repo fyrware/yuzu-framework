@@ -88,7 +88,43 @@ class Yz_Schema_Table {
             $where_clauses = [];
 
             foreach ($where as $key => $value) {
-                $where_clauses[] = "$key = $value";
+                if (str_starts_with($value, '<') || str_starts_with($value, '>')) {
+                    $where_clauses[] = "$key $value";
+                } else if (str_starts_with($value, 'like')) {
+                    $where_clauses[] = "$key like $value";
+                } else if (str_starts_with($value, 'in')) {
+                    $where_clauses[] = "$key in $value";
+                } else if (str_starts_with($value, 'not in')) {
+                    $where_clauses[] = "$key not in $value";
+                } else if (str_starts_with($value, 'is')) {
+                    $where_clauses[] = "$key is $value";
+                } else if (str_starts_with($value, 'is not')) {
+                    $where_clauses[] = "$key is not $value";
+                } else if (str_starts_with($value, 'not')) {
+                    $where_clauses[] = "$key not $value";
+                } else if (str_starts_with($value, 'between')) {
+                    $where_clauses[] = "$key between $value";
+                } else if (str_starts_with($value, 'not between')) {
+                    $where_clauses[] = "$key not between $value";
+                } else if (str_starts_with($value, 'exists')) {
+                    $where_clauses[] = "$key exists $value";
+                } else if (str_starts_with($value, 'not exists')) {
+                    $where_clauses[] = "$key not exists $value";
+                } else if (str_starts_with($value, 'regexp')) {
+                    $where_clauses[] = "$key regexp $value";
+                } else if (str_starts_with($value, 'not regexp')) {
+                    $where_clauses[] = "$key not regexp $value";
+                } else if (str_starts_with($value, 'rlike')) {
+                    $where_clauses[] = "$key rlike $value";
+                } else if (str_starts_with($value, 'not rlike')) {
+                    $where_clauses[] = "$key not rlike $value";
+                } else if (str_starts_with($value, 'sounds like')) {
+                    $where_clauses[] = "$key sounds like $value";
+                } else if (str_starts_with($value, 'not sounds like')) {
+                    $where_clauses[] = "$key not sounds like $value";
+                } else {
+                    $where_clauses[] = "$key = $value";
+                }
             }
 
             $sql .= implode(' and ', $where_clauses);
@@ -100,6 +136,11 @@ class Yz_Schema_Table {
     public function select_row_by_id(int $id): ?array {
         global $wpdb;
         return $wpdb->get_row("select * from $this->name where id = $id", ARRAY_A);
+    }
+
+    public function select_first_row(array $where = []): ?array {
+        global $wpdb;
+        return $wpdb->get_row("select * from $this->name limit 1", ARRAY_A);
     }
 }
 

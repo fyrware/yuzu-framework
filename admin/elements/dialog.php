@@ -78,20 +78,20 @@ function yz_dialog(array $props): void {
         ]);
         if ($open) { ?>
             <script>
-                yz.ready().then(() => {
+                yz.ready().observe(() => {
                     yz.dialog.open(yz('#<?= $id ?>').item());
                 });
             </script>
         <?php }
         if ($stubborn) { ?>
             <script>
-                yz.ready().then(() => {
+                yz.ready().observe(() => {
                     yz.dialog.persist(yz('#<?= $id ?>').item());
                 });
             </script>
         <?php } ?>
         <script>
-            //yz.ready().then(() => {
+            //yz.ready().observe(() => {
             //    const parentDialog = yz('#<?php //= $id ?>//').item().parentElement.closest('dialog');
             //
             //    if (parentDialog) {

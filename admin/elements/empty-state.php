@@ -34,7 +34,7 @@ function yz_empty_state(array $props): void {
                     'direction'     => 'column',
                     'alignment'     => 'center',
                     'justification' => 'center',
-                    'gap'           => 20,
+                    'gap'           => 10,
                     'items'         => [
                         ['children' => function() use ($title) {
                             yz_title([

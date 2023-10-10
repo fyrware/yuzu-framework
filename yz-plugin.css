@@ -17,6 +17,9 @@
 @import url('admin/styles/patterns/stat-card.css');
 
 :root {
+    --yz-color-border: #c3c4c7;
+
+
     --yuzu-wordpress-sidebar-background-color: #1d2327;
     --yuzu-wordpress-text-color: #1d2327;
     --yuzu-wordpress-background-color: #f0f0f1;

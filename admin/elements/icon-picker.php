@@ -80,7 +80,7 @@ function yz_icon_picker(array $props): void {
             ]); ?>
 
             <script>
-                yz.ready().then(() => {
+                yz.ready().observe(() => {
                     const dialog       = document.getElementById('<?= $id . '_dialog' ?>');
                     const searchInput  = document.getElementById('<?= $id . '_dialog_search' ?>');
                     const gridLayout   = document.getElementById('<?= $id . '_dialog_layout' ?>');
@@ -174,7 +174,7 @@ function yz_icon_picker(array $props): void {
     ]); ?>
     <script>
         yz.setIconSet('<?= $appearance ?>',  <?= json_encode($icons) ?>);
-        yz.ready().then(() => {
+        yz.ready().observe(() => {
             const dialog = yz('#<?= $id . '_dialog' ?>').item();
             const button = yz('#<?= $id ?> + .yuzu.flex-layout .select-icon').item();
 

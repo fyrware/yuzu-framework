@@ -11,7 +11,6 @@ class Yz_Empty_State {
         $actions = Yz_Array::value_or($props, 'actions', []);
 
         $classes = [
-            'yuzu',
             'empty-state'
         ];
 
@@ -21,57 +20,45 @@ class Yz_Empty_State {
 
         Yz::Flex_Layout([
             'id' => $id,
-            'class' => implode(' ', $classes),
+            'class' => Yz_Array::join($classes),
             'gap' => 20,
             'direction' => 'column',
             'alignment' => 'center',
             'justification' => 'center',
-            'items' => [
-                ['class' => 'empty-state-icon', 'children' => function() use ($icon) {
-                    echo $icon;
-                }],
-                ['children' => function() use ($title, $description, $actions) {
-                    Yz::Flex_Layout([
-                        'class' => 'empty-state-content',
-                        'direction' => 'column',
-                        'alignment' => 'center',
-                        'justification' => 'center',
-                        'gap' => 20,
-                        'items' => [
-                            ['children' => function() use ($title) {
-                                Yz::Title($title, [
-                                    'class' => 'empty-state-title',
-                                    'level' => 2,
-                                ]);
-                            }],
-                            ['children' => function() use ($description) {
-                                Yz::Element('p', [
-                                    'class' => 'empty-state-description',
-                                    'children' => function() use($description) {
-                                        Yz::Text($description);
-                                    }
-                                ]);
-                            }],
-                            ['children' => function() use ($actions) {
-                                Yz::Flex_Layout([
-                                    'class' => 'empty-state-actions',
-                                    'direction' => 'row',
-                                    'alignment' => 'center',
-                                    'justification' => 'center',
-                                    'gap' => 20,
-                                    'items' => array_map(function($action) {
-                                        return [
-                                            'children' => function() use ($action) {
-                                                Yz::Button($action);
-                                            }
-                                        ];
-                                    }, $actions)
-                                ]);
-                            }]
-                        ]
-                    ]);
-                }]
-            ]
+            'children' => function() use($icon, $title, $description, $actions) {
+                if ($icon) Yz::Icon($icon, [ 'appearance' => 'duotone' ]);
+                Yz::Flex_Layout([
+                    'class' => 'empty-state-content',
+                    'direction' => 'column',
+                    'alignment' => 'center',
+                    'justification' => 'center',
+                    'gap' => 10,
+                    'children' => function() use($title, $description, $actions) {
+                        Yz::Title($title, [
+                            'class' => 'empty-state-title',
+                            'level' => 2,
+                        ]);
+                        Yz::Element('p', [
+                            'class' => 'empty-state-description',
+                            'children' => function() use($description) {
+                                Yz::Text($description);
+                            }
+                        ]);
+                        Yz::Flex_Layout([
+                            'class' => 'empty-state-actions',
+                            'direction' => 'row',
+                            'alignment' => 'center',
+                            'justification' => 'center',
+                            'gap' => 20,
+                            'children' => function() use($actions) {
+                                foreach ($actions as $action) {
+                                    Yz::Button($action);
+                                }
+                            }
+                        ]);
+                    }
+                ]);
+            }
         ]);
     }
 
@@ -80,7 +67,7 @@ class Yz_Empty_State {
             .yuzu.empty-state {
                 padding: 80px 0;
             }
-            .yuzu.empty-state .yuzu.empty-state-icon svg {
+            .yuzu.empty-state > svg {
                 width:   112px;
                 height:  112px;
                 opacity: 0.5;
