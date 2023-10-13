@@ -5,8 +5,9 @@ use \Mexitek\PHPColors\Color;
 class Yz_Style {
 
     private const SCSS_VARIABLE_PATTERN = '/\$(.*?): (.*?)(?: !default)?;/';
+    private const CSS_VARIABLE_PREFIX   = '--yz-';
 
-    private static function convert_string_to_color(string $color): Color {
+    public static function convert_string_to_color(string $color): Color {
         if (str_starts_with($color, '#')) {
             return new Color($color);
         } else if (str_starts_with($color, 'rgb')) {
@@ -18,9 +19,16 @@ class Yz_Style {
         }
     }
 
-    /**
-     * @throws Exception
-     */
+    public static function convert_scss_variable_to_css(string $variable): string {
+        return str_starts_with($variable, '$')
+            ? 'var(' . static::CSS_VARIABLE_PREFIX . substr($variable, 1) . ')'
+            : $variable;
+    }
+
+    public static function parse_css_variable_name(string $css_variable): string {
+        return preg_replace('/var\((.+?)\)/', '$1', $css_variable);
+    }
+
     public static function load_admin_style_variables(): string {
         $admin_color = get_user_option('admin_color');
         $admin_dir   = str_replace(get_bloginfo('url') . '/', ABSPATH, get_admin_url());
@@ -44,62 +52,55 @@ class Yz_Style {
         }
 
         $wp_variables = [];
-
         foreach ($base_variables as $key => $value) {
-            $wp_variables['--yz-' . $key] = str_starts_with($value, '$')
-                ? 'var(--yz-' . substr($value, 1) . ')'
-                : $value;
+            $wp_variables[static::CSS_VARIABLE_PREFIX . $key] = static::convert_scss_variable_to_css($value);
 
             $lighten_matches = [];
             if (preg_match('/lighten\(\s?(.+?),(.+?)%\s?\)/', $value, $lighten_matches)) {
+                $color_to_lighten   = static::convert_scss_variable_to_css($lighten_matches[1]);
                 $lighten_percentage = intval($lighten_matches[2]);
-                $color_to_lighten   = str_starts_with($lighten_matches[1], '$')
-                    ? $wp_variables['--yz-' . substr($lighten_matches[1], 1)]
-                    : $lighten_matches[1];
 
                 while (str_starts_with($color_to_lighten, 'var')) {
-                    $color_to_lighten = $wp_variables[preg_replace('/var\((.+?)\)/', '$1', $color_to_lighten)];
+                    $color_to_lighten = $wp_variables[static::parse_css_variable_name($color_to_lighten)];
                 }
 
-                $wp_variables['--yz-' . $key] = '#' . (new Color($color_to_lighten))->lighten($lighten_percentage);
+                $color_to_lighten_obj = static::convert_string_to_color($color_to_lighten);
+
+                $wp_variables[static::CSS_VARIABLE_PREFIX . $key] = '#' . $color_to_lighten_obj->lighten($lighten_percentage);
             }
 
             $darken_matches = [];
             if (preg_match('/darken\(\s?(.+?),(.+?)%\s?\)/', $value, $darken_matches)) {
+                $color_to_darken   = static::convert_scss_variable_to_css($darken_matches[1]);
                 $darken_percentage = intval($darken_matches[2]);
-                $color_to_darken   = str_starts_with($darken_matches[1], '$')
-                    ? $wp_variables['--yz-' . substr($darken_matches[1], 1)]
-                    : $darken_matches[1];
 
                 while (str_starts_with($color_to_darken, 'var')) {
-                    $color_to_darken = $wp_variables[preg_replace('/var\((.+?)\)/', '$1', $color_to_darken)];
+                    $color_to_darken = $wp_variables[static::parse_css_variable_name($color_to_darken)];
                 }
 
-                $wp_variables['--yz-' . $key] = '#' . (new Color($color_to_darken))->darken($darken_percentage);
+                $color_to_darken_obj = static::convert_string_to_color($color_to_darken);
+
+                $wp_variables[static::CSS_VARIABLE_PREFIX . $key] = '#' . $color_to_darken_obj->darken($darken_percentage);
             }
 
             $mix_matches = [];
             if (preg_match('/mix\(\s?(.+?),\s?(.+?),\s?(.+?)%\s?\)/', $value, $mix_matches)) {
+                $base_color     = static::convert_scss_variable_to_css($mix_matches[1]);
+                $color_to_mix   = static::convert_scss_variable_to_css($mix_matches[2]);
                 $mix_percentage = intval($mix_matches[3]);
-                $base_color     = str_starts_with($mix_matches[1], '$')
-                    ? $wp_variables['--yz-' . substr($mix_matches[1], 1)]
-                    : $mix_matches[1];
-                $color_to_mix   = str_starts_with($mix_matches[2], '$')
-                    ? $wp_variables['--yz-' . substr($mix_matches[2], 1)]
-                    : $mix_matches[2];
 
                 while (str_starts_with($base_color, 'var')) {
-                    $base_color = $wp_variables[preg_replace('/var\((.+?)\)/', '$1', $base_color)];
+                    $base_color = $wp_variables[static::parse_css_variable_name($base_color)];
                 }
 
                 while (str_starts_with($color_to_mix, 'var')) {
-                    $color_to_mix = $wp_variables[preg_replace('/var\((.+?)\)/', '$1', $color_to_mix)];
+                    $color_to_mix = $wp_variables[static::parse_css_variable_name($color_to_mix)];
                 }
 
                 $base_color_obj   = static::convert_string_to_color($base_color);
                 $color_to_mix_obj = static::convert_string_to_color($color_to_mix);
 
-                $wp_variables['--yz-' . $key] = '#' . $base_color_obj->mix($color_to_mix_obj->getHex(), $mix_percentage);
+                $wp_variables[static::CSS_VARIABLE_PREFIX . $key] = '#' . $base_color_obj->mix($color_to_mix_obj->getHex(), $mix_percentage);
             }
         }
 
