@@ -9,6 +9,8 @@
  * Text Domain: yuzu
  */
 
+require_once plugin_dir_path(__FILE__) . 'colors/src/Mexitek/PHPColors/Color.php';
+
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/array.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/buffer.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/cache.php';
@@ -38,11 +40,11 @@ add_action('admin_enqueue_scripts', function() {
     wp_enqueue_script('dayjs', 'https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js');
 });
 
-add_action('admin_head', function() { ?>
+add_action('admin_head', function() { $start_time = microtime(true); ?>
     <style>
         :root {
             <?= Yz_Style::load_admin_style_variables(); ?>
-            --yz-highlight-color-alt: #38b56d;
+            --yz-scss-conversion-duration: <?= (microtime(true) - $start_time) * 1000; ?>ms;
         }
     </style>
 <?php });

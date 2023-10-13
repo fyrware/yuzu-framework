@@ -100,7 +100,7 @@ class YzEventObservable extends YzObservable {
         this.#event = event;
 
         if (this.#target.on) {
-            this.#event.on(this.#target, (...args) => {
+            this.#target.on(this.#event, (...args) => {
                 this.notify(...args);
             });
         } else {
@@ -113,8 +113,8 @@ class YzEventObservable extends YzObservable {
 
 /**
  * Attaches an observable to a given element and event
- * @param element
- * @param event
+ * @param { EventTarget | YzEventWatcher } element
+ * @param { string } event
  * @returns { YzEventObservable }
  */
 yz.spy = function spy(element, event) {
