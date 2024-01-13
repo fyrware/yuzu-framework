@@ -1,15 +1,19 @@
 <?php
 
+/** @deprecated */
 class Yz_String {
 
+    /** @deprecated */
     public static function format_slug(string $slug): string {
         return strtolower(str_replace(' ', '-', str_replace('&', 'and', $slug)));
     }
 
+    /** @deprecated */
     public static function format_field_name(string $name): string {
         return strtolower(str_replace(' ', '_', str_replace('&', 'and', $name)));
     }
 
+    /** @deprecated */
     public static function format_currency(
         $value,
         $currency = '$',
@@ -20,6 +24,7 @@ class Yz_String {
         return $currency . number_format($value, $decimals, $decimal_separator, $thousands_separator);
     }
 
+    /** @deprecated */
     public static function format_capability(string $capability): string {
         $capability    = str_replace('_', ' ', strtolower($capability));
         $capability    = str_replace('-', ' ', $capability);
@@ -28,6 +33,7 @@ class Yz_String {
         return $capability;
     }
 
+    /** @deprecated */
     public static function format_data_url(string $mime_type, string $data): string {
         return 'data:' . $mime_type . ';base64,' . base64_encode($data);
     }

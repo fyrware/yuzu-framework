@@ -3,10 +3,12 @@
 class Yz_Avatar {
 
     public static function render(array $props): void {
-        $id    = Yz_Array::value_or($props, 'id');
-        $class = Yz_Array::value_or($props, 'class');
-        $size  = Yz_Array::value_or($props, 'size', 80);
-        $src   = Yz_Array::value_or($props, 'src', 'https://i.pravatar.cc/' . $size . '?u=' . rand(0, 1000));
+        global $yz;
+
+        $id    = $yz->tools->key_or_default($props, 'id');
+        $class = $yz->tools->key_or_default($props, 'class');
+        $size  = $yz->tools->key_or_default($props, 'size', 80);
+        $src   = $yz->tools->key_or_default($props, 'src', 'https://i.pravatar.cc/' . $size . '?u=' . rand(0, 1000));
 
         $classes = [
             'yuzu',
@@ -17,18 +19,17 @@ class Yz_Avatar {
             $classes[] = $class;
         }
 
-        Yz::Element('img', [
-            'id' => $id,
-            'class' => Yz_Array::join($classes),
-            'attributes' => [
-                'src' => $src,
-                'width' => $size,
+        $yz->html->image($src, [
+            'id'    => $id,
+            'class' => $classes,
+            'attr'  => [
+                'width'  => $size,
                 'height' => $size
             ],
-            'style' => Yz_Array::join_key_value([
-                'border-radius' => '50%',
-                'object-fit' => 'cover'
-            ])
+            'style' => [
+                'border_radius' => '50%',
+                'object_fit'     => 'cover'
+            ]
         ]);
     }
 }

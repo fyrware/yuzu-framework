@@ -3,12 +3,14 @@
 class Yz_Table {
 
     public static function render(array $props): void  {
-        $id = Yz_Array::value_or($props, 'id');
-        $class = Yz_Array::value_or($props, 'class');
-        $fixed = Yz_Array::value_or($props, 'fixed', true);
-        $striped = Yz_Array::value_or($props, 'striped', true);
-        $columns = Yz_Array::value_or($props, 'columns', []);
-        $rows = Yz_Array::value_or($props, 'rows', []);
+        global $yz;
+
+        $id      = $yz->tools->key_or_default($props, 'id');
+        $class   = $yz->tools->key_or_default($props, 'class');
+        $fixed    = $yz->tools->key_or_default($props, 'fixed', true);
+        $striped = $yz->tools->key_or_default($props, 'striped', true);
+        $columns = $yz->tools->key_or_default($props, 'columns', []);
+        $rows    = $yz->tools->key_or_default($props, 'rows', []);
 
         $classes = [
             'yz',
@@ -27,16 +29,16 @@ class Yz_Table {
             $classes[] = $class;
         }
 
-        Yz::Element('table', [
+        $yz->html->element('table', [
             'id' => $id,
-            'class' => implode(' ', $classes),
-            'children' => function() use($columns, $rows) {
-                Yz::Element('thead', [
-                    'children' => function() use($columns) {
-                        Yz::Element('tr', [
-                            'children' => function() use($columns) {
+            'class' => $classes,
+            'children' => function() use($yz, $columns, $rows) {
+                $yz->html->element('thead', [
+                    'children' => function() use($yz, $columns) {
+                        $yz->html->element('tr', [
+                            'children' => function() use($yz, $columns) {
                                 foreach ($columns as $column) {
-                                    Yz::Element('th', [
+                                    $yz->html->element('th', [
                                         'children' => $column
                                     ]);
                                 }
@@ -44,13 +46,13 @@ class Yz_Table {
                         ]);
                     }
                 ]);
-                Yz::Element('tbody', [
-                    'children' => function() use($rows) {
+                $yz->html->element('tbody', [
+                    'children' => function() use($yz, $rows) {
                         foreach ($rows as $row) {
-                            Yz::Element('tr', [
-                                'children' => function() use($row) {
+                            $yz->html->element('tr', [
+                                'children' => function() use($yz, $row) {
                                     foreach ($row as $cell) {
-                                        Yz::Element('td', [
+                                        $yz->html->element('td', [
                                             'children' => $cell
                                         ]);
                                     }

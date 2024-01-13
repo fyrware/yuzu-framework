@@ -33,19 +33,21 @@ class Yz_Flex_Layout {
     ];
 
     public static function render(array $props): void {
-        $id           = yz_prop($props, 'id');
-        $as           = yz_prop($props, 'as', 'section');
-        $inline       = yz_prop($props, 'inline', false);
-        $direction    = yz_prop($props, 'direction', 'row');
-        $justification = yz_prop($props, 'justification', 'start');
-        $alignment    = yz_prop($props, 'alignment', 'stretch');
-        $wrap         = yz_prop($props, 'wrap', 'nowrap');
-        $class_name   = yz_prop($props, 'class', '');
-        $style        = yz_prop($props, 'style', []);
-        $data         = yz_prop($props, 'data', []);
-        $gap          = yz_prop($props, 'gap', 0);
-        $children     = yz_prop($props, 'children');
-        $width        = yz_prop($props, 'width');
+        global $yz;
+
+        $id           = $yz->tools->key_or_default($props, 'id');
+        $as           = $yz->tools->key_or_default($props, 'as', 'section');
+        $inline       = $yz->tools->key_or_default($props, 'inline', false);
+        $direction    = $yz->tools->key_or_default($props, 'direction', 'row');
+        $justification = $yz->tools->key_or_default($props, 'justification', 'start');
+        $alignment    = $yz->tools->key_or_default($props, 'alignment', 'stretch');
+        $wrap         = $yz->tools->key_or_default($props, 'wrap', 'nowrap');
+        $class_name   = $yz->tools->key_or_default($props, 'class');
+        $style        = $yz->tools->key_or_default($props, 'style');
+        $data         = $yz->tools->key_or_default($props, 'data', []);
+        $gap          = $yz->tools->key_or_default($props, 'gap', 0);
+        $children     = $yz->tools->key_or_default($props, 'children');
+        $width        = $yz->tools->key_or_default($props, 'width');
 
         assert(is_bool($inline));
         assert(in_array($direction,    Yz_Flex_Layout::VALID_DIRECTIONS));
@@ -95,11 +97,11 @@ class Yz_Flex_Layout {
             $classes[] = $class_name;
         }
 
-        Yz::Element($as, [
+        $yz->html->element($as, [
             'id'       => $id,
             'data'     => $data,
-            'class'    => Yz_Array::join($classes),
-            'style'    => Yz_Array::join_key_value($style),
+            'class'    => $classes,
+            'style'    => $style,
             'children' => function() use($children) {
                 if (is_callable($children)) {
                     $children();
@@ -109,7 +111,7 @@ class Yz_Flex_Layout {
     }
 
     public static function render_style() { ?>
-        <style>
+        <style data-yz-element="flex-layout">
             .yz.flex-layout {
                 display: flex;
             }

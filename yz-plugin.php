@@ -38,16 +38,71 @@ add_action('plugins_loaded', function() {
 add_action('admin_enqueue_scripts', function() {
     wp_enqueue_script('d3js',  'https://cdn.jsdelivr.net/npm/d3@7');
     wp_enqueue_script('dayjs', 'https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js');
+
+    wp_enqueue_style('highlightjs', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css');
+    wp_enqueue_script('highlightjs', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js');
+    wp_enqueue_script('highlightjs-php', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js');
+    wp_enqueue_script('highlightjs-line-numbers', 'https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js');
 });
 
-add_action('admin_head', function() { $start_time = microtime(true); ?>
+add_action('admin_head', function() {
+    $start_time = microtime(true); ?>
     <style>
         :root {
             <?= Yz_Style::load_admin_style_variables(); ?>
             --yz-scss-conversion-duration: <?= (microtime(true) - $start_time) * 1000; ?>ms;
+            --yz-body-background-color: #f0f0f1;
+            --yz-section-border-color: #c3c4c7;
+            --yz-input-border-color: #8c8f94;
+            --yz-info-color: #178aff;
+            --yz-success-color: #00b75d;
+            --yz-warning-color: #f88f05;
+            --yz-danger-color: #e63a2b;
+
+            --yz-transparent-bg-first: #ffffff;
+            --yz-transparent-bg-second: #f0f0f1;
+            --yz-transparent-bg-image:
+                repeating-linear-gradient(
+                    45deg,
+                    var(--yz-transparent-bg-second) 25%,
+                    transparent 25%,
+                    transparent 75%,
+                    var(--yz-transparent-bg-second) 75%,
+                    var(--yz-transparent-bg-second)
+                ),
+                repeating-linear-gradient(
+                    45deg,
+                    var(--yz-transparent-bg-second) 25%,
+                    var(--yz-transparent-bg-first) 25%,
+                    var(--yz-transparent-bg-first) 75%,
+                    var(--yz-transparent-bg-second) 75%,
+                    var(--yz-transparent-bg-second)
+                );
+            --yz-transparent-bg-position: 0 0, 8px 8px;
+            --yz-transparent-bg-size: 16px 16px;
+        }
+
+        #adminmenu li.wp-menu-separator {
+            height: 1px;
+            margin: 10px 0;
+            background-color: var(--yz-menu-submenu-background-alt);
         }
     </style>
 <?php });
+
+add_action('init', function() {
+    Yz::use_async_form('yz_read_uploads_directory', function() {
+        $path = Yz::use_prop($_GET, 'path');
+
+        if ($path === 'undefined') {
+            $path = null;
+        }
+
+        $scanned_directory = Yz_Uploads_Service::scan_uploads_dir($path);
+
+        wp_send_json_success($scanned_directory->to_array());
+    });
+});
 
 
 

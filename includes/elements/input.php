@@ -9,7 +9,7 @@ class Yz_Input {
         'datetime-local' => 'calendar',
         'location'       => 'map-pin',
         'email'          => 'envelope',
-        'file'           => 'folder-notch-open',
+        'file'            => 'folder-notch-open',
         'month'          => 'calendar',
         'number'         => 'hash',
         'password'       => 'keyhole',
@@ -23,20 +23,24 @@ class Yz_Input {
     ];
 
     public static function render(array $props): void {
-        $id            = Yz_Array::value_or($props, 'id');
-        $class         = Yz_Array::value_or($props, 'class');
-        $step          = Yz_Array::value_or($props, 'step');
-        $label         = Yz_Array::value_or($props, 'label');
-        $placeholder   = Yz_Array::value_or($props, 'placeholder');
-        $value         = Yz_Array::value_or($props, 'value');
-        $name          = Yz_Array::value_or($props, 'name', $id);
-        $type          = Yz_Array::value_or($props, 'type', 'text');
-        $checked       = Yz_Array::value_or($props, 'checked', false);
-        $required      = Yz_Array::value_or($props, 'required', false);
-        $disabled      = Yz_Array::value_or($props, 'disabled', false);
-        $hidden        = Yz_Array::value_or($props, 'hidden', false);
-        $layout        = Yz_Array::value_or($props, 'layout', 'column');
-        $width         = Yz_Array::value_or($props, 'width');
+        global $yz;
+
+        $id            = $yz->tools->key_or_default($props, 'id');
+        $class         = $yz->tools->key_or_default($props, 'class');
+        $step          = $yz->tools->key_or_default($props, 'step');
+        $label         = $yz->tools->key_or_default($props, 'label');
+        $placeholder   = $yz->tools->key_or_default($props, 'placeholder');
+        $value         = $yz->tools->key_or_default($props, 'value');
+        $name          = $yz->tools->key_or_default($props, 'name', $id);
+        $type          = $yz->tools->key_or_default($props, 'type', 'text');
+        $checked       = $yz->tools->key_or_default($props, 'checked', false);
+        $required      = $yz->tools->key_or_default($props, 'required', false);
+        $disabled      = $yz->tools->key_or_default($props, 'disabled', false);
+        $hidden        = $yz->tools->key_or_default($props, 'hidden', false);
+        $layout        = $yz->tools->key_or_default($props, 'layout', 'column');
+        $width         = $yz->tools->key_or_default($props, 'width');
+        $autofocus     = $yz->tools->key_or_default($props, 'autofocus', false);
+        $data_set      = $yz->tools->key_or_default($props, 'data', []);
 
         if ($type === 'currency') {
             $step = 'any';
@@ -57,21 +61,23 @@ class Yz_Input {
                 'input-label',
             ];
 
-            Yz::Element('label', [
-                'class'    => Yz_Array::join($label_classes),
+            $yz->html->element('label', [
+                'class'    => $yz->tools->join_values($label_classes),
                 'attr'     => [ 'for' => $id ],
-                'children' => function() use($id, $name, $classes, $type, $checked, $label, $disabled) {
-                    Yz::Element('input', [
+                'children' => function() use($yz, $id, $name, $classes, $type, $checked, $label, $disabled, $autofocus, $data_set) {
+                    $yz->html->element('input', [
                         'id'    => $id,
                         'name'  => $name,
-                        'class' => Yz_Array::join($classes),
+                        'class' => array_merge($classes, [ $type ]),
+                        'data'  => $data_set,
                         'attr'  => [
                             'type'     => $type,
                             'checked'  => $checked,
-                            'disabled' => $disabled
+                            'disabled' => $disabled,
+                            'autofocus' => $autofocus
                         ]
                     ]);
-                    Yz::Text($label);
+                    $yz->html->text($label ?? '');
                 }
             ]);
 
@@ -84,19 +90,21 @@ class Yz_Input {
         if ($decoration === 'location') $type = 'text';
         if ($decoration === 'title')    $type = 'text';
 
-        $input = Yz_Buffer::capture(fn() =>
-            Yz::Element('input', [
-                'id'         => $id,
-                'name'       => $name,
-                'class'      => Yz_Array::join($classes),
-                'attr' => [
+        $input = $yz->tools->capture_buffer(fn() =>
+            $yz->html->element('input', [
+                'id'    => $id,
+                'name'  => $name,
+                'class' => $classes,
+                'data'  => $data_set,
+                'attr'  => [
                     'type'        => $type,
                     'value'       => $value,
                     'placeholder' => $placeholder,
                     'required'    => $required,
                     'disabled'    => $disabled,
                     'hidden'      => $hidden,
-                    'step'        => $step
+                    'step'        => $step,
+                    'autofocus'   => $autofocus
                 ]
             ])
         );
@@ -117,12 +125,13 @@ class Yz_Input {
 //            $input_container_style['width'] = is_string($width) ? $width : $width . 'px';
 //        }
 
-        Yz::Flex_Layout([
+        $yz->html->flex_layout([
             'gap'       => $layout === 'column' ? 5 : 10,
             'direction' => $layout,
-            'class'     => Yz_Array::join($input_container_classes),
+            'class'     => $input_container_classes,
+            'style'     => $input_container_style,
             'width'     => $layout === 'column' ? $width : 'auto',
-            'children'  => function() use($id, $label, $decoration, $input, $required, $width) {
+            'children'  => function() use($yz, $id, $label, $decoration, $input, $required, $width) {
                 if ($label) {
                     $label_classes = [
                         'yz',
@@ -133,27 +142,28 @@ class Yz_Input {
                         $label_classes[] = 'input-label-required';
                     }
 
-                    Yz::Text($label, [
-                        'class'   => Yz_Array::join($label_classes),
+                    $yz->html->text($label, [
+                        'class'   => $label_classes,
                         'variant' => 'label',
                         'attr'    => [ 'for' => $id ]
                     ]);
                 }
-                Yz::Flex_Layout([
+                $yz->html->flex_layout([
                     'alignment' => 'center',
                     'class'     => 'input-container-inner',
                     'width'     => $width,
-                    'children'  => function() use($decoration, $input) {
-                        $input_decoration = Yz_Array::value_or(Yz_Input::INPUT_DECORATIONS, $decoration, 'text-aa');
+                    'children'  => function() use($yz, $decoration, $input) {
+                        $input_decoration = $yz->tools->key_or_default(Yz_Input::INPUT_DECORATIONS, $decoration, 'text-aa');
+
                         $input_decoration_classes = [
                             'yz',
                             'input-decoration'
                         ];
 
-                        Yz::Element('div', [
-                            'class' => Yz_Array::join($input_decoration_classes),
-                            'children' => function() use($input_decoration) {
-                                Yz::Icon($input_decoration, [
+                        $yz->html->element('div', [
+                            'class' => $yz->tools->join_values($input_decoration_classes),
+                            'children' => function() use($yz, $input_decoration) {
+                                $yz->html->icon($input_decoration, [
                                     'appearance' => 'duotone'
                                 ]);
                             }
@@ -167,7 +177,7 @@ class Yz_Input {
     }
 
     public static function render_style() { ?>
-        <style>
+        <style data-yz-element="input">
             .yz.input-label {
                 display: inline-flex;
                 white-space: nowrap;

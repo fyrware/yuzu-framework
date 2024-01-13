@@ -3,12 +3,14 @@
 class Yz_Empty_State {
 
     public static function render(array $props): void {
-        $id = Yz_Array::value_or($props, 'id');
-        $class = Yz_Array::value_or($props, 'class');
-        $title = Yz_Array::value_or($props, 'title');
-        $description = Yz_Array::value_or($props, 'description');
-        $icon = Yz_Array::value_or($props, 'icon');
-        $actions = Yz_Array::value_or($props, 'actions', []);
+        global $yz;
+
+        $id          = $yz->tools->key_or_default($props, 'id');
+        $class       = $yz->tools->key_or_default($props, 'class');
+        $title       = $yz->tools->key_or_default($props, 'title');
+        $description = $yz->tools->key_or_default($props, 'description');
+        $icon        = $yz->tools->key_or_default($props, 'icon');
+        $actions     = $yz->tools->key_or_default($props, 'actions', []);
 
         $classes = [
             'empty-state'
@@ -18,41 +20,45 @@ class Yz_Empty_State {
             $classes[] = $class;
         }
 
-        Yz::Flex_Layout([
+        $yz->html->flex_layout([
             'id' => $id,
-            'class' => Yz_Array::join($classes),
+            'class' => $classes,
             'gap' => 20,
             'direction' => 'column',
             'alignment' => 'center',
             'justification' => 'center',
-            'children' => function() use($icon, $title, $description, $actions) {
-                if ($icon) Yz::Icon($icon, [ 'appearance' => 'duotone' ]);
-                Yz::Flex_Layout([
+            'children' => function() use($yz, $icon, $title, $description, $actions) {
+                if ($icon) $yz->html->icon($icon, [ 'appearance' => 'duotone' ]);
+                $yz->html->flex_layout([
                     'class' => 'empty-state-content',
                     'direction' => 'column',
                     'alignment' => 'center',
                     'justification' => 'center',
                     'gap' => 10,
-                    'children' => function() use($title, $description, $actions) {
-                        Yz::Title($title, [
+                    'children' => function() use($yz, $title, $description, $actions) {
+                        $yz->html->title($title, [
                             'class' => 'empty-state-title',
                             'level' => 2,
                         ]);
-                        Yz::Element('p', [
-                            'class' => 'empty-state-description',
-                            'children' => function() use($description) {
-                                Yz::Text($description);
-                            }
-                        ]);
-                        Yz::Flex_Layout([
+
+                        if (isset($description)) {
+                            $yz->html->element('p', [
+                                'class' => 'empty-state-description',
+                                'children' => function() use($yz, $description) {
+                                    $yz->html->text($description ?? '');
+                                }
+                            ]);
+                        }
+
+                        $yz->html->flex_layout([
                             'class' => 'empty-state-actions',
                             'direction' => 'row',
                             'alignment' => 'center',
                             'justification' => 'center',
                             'gap' => 20,
-                            'children' => function() use($actions) {
+                            'children' => function() use($yz, $actions) {
                                 foreach ($actions as $action) {
-                                    Yz::Button($action);
+                                    $yz->html->button($action);
                                 }
                             }
                         ]);
@@ -63,7 +69,7 @@ class Yz_Empty_State {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="empty-state">
             .yuzu.empty-state {
                 padding: 80px 0;
             }

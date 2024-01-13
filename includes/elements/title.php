@@ -3,12 +3,14 @@
 class Yz_Title {
 
         public static function render(string $text, array $props = []): void {
-            $id         = Yz_Array::value_or($props, 'id');
-            $class      = Yz_Array::value_or($props, 'class');
-            $level      = Yz_Array::value_or($props, 'level', 1);
-            $attributes = Yz_Array::value_or($props, 'attr', []);
-            $data_set   = Yz_Array::value_or($props, 'data', []);
-            $icon       = Yz_Array::value_or($props, 'icon');
+            global $yz;
+
+            $id         = $yz->tools->key_or_default($props, 'id');
+            $class      = $yz->tools->key_or_default($props, 'class');
+            $level      = $yz->tools->key_or_default($props, 'level', 1);
+            $attributes = $yz->tools->key_or_default($props, 'attr', []);
+            $data_set   = $yz->tools->key_or_default($props, 'data', []);
+            $icon       = $yz->tools->key_or_default($props, 'icon');
 
             $classes = [
                 'yz',
@@ -20,13 +22,13 @@ class Yz_Title {
                 $classes[] = $class;
             }
 
-            Yz::Element('h' . $level, [
+            $yz->html->element('h' . $level, [
                 'id'       => $id,
-                'class'    => Yz_Array::join($classes),
+                'class'    => $classes,
                 'attr'     => $attributes,
                 'data'     => $data_set,
-                'children' => function() use($text, $icon) {
-                    if ($icon) Yz::Icon($icon, [ 'appearance' => 'duotone' ]);
+                'children' => function() use($yz, $text, $icon) {
+                    if ($icon) $yz->html->icon($icon, [ 'appearance' => 'duotone' ]);
                     echo $text;
                 }
             ]);

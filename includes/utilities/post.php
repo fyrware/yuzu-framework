@@ -1,7 +1,9 @@
 <?php
 
+/** @deprecated */
 class Yz_Post {
 
+    /** @deprecated */
     public static function add_post_type(string $post_type_name, array $props): WP_Post_Type {
         $singular_name = Yz_Array::value_or($props, 'singular_name', $post_type_name);
         $plural_name   = Yz_Array::value_or($props, 'plural_name', $post_type_name);

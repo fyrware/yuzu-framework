@@ -3,11 +3,13 @@
 class Yz_Card {
 
     public static function render(array $props = []): void {
-        $id         = Yz_Array::value_or($props, 'id');
-        $class      = Yz_Array::value_or($props, 'class');
-        $alignment  = Yz_Array::value_or($props, 'alignment', 'start');
-        $children   = Yz_Array::value_or($props, 'children');
-        $padding    = Yz_Array::value_or($props, 'padding');
+        global $yz;
+
+        $id         = $yz->tools->key_or_default($props, 'id');
+        $class      = $yz->tools->key_or_default($props, 'class');
+        $alignment  = $yz->tools->key_or_default($props, 'alignment', 'start');
+        $children   = $yz->tools->key_or_default($props, 'children');
+        $padding    = $yz->tools->key_or_default($props, 'padding');
 
         $classes = [
             'yuzu',
@@ -28,10 +30,10 @@ class Yz_Card {
             $style[ 'padding' ] = is_string($padding) ? $padding : $padding . 'px';
         }
 
-        Yz::Element('section', [
+        $yz->html->element('section', [
             'id'       => $id,
-            'class'    => Yz_Array::join($classes),
-            'style'    => Yz_Array::join_key_value($style),
+            'class'    => $classes,
+            'style'    => $style,
             'children' => function() use($children) {
                 if (is_callable($children)) {
                     $children();
@@ -41,7 +43,7 @@ class Yz_Card {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="card">
             .yuzu.card {
                 display: flex;
                 flex-direction: column;

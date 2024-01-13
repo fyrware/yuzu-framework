@@ -68,16 +68,24 @@ class Yz_Markup {
 
     public static function create_element(mixed $tag, ?array $props = null): string {
         $props = is_array($tag)  ? $tag : $props;
-        $tag   = is_string($tag) ? $tag : yz_prop($props, 'tag', 'div');
+        $tag   = is_string($tag) ? $tag : Yz_Array::value_or($props, 'tag', 'div');
 
-        $id         = yz_prop($props, 'id');
-        $name       = yz_prop($props, 'name', $id);
-        $class      = yz_prop($props, 'class');
-        $style      = yz_prop($props, 'style');
-        $children   = yz_prop($props, 'children');
-        $attributes = yz_prop($props, 'attr', []);
-        $data_set   = yz_prop($props, 'data', []);
-        $aria_set   = yz_prop($props, 'aria', []);
+        $id         = Yz_Array::value_or($props, 'id');
+        $name       = Yz_Array::value_or($props, 'name', $id);
+        $class      = Yz_Array::value_or($props, 'class');
+        $style      = Yz_Array::value_or($props, 'style');
+        $children   = Yz_Array::value_or($props, 'children');
+        $attributes = Yz_Array::value_or($props, 'attr', []);
+        $data_set   = Yz_Array::value_or($props, 'data', []);
+        $aria_set   = Yz_Array::value_or($props, 'aria', []);
+
+        if (is_array($class)) {
+            $class = Yz_Array::join($class);
+        }
+
+        if (is_array($style)) {
+            $style = Yz_Array::join_key_value($style);
+        }
 
         if (!is_null($tag))        assert(is_string($tag),        'Tag must be a string.');
         if (!is_null($id))         assert(is_string($id),         'ID must be a string.');
@@ -121,6 +129,10 @@ class Yz_Markup {
 
         if (!empty($classes)) {
             $attributes['class'] = Yz_Array::join($classes);
+        }
+
+        if (isset($attributes['class']) && !str_contains($attributes['class'], 'yz')) {
+            $attributes['class'] = 'yz ' . $attributes['class'];
         }
 
         return Yz_Markup::create_tag($tag, $attributes, $children);

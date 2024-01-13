@@ -10,16 +10,18 @@ class Yz_Notice {
     ];
 
     public static function render(array $props): void {
-        $id          = Yz_Array::value_or($props, 'id');
-        $class       = Yz_Array::value_or($props, 'class');
-        $alt         = Yz_Array::value_or($props, 'alt', false);
-        $dismissible = Yz_Array::value_or($props, 'dismissible', false);
-        $variant     = Yz_Array::value_or($props, 'variant', 'info');
-        $title       = Yz_Array::value_or($props, 'title');
-        $icon        = Yz_Array::value_or($props, 'icon');
-        $action      = Yz_Array::value_or($props, 'action');
-        $children    = Yz_Array::value_or($props, 'children');
-        $inline      = Yz_Array::value_or($props, 'inline', false);
+        global $yz;
+
+        $id          = $yz->tools->key_or_default($props, 'id');
+        $class       = $yz->tools->key_or_default($props, 'class');
+        $alt         = $yz->tools->key_or_default($props, 'alt', false);
+        $dismissible = $yz->tools->key_or_default($props, 'dismissible', false);
+        $variant     = $yz->tools->key_or_default($props, 'variant', 'info');
+        $title       = $yz->tools->key_or_default($props, 'title');
+        $icon        = $yz->tools->key_or_default($props, 'icon');
+        $action      = $yz->tools->key_or_default($props, 'action');
+        $children    = $yz->tools->key_or_default($props, 'children');
+        $inline      = $yz->tools->key_or_default($props, 'inline', false);
 
         assert(is_string($title), 'Title must be a string');
         assert(is_null($action) || is_array($action), 'Action must be an array');
@@ -50,27 +52,27 @@ class Yz_Notice {
             $classes[] = $class;
         }
 
-        Yz::Element('aside', [
+        $yz->html->element('aside', [
             'id' => $id,
-            'class' => Yz_Array::join($classes),
-            'children' => function() use($icon, $title, $children, $action) {
-                Yz::Flex_Layout([
+            'class' => $classes,
+            'children' => function() use($yz, $icon, $title, $children, $action) {
+                $yz->html->flex_layout([
                     'gap' => 12,
                     'alignment' => 'center',
                     'class' => 'notice-content',
-                    'children' => function() use($icon, $title, $children, $action) {
-                        if ($icon) Yz::Icon($icon, [ 'appearance' => 'bold' ]);
-                        Yz::Flex_Layout([
+                    'children' => function() use($yz, $icon, $title, $children, $action) {
+                        if ($icon) $yz->html->icon($icon, [ 'appearance' => 'bold' ]);
+                        $yz->html->flex_layout([
                             'class' => 'notice-text',
                             'direction' => 'column',
                             'justification' => 'center',
-                            'children' => function() use($title, $children) {
-                                if ($title) Yz::Text($title, [ 'variant' => 'strong' ]);
+                            'children' => function() use($yz, $title, $children) {
+                                if ($title) $yz->html->text($title, [ 'variant' => 'strong' ]);
                                 if (is_callable($children)) $children();
                             }
                         ]);
                         if ($action) {
-                            Yz::Button([
+                            $yz->html->button([
                                 'size' => 'small',
                                 'type' => 'link',
                                 'label' => $action['label'],

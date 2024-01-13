@@ -3,11 +3,13 @@
 class Yz_Box {
 
     public static function render(array $props): void {
-        $id = Yz_Array::value_or($props, 'id');
-        $class = Yz_Array::value_or($props, 'class');
-        $children = Yz_Array::value_or($props, 'children');
-        $padding = Yz_Array::value_or($props, 'padding', 0);
-        $margin = Yz_Array::value_or($props, 'margin', 0);
+        global $yz;
+
+        $id       = $yz->tools->key_or_default($props, 'id');
+        $class    = $yz->tools->key_or_default($props, 'class');
+        $children = $yz->tools->key_or_default($props, 'children');
+        $padding  = $yz->tools->key_or_default($props, 'padding', 0);
+        $margin   = $yz->tools->key_or_default($props, 'margin', 0);
 
         if (is_numeric($padding)) {
             $padding .= 'px';
@@ -26,14 +28,14 @@ class Yz_Box {
             $classes[] = $class;
         }
 
-        Yz::Element('div', [
-            'id' => $id,
-            'class' => Yz_Array::join($classes),
+        $yz->html->element('div', [
+            'id'       => $id,
+            'class'    => $classes,
             'children' => $children,
-            'style' => Yz_Array::join_key_value([
+            'style'    => [
                 'padding' => $padding,
-                'margin' => $margin
-            ])
+                'margin'  => $margin
+            ]
         ]);
     }
 }

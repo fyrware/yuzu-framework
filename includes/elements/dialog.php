@@ -3,25 +3,27 @@
 class Yz_Dialog {
 
     public static function render(array $props): void {
-        $portal = Yz_Array::value_or($props, 'portal', 'default_portal');
+        global $yz;
 
-        Yz::Portal_Injection($portal, [
-            'children' => function() use($props) {
-                $id          = Yz_Array::value_or($props, 'id');
-                $class       = Yz_Array::value_or($props, 'class');
-                $icon        = Yz_Array::value_or($props, 'icon');
-                $title       = Yz_Array::value_or($props, 'title');
-                $action      = Yz_Array::value_or($props, 'action');
-                $method      = Yz_Array::value_or($props, 'method', 'dialog');
-                $open        = Yz_Array::value_or($props, 'open', false);
-                $modal       = Yz_Array::value_or($props, 'modal', false);
-                $dismissible = Yz_Array::value_or($props, 'dismissible', true);
-                $fixed        = Yz_Array::value_or($props, 'fixed', false);
-                $full_size   = Yz_Array::value_or($props, 'full_size', false);
-                $width       = Yz_Array::value_or($props, 'width');
-                $children    = Yz_Array::value_or($props, 'children');
-                $attributes  = Yz_Array::value_or($props, 'attr', []);
-                $data_set    = Yz_Array::value_or($props, 'data', []);
+        $portal = $yz->tools->key_or_default($props, 'portal', 'default_portal');
+
+        $yz->html->transport_source($portal, [
+            'children' => function() use($yz, $props) {
+                $id          = $yz->tools->key_or_default($props, 'id');
+                $class       = $yz->tools->key_or_default($props, 'class');
+                $icon        = $yz->tools->key_or_default($props, 'icon');
+                $title       = $yz->tools->key_or_default($props, 'title');
+                $action      = $yz->tools->key_or_default($props, 'action');
+                $method      = $yz->tools->key_or_default($props, 'method', 'dialog');
+                $open        = $yz->tools->key_or_default($props, 'open', false);
+                $modal       = $yz->tools->key_or_default($props, 'modal', false);
+                $dismissible = $yz->tools->key_or_default($props, 'dismissible', true);
+                $fixed        = $yz->tools->key_or_default($props, 'fixed', false);
+                $full_size   = $yz->tools->key_or_default($props, 'full_size', false);
+                $width       = $yz->tools->key_or_default($props, 'width');
+                $children    = $yz->tools->key_or_default($props, 'children');
+                $attributes  = $yz->tools->key_or_default($props, 'attr', []);
+                $data_set    = $yz->tools->key_or_default($props, 'data', []);
 
                 $classes = [
                     'yz',
@@ -60,37 +62,37 @@ class Yz_Dialog {
                     $style['width'] = is_string($width) ? $width : $width . 'px';
                 }
 
-                Yz::Element('dialog', [
+                $yz->html->element('dialog', [
                     'id'       => $id,
-                    'class'    => Yz_Array::join($classes),
-                    'style'    => Yz_Array::join_key_value($style),
+                    'class'    => $classes,
+                    'style'    => $style,
                     'data'     => $data_set,
                     'attr'     => $attributes,
-                    'children' => function() use($action, $method, $children, $icon, $title) {
-                        Yz::Card([
-                            'children' => function() use($action, $method, $children, $icon, $title) {
-                                Yz::Form([
+                    'children' => function() use($yz, $action, $method, $children, $icon, $title) {
+                        $yz->html->card([
+                            'children' => function() use($yz, $action, $method, $children, $icon, $title) {
+                                $yz->html->form([
                                     'action'   => $action,
                                     'method'   => $method,
-                                    'children' => function() use($children, $icon, $title) {
-                                        Yz::Element('header', [
+                                    'children' => function() use($yz, $children, $icon, $title) {
+                                        $yz->html->element('header', [
                                             'class' => 'yz dialog-header',
-                                            'children' => function() use($icon, $title) {
+                                            'children' => function() use($yz, $icon, $title) {
                                                 if ($icon) {
-                                                    Yz::Element('div', [
+                                                    $yz->html->element('div', [
                                                         'class' => 'yz dialog-header-icon',
-                                                        'children' => function() use($icon) {
-                                                            Yz::Icon($icon, [ 'appearance' => 'duotone' ]);
+                                                        'children' => function() use($yz, $icon) {
+                                                            $yz->html->icon($icon, [ 'appearance' => 'duotone' ]);
                                                         }
                                                     ]);
                                                 }
                                                 if ($title) {
-                                                    Yz::Title($title, [ 'level' => 2 ]);
+                                                    $yz->html->title($title, [ 'level' => 2 ]);
                                                 }
                                             }
                                         ]);
                                         if (is_callable($children)) {
-                                            Yz::Element('div', [
+                                            $yz->html->element('div', [
                                                 'class' => 'yz dialog-content',
                                                 'children' => $children
                                             ]);
@@ -106,7 +108,7 @@ class Yz_Dialog {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="dialog">
             .yz.dialog {
                 min-width: 240px;
                 max-height: calc(100% - 60px);
@@ -136,14 +138,14 @@ class Yz_Dialog {
                 height: calc(100% - 60px);
             }
 
-            .yz.dialog .yz.card {
+            .yz.dialog > .yz.card {
                 display: flex;
                 flex-direction: column;
                 height: 100%;
                 border: none;
                 background: #f0f0f1;
                 padding: 0;
-                box-shadow: 0 5px 15px rgba(0,0,0,.7);
+                /*box-shadow: 0 5px 15px rgba(0,0,0,.7);*/
                 border-radius: 4px;
             }
 
@@ -188,7 +190,10 @@ class Yz_Dialog {
 
             .yz.dialog .yz.dialog-content {
                 flex-grow: 1;
+                flex-shrink: 1;
+                height: 0;
                 padding: 20px;
+                overflow: auto;
             }
 
             .yz.dialog .yz.dialog-footer {
@@ -210,7 +215,7 @@ class Yz_Dialog {
     <?php }
 
     public static function render_script() { ?>
-        <script>
+        <script data-yz-element="dialog">
             yz.ready().observe(() => {
                 yz('.yuzu.dialog').forEach((dialog) => {
                     const open        = 'open'        in dialog.dataset;

@@ -31,7 +31,7 @@ function yz(selector, context = document) {
  * @property { object | undefined } bold
  * @property { object | undefined } duotone
  * @property { object | undefined } solid
- */
+ *
 
 /**
  * Library of available icons (must be loaded server-side)
@@ -45,6 +45,13 @@ yz.icons = Object.seal({
     duotone: undefined,
     solid: undefined
 });
+
+yz.wordpress = Object.seal({
+    ajax: '',
+    nonce: '',
+});
+
+yz.dateLocale = 'en-US';
 
 /**
  * A bare-bones observable implementation
@@ -121,6 +128,10 @@ yz.spy = function spy(element, event) {
     return new YzEventObservable(element, event);
 }
 
+yz.do = function doEvent(element, event, options) {
+    return element.dispatchEvent(new Event('change', options));
+}
+
 /**
  * Attaches an observable to the `DOMContentLoaded` event
  * @returns { YzEventObservable }
@@ -139,25 +150,85 @@ yz.ready = function ready() {
 
 /**
  * Attaches an observable to a fetch request
- * @param url
- * @param options
+ * @param { string } action
+ * @param { FormData | object } data
  * @returns { YzObservable }
  */
-yz.request = function request(url, options = {}) {
+yz.submit = function request(action, data = new FormData()) {
     const observable = new YzObservable();
 
-    fetch(url, options).then(response => {
-        observable.notify(response);
+    if (!(data instanceof FormData)) {
+        const object = data;
+
+        data = new FormData();
+
+        Object.entries(object).forEach(([key, value]) => {
+            data.append(key, value);
+        });
+    }
+
+    const options = {
+        method: 'post',
+        credentials: 'same-origin',
+        body: data
+    };
+
+    options.body.append('action', action);
+    options.body.append('nonce', yz.wordpress.nonce);
+
+    fetch(yz.wordpress.ajax, options).then(async response => {
+        observable.notify(await response.json());
     });
 
     return observable;
 }
 
 /**
+ * Attaches an observable to a fetch request with the `GET` method
+ * @param { string } action
+ * @param { object } params
+ * @returns { YzObservable }
+ */
+yz.query = function query(action, params = {}) {
+    const observable = new YzObservable();
+
+    const options = {
+        method: 'get',
+        credentials: 'same-origin',
+    };
+
+    const queryString = '?action=' + action + '&' + Object.entries(params).map(([key, value]) => {
+        return `${key}=${encodeURIComponent(String(value))}`;
+    }).join('&');
+
+    fetch(yz.wordpress.ajax + queryString, options).then(async response => {
+        observable.notify(await response.json());
+    });
+
+    return observable;
+}
+
+/**
+ * @param { HTMLTemplateElement } template
+ */
+yz.instance = function instance(template) {
+    return document.importNode(template.content, true);
+}
+
+/**
+ *
+ * @param { Date | string | number } date
+ * @param { DateTimeFormatOptions } options
+ */
+yz.date = function date(date = Date.now(), options = {}) {
+    return new Date(date).toLocaleDateString(yz.dateLocale, options);
+}
+
+/**
  * Debounce a function callback
- * @param fn
- * @param delay
- * @returns {(function(...[*]): void)|*}
+ * @param { function(...[*]): void } fn
+ * @param { number } delay
+ * @returns { (function(...[*]): void) | * }
  */
 yz.debounce = function debounce(fn, delay = 250) {
     let timeout;
@@ -217,4 +288,36 @@ yz.pickMedia = function pickMedia(element, options = {}) {
     });
 
     return observable;
+}
+
+yz.ux = {
+    /**
+     * Make a list element reorderable, triggered on drag & drop
+     * @param { HTMLUListElement | HTMLOListElement } list
+     */
+    enableReorder(list) {
+        yz('li', list).forEach((item) => {
+            item.draggable = true;
+            item.dataset.state = 'idle';
+
+            yz.spy(list, 'dragover').observe((dragover) => {
+                dragover.preventDefault();
+            });
+
+            yz.spy(item, 'drag').observe((drag) => {
+                const swapItem = document.elementFromPoint(event.clientX, event.clientY) ?? item;
+                const actualSwapItem = swapItem.closest('li');
+
+                drag.target.dataset.state = 'dragging';
+
+                if (list.contains(actualSwapItem)) {
+                    list.insertBefore(item, item.nextSibling !== actualSwapItem ? actualSwapItem : actualSwapItem.nextSibling);
+                }
+            });
+
+            yz.spy(item, 'dragend').observe((dragend) => {
+                dragend.target.dataset.state = 'idle';
+            });
+        });
+    }
 }

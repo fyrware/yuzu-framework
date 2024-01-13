@@ -10,12 +10,14 @@ class Yz_Text {
     ];
 
     public static function render(string $text, array $props): void {
-        $id       = Yz_Array::value_or($props, 'id');
-        $class    = Yz_Array::value_or($props, 'class');
-        $variant  = Yz_Array::value_or($props, 'variant', 'span');
-        $attr_set = Yz_Array::value_or($props, 'attr', []);
-        $aria_set = Yz_Array::value_or($props, 'aria', []);
-        $data_set = Yz_Array::value_or($props, 'data', []);
+        global $yz;
+
+        $id       = $yz->tools->key_or_default($props, 'id');
+        $class    = $yz->tools->key_or_default($props, 'class');
+        $variant  = $yz->tools->key_or_default($props, 'variant', 'span');
+        $attr_set = $yz->tools->key_or_default($props, 'attr', []);
+        $aria_set = $yz->tools->key_or_default($props, 'aria', []);
+        $data_set = $yz->tools->key_or_default($props, 'data', []);
 
         assert(is_string($text), 'Text must be a string');
         assert(in_array($variant, Yz_Text::VALID_VARIANTS), 'Invalid text variant');
@@ -30,9 +32,9 @@ class Yz_Text {
             $classes[] = $class;
         }
 
-        Yz::Element($variant, [
+        $yz->html->element($variant, [
             'id'       => $id,
-            'class'    => Yz_Array::join($classes),
+            'class'    => $classes,
             'attr'     => $attr_set,
             'aria'     => $aria_set,
             'data'     => $data_set,

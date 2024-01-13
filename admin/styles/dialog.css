@@ -27,14 +27,14 @@
     height: calc(100% - 60px);
 }
 
-.yuzu.dialog .yuzu.card {
+.yuzu.dialog > .yuzu.card {
     display: flex;
     flex-direction: column;
     height: 100%;
     border: none;
     background: #f0f0f1;
     padding: 0;
-    box-shadow: 0 5px 15px rgba(0,0,0,.7);
+    /*box-shadow: 0 5px 15px rgba(0,0,0,.7);*/
     border-radius: 4px;
 }
 

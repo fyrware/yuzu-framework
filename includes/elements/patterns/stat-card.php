@@ -3,12 +3,14 @@
 class Yz_Stat_Card {
 
     public static function render(array $props): void {
-        $id          = Yz_Array::value_or($props, 'id');
-        $class       = Yz_Array::value_or($props, 'class');
-        $icon        = Yz_Array::value_or($props, 'icon', 'question');
-        $value       = Yz_Array::value_or($props, 'value', '0');
-        $description = Yz_Array::value_or($props, 'description', '');
-        $children    = Yz_Array::value_or($props, 'children');
+        global $yz;
+
+        $id          = $yz->tools->key_or_default($props, 'id');
+        $class       = $yz->tools->key_or_default($props, 'class');
+        $icon        = $yz->tools->key_or_default($props, 'icon', 'question');
+        $value       = $yz->tools->key_or_default($props, 'value', '0');
+        $description = $yz->tools->key_or_default($props, 'description', '');
+        $children    = $yz->tools->key_or_default($props, 'children');
 
         $classes = [
             'stat-card'
@@ -18,27 +20,27 @@ class Yz_Stat_Card {
             $classes[] = $class;
         }
 
-        Yz::Card([
+        $yz->html->card([
             'id' => $id,
-            'class' => Yz_Array::join($classes),
+            'class' => $classes,
             'alignment' => 'center',
-            'children' => function() use($icon, $value, $description, $children) {
-                Yz::Flex_Layout([
+            'children' => function() use($yz, $icon, $value, $description, $children) {
+                $yz->html->flex_layout([
                     'alignment' => 'center',
                     'gap' => 10,
-                    'children' => function() use($icon, $value) {
-                        Yz::Icon($icon, [
+                    'children' => function() use($yz, $icon, $value) {
+                        $yz->html->icon($icon, [
                             'appearance' => 'duotone',
                             'class' => 'stat-card-icon'
                         ]);
-                        Yz::Text($value, [ 'class' => 'stat-card-value' ]);
+                        $yz->html->text($value, [ 'class' => 'stat-card-value' ]);
                     }
                 ]);
 
-                Yz::Text($description);
+                $yz->html->text($description);
 
                 if (is_callable($children)) {
-                    Yz::Element('br');
+                    $yz->html->element('br');
                     $children();
                 }
             }

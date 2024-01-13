@@ -3,9 +3,11 @@
 class Yz_Image {
 
     public static function render(string $src, array $props): void {
-        $id    = Yz_Array::value_or($props, 'id');
-        $class = Yz_Array::value_or($props, 'class');
-        $alt   = Yz_Array::value_or($props, 'alt');
+        global $yz;
+
+        $id    = $yz->tools->key_or_default($props, 'id');
+        $class = $yz->tools->key_or_default($props, 'class');
+        $alt   = $yz->tools->key_or_default($props, 'alt');
 
         $classes = [
             'yuzu',
@@ -16,9 +18,9 @@ class Yz_Image {
             $classes[] = $class;
         }
 
-        Yz::Element('img', [
+        $yz->html->element('img', [
             'id'    => $id,
-            'class' => Yz_Array::join($classes),
+            'class' => $classes,
             'attr'  => [
                 'src' => $src,
                 'alt' => $alt

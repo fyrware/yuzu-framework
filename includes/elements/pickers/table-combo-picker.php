@@ -3,54 +3,54 @@
 class Yz_Table_Combo_Picker {
 
     public static function render(array $props): void {
-        $label    = Yz_Array::value_or($props, 'label');
-        $fields   = Yz_Array::value_or($props, 'fields', []);
+        global $yz;
 
-        Yz::Flex_Layout([
+        $label = $yz->tools->key_or_default($props, 'label');
+        $fields = $yz->tools->key_or_default($props, 'fields', []);
+
+        $yz->html->flex_layout([
             'gap' => 5,
             'class'     => 'table-combo-picker',
             'direction' => 'column',
-            'children'  => function() use($label, $fields) {
-                Yz::Flex_Layout([
+            'children'  => function() use($yz, $label, $fields) {
+                $yz->html->flex_layout([
                     'alignment' => 'center',
                     'justification' => 'space-between',
-                    'children' => function() use($label) {
-                        Yz::Text($label, [
+                    'children' => function() use($yz, $label) {
+                        $yz->html->text($label, [
                             'class'   => 'table-combo-picker-label',
                             'variant' => 'label'
                         ]);
-                        Yz::Button([
+                        $yz->html->button([
                             'icon'  => 'plus-circle',
                             'size' => 'small',
                             'label' => 'Add Row'
                         ]);
                     }
                 ]);
-                Yz::Table([
-                    'columns' => array_map(function($field) {
-                        $label = Yz_Array::value_or($field, 'label');
-                        return fn() => Yz::Text($label);
+                $yz->html->table([
+                    'columns' => array_map(function($field) use($yz) {
+                        $label = $yz->tools->key_or_default($field, 'label');
+                        return fn() => $yz->html->text($label);
                     }, $fields),
                     'rows' => [
-                        array_map(function($key) use($fields) {
-                            $field = Yz_Array::value_or($fields, $key, []);
-                            $type = Yz_Array::value_or($field, 'type');
-                            $options = Yz_Array::value_or($field, 'options', []);
-                            $placeholder = Yz_Array::value_or($field, 'placeholder');
+                        array_map(function($key) use($yz, $fields) {
+                            $field = $yz->tools->key_or_default($fields, $key, []);
+                            $type = $yz->tools->key_or_default($field, 'type');
+                            $options = $yz->tools->key_or_default($field, 'options', []);
+                            $placeholder = $yz->tools->key_or_default($field, 'placeholder');
 
-                            switch ($type) {
-                                case 'select':
-                                    return fn() => Yz::Select([
-                                        'name'    => $key,
-                                        'options' => $options
-                                    ]);
-                                default:
-                                    return fn() => Yz::Input([
-                                        'type'        => $type,
-                                        'name'        => $key,
-                                        'placeholder' => $placeholder
-                                    ]);
-                            }
+                            return match ($type) {
+                                'select' => fn() => $yz->html->select([
+                                    'name' => $key,
+                                    'options' => $options
+                                ]),
+                                default => fn() => $yz->html->input([
+                                    'type' => $type,
+                                    'name' => $key,
+                                    'placeholder' => $placeholder
+                                ]),
+                            };
                         }, array_keys($fields))
                     ]
                 ]);

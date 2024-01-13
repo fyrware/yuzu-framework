@@ -3,14 +3,16 @@
 class Yz_Grid_Layout {
 
     public static function render(array $props): void {
-        $id       = Yz_Array::value_or($props, 'id');
-        $class    = Yz_Array::value_or($props, 'class');
-        $data     = Yz_Array::value_or($props, 'data', []);
-        $rows     = Yz_Array::value_or($props, 'rows', 0);
-        $columns  = Yz_Array::value_or($props, 'columns', 0);
-        $gap      = Yz_Array::value_or($props, 'gap');
-        $children = Yz_Array::value_or($props, 'children');
-        $as       = Yz_Array::value_or($props, 'as', 'section');
+        global $yz;
+
+        $id       = $yz->tools->key_or_default($props, 'id');
+        $class    = $yz->tools->key_or_default($props, 'class');
+        $data     = $yz->tools->key_or_default($props, 'data', []);
+        $rows     = $yz->tools->key_or_default($props, 'rows', 0);
+        $columns  = $yz->tools->key_or_default($props, 'columns', 0);
+        $gap      = $yz->tools->key_or_default($props, 'gap');
+        $children = $yz->tools->key_or_default($props, 'children');
+        $as       = $yz->tools->key_or_default($props, 'as', 'section');
 
         if (is_int($gap) || is_double($gap)) {
             $gap .= 'px';
@@ -58,11 +60,11 @@ class Yz_Grid_Layout {
             $classes[] = $class;
         }
 
-        Yz::Element($as, [
+        $yz->html->element($as, [
             'id'       => $id,
             'data'     => $data,
-            'class'    => Yz_Array::join($classes),
-            'style'    => Yz_Array::join_key_value($styles),
+            'class'    => $classes,
+            'style'    => $styles,
             'children' => function() use($children) {
                 if (is_callable($children)) {
                     $children();
@@ -72,7 +74,7 @@ class Yz_Grid_Layout {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="grid-layout">
             .yz.grid-layout {
                 display: grid;
                 grid-auto-columns: 1fr;

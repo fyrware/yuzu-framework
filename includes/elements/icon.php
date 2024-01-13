@@ -3,11 +3,14 @@
 class Yz_Icon {
 
     public static function svg(string $glyph, array $props): string {
-        return Yz_Buffer::capture(fn() => static::render($glyph, $props));
+        global $yz;
+        return $yz->tools->capture_buffer(fn() => static::render($glyph, $props));
     }
 
     public static function url(string $glyph, array $props): string {
-        $appearance = Yz_Array::value_or($props, 'appearance', 'regular');
+        global $yz;
+
+        $appearance = $yz->tools->key_or_default($props, 'appearance', 'regular');
 
         $file_dir    = plugin_dir_url(__FILE__) . '../../icons/assets/' . $appearance;
         $file_name   = ($appearance === 'regular' ? $glyph : $glyph . '-' . $appearance) . '.svg';
@@ -16,9 +19,11 @@ class Yz_Icon {
     }
 
     public static function render(string $glyph, array $props): void {
-        $id         = Yz_Array::value_or($props, 'id', '');
-        $class      = Yz_Array::value_or($props, 'class', '');
-        $appearance = Yz_Array::value_or($props, 'appearance', 'regular');
+        global $yz;
+        
+        $id         = $yz->tools->key_or_default($props, 'id', '');
+        $class      = $yz->tools->key_or_default($props, 'class', '');
+        $appearance = $yz->tools->key_or_default($props, 'appearance', 'regular');
 
         $classes = [
             'yz',
@@ -35,7 +40,7 @@ class Yz_Icon {
         }
 
         $svg_icon = file_get_contents(static::url($glyph, ['appearance' => $appearance]));
-        $svg_icon = str_replace('<svg', '<svg class="' . Yz_Array::join($classes) . '"', $svg_icon);
+        $svg_icon = str_replace('<svg', '<svg class="' . $yz->tools->join_values($classes) . '"', $svg_icon);
 
         if ($id) {
             $svg_icon = str_replace('<svg', '<svg id="' . $id . '"', $svg_icon);

@@ -32,17 +32,19 @@ class Yz_Button {
     ];
 
     public static function render(array $props): void {
-        $id         = Yz_Array::value_or($props, 'id');
-        $label      = Yz_Array::value_or($props, 'label');
-        $href       = Yz_Array::value_or($props, 'href');
-        $icon       = Yz_Array::value_or($props, 'icon');
-        $icon_style = Yz_Array::value_or($props, 'icon_appearance', 'duotone');
-        $type       = Yz_Array::value_or($props, 'type', 'button');
-        $size       = Yz_Array::value_or($props, 'size', 'medium');
-        $variant    = Yz_Array::value_or($props, 'variant', 'secondary');
-        $color      = Yz_Array::value_or($props, 'color', 'primary');
-        $class      = Yz_Array::value_or($props, 'class', '');
-        $disabled   = Yz_Array::value_or($props, 'disabled', false);
+        global $yz;
+
+        $id         = $yz->tools->key_or_default($props, 'id');
+        $label      = $yz->tools->key_or_default($props, 'label');
+        $href       = $yz->tools->key_or_default($props, 'href');
+        $icon       = $yz->tools->key_or_default($props, 'icon');
+        $icon_style = $yz->tools->key_or_default($props, 'icon_appearance', 'duotone');
+        $type       = $yz->tools->key_or_default($props, 'type', 'button');
+        $size       = $yz->tools->key_or_default($props, 'size', 'medium');
+        $variant    = $yz->tools->key_or_default($props, 'variant', 'secondary');
+        $color      = $yz->tools->key_or_default($props, 'color', 'primary');
+        $class      = $yz->tools->key_or_default($props, 'class', '');
+        $disabled   = $yz->tools->key_or_default($props, 'disabled', false);
 
         assert(in_array($type,    Yz_Button::VALID_TYPES),    'Invalid button type');
         assert(in_array($size,    Yz_Button::VALID_SIZES),    'Invalid button size');
@@ -71,65 +73,65 @@ class Yz_Button {
         }
 
         if ($type === 'link') {
-            Yz::Element('a', [
+            $yz->html->element('a', [
                 'id'    => $id,
-                'class' => Yz_Array::join($classes),
+                'class' => $classes,
                 'attr'  => [
                     'href' => $href
                 ],
-                'children' => function() use($icon, $icon_style, $label) {
-                    if ($icon) Yz::Icon($icon, ['appearance' => $icon_style]);
+                'children' => function() use($yz, $icon, $icon_style, $label) {
+                    if ($icon) $yz->html->icon($icon, ['appearance' => $icon_style]);
                     if ($label) echo $label;
                 }
             ]);
         } else {
-            Yz::Element('button', [
+            $yz->html->element('button', [
                 'id'    => $id,
-                'class' => Yz_Array::join($classes),
+                'class' => $classes,
                 'attr'  => [
                     'type'     => $type,
                     'disabled' => $disabled
                 ],
-                'children' => function() use($icon, $icon_style, $label) {
-                    if ($icon) Yz::Icon($icon, ['appearance' => $icon_style]);
-                    if ($label) Yz::Text($label);
+                'children' => function() use($yz, $icon, $icon_style, $label) {
+                    if ($icon) $yz->html->icon($icon, ['appearance' => $icon_style]);
+                    if ($label) echo $label;
                 }
             ]);
         }
     }
 
     public static function render_style() { ?>
-        <style>
-            .yuzu.button {
+        <style data-yz-element="button">
+            .yz.button {
                 display: inline-flex;
                 align-items: center;
                 gap: 5px;
             }
-            .yuzu.button .yuzu.icon {
+            .yz.button .yz.icon {
                 width: 22px;
                 height: 22px;
             }
 
-            .yuzu.button.button-size-small {
+            .yz.button.button-size-small {
                 min-height: 24px;
                 line-height: 2;
                 padding: 0 6px;
                 font-size: 11px;
             }
 
-            .yuzu.button.button-size-small .icon {
+            .yz.button.button-size-small .icon {
                 width: 16px;
                 height: 16px;
             }
 
-            .yuzu.button.button-size-large {
+            .yz.button.button-size-large {
                 min-height: 36px;
                 line-height: 2;
                 padding: 4px 12px;
                 font-size: 16px;
             }
 
-            .yuzu.button.button-size-large .icon {
+            .yz.button.button-size-large .icon {
                 width: 24px;
                 height: 24px;
             }

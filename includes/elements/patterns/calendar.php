@@ -3,13 +3,15 @@
 class Yz_Calendar {
 
     public static function render(array $props): void {
-        $id       = Yz_Array::value_or($props, 'id');
-        $month    = Yz_Array::value_or($props, 'month', date('n'));
-        $year     = Yz_Array::value_or($props, 'year', date('Y'));
-        $events   = Yz_Array::value_or($props, 'events', []);
-        $today    = Yz_Array::value_or($props, 'today', 0);
+        global $yz;
 
-        Yz::Grid_Layout([
+        $id     = $yz->tools->key_or_default($props, 'id');
+        $month  = $yz->tools->key_or_default($props, 'month', date('n'));
+        $year   = $yz->tools->key_or_default($props, 'year', date('Y'));
+        $events = $yz->tools->key_or_default($props, 'events', []);
+        $today  = $yz->tools->key_or_default($props, 'today', 0);
+
+        $yz->html->grid_layout([
             'as'      => 'ol',
             'id'      => $id,
             'class'   => 'calendar',
@@ -18,11 +20,11 @@ class Yz_Calendar {
                 'month'    => $month,
                 'year'     => $year
             ],
-            'children' => function() use($today, $month, $year, $events) {
+            'children' => function() use($yz, $today, $month, $year, $events) {
                 $current_year       = (int)date('Y', strtotime("$year-$month-1"));
                 $current_month      = (int)date('n', strtotime("$year-$month-1"));
                 $current_month_days = (int)date('t', strtotime("$year-$month-1"));
-                $first_day_offset   = (int)date('w', strtotime("$year-$month-1"));
+                $first_day_offset    = (int)date('w', strtotime("$year-$month-1"));
 
                 for ($i = 0; $i < 7 * 5; $i++) {
                     $day_number = $i;
@@ -38,7 +40,7 @@ class Yz_Calendar {
                         $day_number -= $first_day_offset - 1;
                     }
 
-                    $day_events = Yz_Array::filter($events, function($event) use($current_year, $current_month, $day_number) {
+                    $day_events = $yz->tools->filter_array($events, function($event) use($current_year, $current_month, $day_number) {
                         foreach ($event['dates'] as $date) {
                             if ($date['year'] === $current_year && $date['month'] === $current_month && $date['day'] === $day_number) {
                                 return true;
@@ -47,38 +49,38 @@ class Yz_Calendar {
                         return false;
                     });
 
-                    $day_events = Yz_Array::sort($day_events, function($a, $b) {
+                    $day_events = $yz->tools->sort_array($day_events, function($a, $b) {
                         return count($b['dates']) <=> count($a['dates']);
                     });
 
-                    Yz::Element('li', [
+                    $yz->html->element('li', [
                         'class' => 'yz calendar-day',
                         'data' => [
                             'day' => $day_number
                         ],
-                        'children' => function() use($today, $current_year, $current_month, $day_number, $day_events) {
-                            Yz::Flex_Layout([
+                        'children' => function() use($yz, $today, $current_year, $current_month, $day_number, $day_events) {
+                            $yz->html->flex_layout([
                                 'gap'       => 5,
                                 'alignment' => 'stretch',
                                 'direction' => 'column',
-                                'children'  => function() use($today, $current_year, $current_month, $day_number, $day_events) {
-                                    Yz::Flex_Layout([
+                                'children'  => function() use($yz, $today, $current_year, $current_month, $day_number, $day_events) {
+                                    $yz->html->flex_layout([
                                         'gap' => 5,
                                         'alignment' => 'center',
-                                        'children' => function() use($today, $current_year, $current_month, $day_number) {
+                                        'children' => function() use($yz, $today, $current_year, $current_month, $day_number) {
                                             $today_year  = (int)date('Y');
                                             $today_month = (int)date('n');
 
-                                            Yz::Text($day_number, [ 'class' => 'calendar-day-number' ]);
+                                            $yz->html->text($day_number, [ 'class' => 'calendar-day-number' ]);
 
                                             if ($day_number === $today && $current_month === $today_month && $current_year === $today_year) {
-                                                Yz::Text('&mdash; Today', [ 'class' => 'calendar-day-today-label' ]);
+                                                $yz->html->text('&mdash; Today', [ 'class' => 'calendar-day-today-label' ]);
                                             }
                                         }
                                     ]);
 
                                     foreach ($day_events as $event) {
-                                        $event_date = Yz_Array::find($event['dates'], function($date) use($day_number) {
+                                        $event_date = $yz->tools->find_value($event['dates'], function($date) use($day_number) {
                                             return $date['day'] === $day_number;
                                         });
 
@@ -90,26 +92,26 @@ class Yz_Calendar {
                                             $day_classes[] = 'calendar-day-event-multi';
                                         }
 
-                                        if ($event_date === Yz_Array::first($event['dates'])) {
+                                        if ($event_date === $yz->tools->first($event['dates'])) {
                                             $day_classes[] = 'calendar-day-event-first';
                                         }
 
-                                        if ($event_date === Yz_Array::last($event['dates'])) {
+                                        if ($event_date === $yz->tools->last($event['dates'])) {
                                             $day_classes[] = 'calendar-day-event-last';
                                         }
 
-                                        Yz::Flex_Layout([
-                                            'as'       => 'div',
-                                            'gap'      => 5,
-                                            'class'    => Yz_Array::join($day_classes),
-                                            'data'     => [
+                                        $yz->html->flex_layout([
+                                            'as'    => 'div',
+                                            'gap'   => 5,
+                                            'class' => $day_classes,
+                                            'data'  => [
                                                 'event_id' => $event['id']
                                             ],
-                                            'children' => function() use($event, $event_date) {
-                                                Yz::Text($event['title'], [ 'class' => 'calendar-day-event-name' ]);
+                                            'children' => function() use($yz, $event, $event_date) {
+                                                $yz->html->text($event['title'], [ 'class' => 'calendar day-event-name' ]);
 
                                                 if (count($event['dates']) > 1) {
-                                                    Yz::Text(Yz_Array::index_of($event['dates'], $event_date) + 1 . '/' . count($event['dates']), [ 'class' => 'calendar-day-event-count' ]);
+                                                    $yz->html->text($yz->tools->index_of($event['dates'], $event_date) + 1 . '/' . count($event['dates']), [ 'class' => 'calendar-day-event-count' ]);
                                                 }
                                             }
                                         ]);
