@@ -38,7 +38,7 @@ class Yz_Code_Block {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="code-block">
             .yz.code-block {
                 margin: 0;
             }

@@ -1,6 +1,5 @@
 <?php
 
-/** @deprecated */
 class Yz_Form {
 
     private const VALID_METHODS = [
@@ -48,12 +47,12 @@ class Yz_Form {
         });
     }
 
-    /** @deprecated */
     public static function render(array $props = []): void {
         global $yz;
 
         $action     = $yz->tools->key_or_default($props, 'action');
         $method     = $yz->tools->key_or_default($props, 'method', 'post');
+        $redirect   = $yz->tools->key_or_default($props, 'redirect');
         $children   = $yz->tools->key_or_default($props, 'children');
         $attributes = $yz->tools->key_or_default($props, 'attr', []);
         $data_set   = $yz->tools->key_or_default($props, 'data', []);
@@ -80,7 +79,7 @@ class Yz_Form {
             'class'    => $classes,
             'data'     => $data_set,
             'attr'     => $attributes,
-            'children' => function() use($yz, $action, $children) {
+            'children' => function() use($yz, $action, $redirect, $children) {
                 if ($action) {
                     $yz->html->input([
                         'hidden' => true,
@@ -88,6 +87,13 @@ class Yz_Form {
                         'value'  => $action
                     ]);
                     wp_nonce_field($action, 'nonce');
+                }
+                if (!is_null($redirect)) {
+                    $yz->html->input([
+                        'hidden' => true,
+                        'name'   => 'redirect',
+                        'value'  => $redirect
+                    ]);
                 }
                 if (is_callable($children)) {
                     $children();

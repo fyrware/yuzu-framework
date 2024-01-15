@@ -28,7 +28,7 @@ class Yz_Notice {
         assert(in_array($variant, Yz_Notice::VALID_VARIANTS), 'Invalid variant');
 
         $classes = [
-            'yuzu',
+            'yz',
             'notice'
         ];
 
@@ -87,30 +87,30 @@ class Yz_Notice {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="notice">
             .notice {
                 border-radius: 4px;
             }
 
-            .yuzu.notice {
+            .yz.notice {
                 margin: 0;
                 min-height: 40px;
                 box-sizing: border-box;
             }
 
-            .yuzu.notice.inline {
+            .yz.notice.inline {
                 margin: 15px 0 15px;
             }
 
-            .yuzu.notice .notice-content {
+            .yz.notice .notice-content {
                 margin: 0.5em 0;
             }
 
-            .yuzu.notice .notice-text {
+            .yz.notice .notice-text {
                 flex-grow: 1;
             }
 
-            .yuzu.notice .yuzu.icon {
+            .yz.notice .yz.icon {
                 width: 24px;
                 height: 24px;
             }

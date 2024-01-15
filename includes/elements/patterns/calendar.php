@@ -126,7 +126,7 @@ class Yz_Calendar {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="calendar">
             .yz.calendar {
                 list-style: none;
                 padding: 0;

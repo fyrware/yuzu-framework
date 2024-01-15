@@ -36,7 +36,7 @@ class Yz_Rich_Text_Editor {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="rich-text-editor">
             .yz.rich-text-editor .wp-editor-tabs {
                 margin-right: 8px;
             }

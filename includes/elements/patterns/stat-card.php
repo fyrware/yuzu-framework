@@ -48,7 +48,7 @@ class Yz_Stat_Card {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="stat-card">
             .yuzu.stat-card {
                 align-items: center;
             }

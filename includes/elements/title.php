@@ -35,7 +35,7 @@ class Yz_Title {
         }
 
         public static function render_style(): void { ?>
-            <style>
+            <style data-yz-element="title">
                 .yuzu.title {
                     display: flex;
                     align-items: center;

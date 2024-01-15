@@ -49,7 +49,7 @@ class Yz_Text_Area {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="textarea">
             .yz.text-area-label {
                 font-weight: 700;
             }

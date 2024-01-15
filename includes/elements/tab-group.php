@@ -140,7 +140,7 @@ class Yz_Tab_Group {
     }
 
     public static function render_style() { ?>
-        <style>
+        <style data-yz-element="tab-group">
             .yuzu.tab-group {
                 display:       flex;
                 align-items:   end;

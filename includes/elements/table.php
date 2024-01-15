@@ -66,7 +66,7 @@ class Yz_Table {
     }
 
     public static function render_style(): void { ?>
-        <style>
+        <style data-yz-element="table">
             .yz.table {
                 width: 100%;
                 margin: 0;

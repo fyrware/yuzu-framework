@@ -18,6 +18,10 @@ class Yz_Html_Service {
 
     public function avatar(array $props = []): void {
         Yz_Avatar::render($props);
+
+        $this->enqueue_dependency('yz_avatar_dependencies', function() {
+            Yz_Avatar::render_style();
+        });
     }
 
     public function box(array $props = []): void {

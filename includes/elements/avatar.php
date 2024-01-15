@@ -11,7 +11,7 @@ class Yz_Avatar {
         $src   = $yz->tools->key_or_default($props, 'src', 'https://i.pravatar.cc/' . $size . '?u=' . rand(0, 1000));
 
         $classes = [
-            'yuzu',
+            'yz',
             'avatar'
         ];
 
@@ -32,4 +32,12 @@ class Yz_Avatar {
             ]
         ]);
     }
+
+    public static function render_style(): void { ?>
+        <style data-yz-element="avatar">
+            .yz.avatar {
+                border-radius: 50%;
+            }
+        </style>
+    <?php }
 }
