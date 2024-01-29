@@ -91,8 +91,10 @@ add_action('admin_head', function() {
 <?php });
 
 add_action('init', function() {
-    Yz::use_async_form('yz_read_uploads_directory', function() {
-        $path = Yz::use_prop($_GET, 'path');
+    global $yz;
+
+    $yz->forms->register_async_form('yz_read_uploads_directory', function() use($yz) {
+        $path = $yz->tools->key_or_default($_GET, 'path');
 
         if ($path === 'undefined') {
             $path = null;

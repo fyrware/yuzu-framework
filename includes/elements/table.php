@@ -9,6 +9,7 @@ class Yz_Table {
         $class   = $yz->tools->key_or_default($props, 'class');
         $fixed    = $yz->tools->key_or_default($props, 'fixed', true);
         $striped = $yz->tools->key_or_default($props, 'striped', true);
+        $widths  = $yz->tools->key_or_default($props, 'widths', []);
         $columns = $yz->tools->key_or_default($props, 'columns', []);
         $rows    = $yz->tools->key_or_default($props, 'rows', []);
 
@@ -32,13 +33,18 @@ class Yz_Table {
         $yz->html->element('table', [
             'id' => $id,
             'class' => $classes,
-            'children' => function() use($yz, $columns, $rows) {
+            'children' => function() use($widths, $yz, $columns, $rows) {
                 $yz->html->element('thead', [
-                    'children' => function() use($yz, $columns) {
+                    'children' => function() use($widths, $yz, $columns) {
                         $yz->html->element('tr', [
-                            'children' => function() use($yz, $columns) {
-                                foreach ($columns as $column) {
+                            'children' => function() use($widths, $yz, $columns) {
+                                foreach ($columns as $key => $column) {
+                                    $width = array_key_exists($key, $widths) ? $widths[$key] : null;
+
                                     $yz->html->element('th', [
+                                        'attr' => [
+                                            'width' => $width
+                                        ],
                                         'children' => $column
                                     ]);
                                 }
@@ -51,7 +57,7 @@ class Yz_Table {
                         foreach ($rows as $row) {
                             $yz->html->element('tr', [
                                 'children' => function() use($yz, $row) {
-                                    foreach ($row as $cell) {
+                                    foreach ($row as $key => $cell) {
                                         $yz->html->element('td', [
                                             'children' => $cell
                                         ]);

@@ -30,6 +30,7 @@ require_once __DIR__ . '/elements/input.php';
 require_once __DIR__ . '/elements/notice.php';
 require_once __DIR__ . '/elements/portal.php';
 require_once __DIR__ . '/elements/select.php';
+require_once __DIR__ . '/elements/settings-table.php';
 require_once __DIR__ . '/elements/tab-group.php';
 require_once __DIR__ . '/elements/table.php';
 require_once __DIR__ . '/elements/text.php';

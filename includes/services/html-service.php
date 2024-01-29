@@ -152,6 +152,14 @@ class Yz_Html_Service {
         Yz_Select::render($props);
     }
 
+    public function settings_table(array $props = []): void {
+        Yz_Settings_Table::render($props);
+
+        $this->enqueue_dependency('yz_settings_table_dependencies', function() {
+            Yz_Settings_Table::render_style();
+        });
+    }
+
     public function stat_card(array $props = []): void {
         Yz_Stat_Card::render($props);
 

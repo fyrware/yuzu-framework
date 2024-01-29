@@ -57,18 +57,24 @@ class Yz_Notice {
             'class' => $classes,
             'children' => function() use($yz, $icon, $title, $children, $action) {
                 $yz->html->flex_layout([
-                    'gap' => 12,
+                    'gap' => 40,
                     'alignment' => 'center',
                     'class' => 'notice-content',
                     'children' => function() use($yz, $icon, $title, $children, $action) {
-                        if ($icon) $yz->html->icon($icon, [ 'appearance' => 'bold' ]);
                         $yz->html->flex_layout([
+                            'gap' => 12,
+                            'alignment' => 'center',
                             'class' => 'notice-text',
-                            'direction' => 'column',
-                            'justification' => 'center',
-                            'children' => function() use($yz, $title, $children) {
-                                if ($title) $yz->html->text($title, [ 'variant' => 'strong' ]);
-                                if (is_callable($children)) $children();
+                            'children' => function() use($yz, $icon, $title, $children) {
+                                if ($icon) $yz->html->icon($icon, [ 'appearance' => 'bold' ]);
+                                $yz->html->flex_layout([
+                                    'direction' => 'column',
+                                    'justification' => 'center',
+                                    'children' => function() use($yz, $title, $children) {
+                                        if ($title) $yz->html->text($title, [ 'variant' => 'strong' ]);
+                                        if (is_callable($children)) $children();
+                                    }
+                                ]);
                             }
                         ]);
                         if ($action) {
@@ -94,6 +100,7 @@ class Yz_Notice {
 
             .yz.notice {
                 margin: 0;
+                width: 100%;
                 min-height: 40px;
                 box-sizing: border-box;
             }

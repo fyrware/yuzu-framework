@@ -141,6 +141,8 @@ class Yz_Dialog {
             .yz.dialog > .yz.card {
                 display: flex;
                 flex-direction: column;
+                width: 100%;
+                max-width: 100%;
                 height: 100%;
                 border: none;
                 background: #f0f0f1;
@@ -189,11 +191,15 @@ class Yz_Dialog {
             }
 
             .yz.dialog .yz.dialog-content {
-                flex-grow: 1;
-                flex-shrink: 1;
-                height: 0;
+                /*flex-grow: 1;*/
+                /*flex-shrink: 1;*/
+                /*height: 0;*/
                 padding: 20px;
                 overflow: auto;
+            }
+
+            .yz.dialog.dialog-full-size .yz.dialog-content {
+                flex-grow: 1;
             }
 
             .yz.dialog .yz.dialog-footer {

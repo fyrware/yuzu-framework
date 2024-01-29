@@ -130,12 +130,12 @@ class Yz_Uploads_Service {
         $joined_paths = implode("', '", array_map('esc_sql', $paths));
 
         $query = "
-            SELECT p.ID
-            FROM wp_posts p
-            JOIN wp_postmeta pm ON p.ID = pm.post_id
-            WHERE pm.meta_key = '_wp_attached_file'
-            AND pm.meta_value IN ('$joined_paths')
-            AND p.post_type = 'attachment';
+            select p.ID
+            from wp_posts p
+            join wp_postmeta pm on p.ID = pm.post_id
+            where pm.meta_key = '_wp_attached_file'
+            and pm.meta_value in ('$joined_paths')
+            and p.post_type = 'attachment';
         ";
 
         return $wpdb->get_col($query);
@@ -144,6 +144,9 @@ class Yz_Uploads_Service {
     public static function scan_uploads_dir(?string $path = null): Yz_Uploads_Scanned_Dir {
         $uploads_dir = wp_get_upload_dir();
         $uploads_dir_path = $uploads_dir['basedir'];
+
+        wp_send_json_success(json_encode($uploads_dir_path));
+        wp_die();
 
         if (isset($path)) {
             $uploads_dir_path .= '/' . $path;

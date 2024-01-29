@@ -12,7 +12,7 @@ class Yz_Card {
         $padding    = $yz->tools->key_or_default($props, 'padding');
 
         $classes = [
-            'yuzu',
+            'yz',
             'card'
         ];
 
@@ -26,7 +26,7 @@ class Yz_Card {
             $style[ 'justify_content' ] = $alignment;
         }
 
-        if ($padding) {
+        if (isset($padding)) {
             $style[ 'padding' ] = is_string($padding) ? $padding : $padding . 'px';
         }
 
@@ -44,7 +44,7 @@ class Yz_Card {
 
     public static function render_style(): void { ?>
         <style data-yz-element="card">
-            .yuzu.card {
+            .yz.card {
                 display: flex;
                 flex-direction: column;
                 box-sizing: border-box;
@@ -61,7 +61,7 @@ class Yz_Card {
                 position: relative;
             }
 
-            .yuzu.card > *:first-child {
+            .yz.card > *:first-child {
                 margin-top: 0;
                 padding-top: 0;
             }
