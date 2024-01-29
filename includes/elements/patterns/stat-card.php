@@ -49,16 +49,16 @@ class Yz_Stat_Card {
 
     public static function render_style(): void { ?>
         <style data-yz-element="stat-card">
-            .yuzu.stat-card {
+            .yz.stat-card {
                 align-items: center;
             }
 
-            .yuzu.stat-card .stat-card-icon {
+            .yz.stat-card .stat-card-icon {
                 width: 40px;
                 height: 40px;
             }
 
-            .yuzu.stat-card .stat-card-value {
+            .yz.stat-card .stat-card-value {
                 font-size: 24px;
                 font-weight: 800;
             }

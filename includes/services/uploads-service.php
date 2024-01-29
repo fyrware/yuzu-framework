@@ -54,9 +54,11 @@ class Yz_Uploads_File {
     }
 
     public function get_url(): string {
+        global $yz;
+
         $uploads_dir = wp_get_upload_dir();
         $uploads_dir_url = $uploads_dir['baseurl'];
-        $relative_location = Yz_Posts_Service::get_post_meta($this->post->ID, static::ATTACHED_FILE);
+        $relative_location = $yz->posts->get_post_meta($this->post->ID, static::ATTACHED_FILE);
 
         return $uploads_dir_url . '/' . $relative_location;
     }
@@ -97,7 +99,9 @@ class Yz_Uploads_File {
     }
 
     public function get_upload_location(): string {
-        return Yz_Posts_Service::get_post_meta($this->post->ID, static::UPLOAD_LOCATION);
+        global $yz;
+
+        return $yz->posts->get_post_meta($this->post->ID, static::UPLOAD_LOCATION);
     }
 
     public function __construct(Wp_Post $post) {
@@ -144,9 +148,6 @@ class Yz_Uploads_Service {
     public static function scan_uploads_dir(?string $path = null): Yz_Uploads_Scanned_Dir {
         $uploads_dir = wp_get_upload_dir();
         $uploads_dir_path = $uploads_dir['basedir'];
-
-        wp_send_json_success(json_encode($uploads_dir_path));
-        wp_die();
 
         if (isset($path)) {
             $uploads_dir_path .= '/' . $path;
