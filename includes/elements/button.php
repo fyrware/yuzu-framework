@@ -34,22 +34,23 @@ class Yz_Button {
     public static function render(array $props): void {
         global $yz;
 
-        $id         = $yz->tools->key_or_default($props, 'id');
-        $label      = $yz->tools->key_or_default($props, 'label');
-        $href       = $yz->tools->key_or_default($props, 'href');
-        $icon       = $yz->tools->key_or_default($props, 'icon');
-        $icon_style = $yz->tools->key_or_default($props, 'icon_appearance', 'duotone');
-        $type       = $yz->tools->key_or_default($props, 'type', 'button');
-        $size       = $yz->tools->key_or_default($props, 'size', 'medium');
-        $variant    = $yz->tools->key_or_default($props, 'variant', 'secondary');
-        $color      = $yz->tools->key_or_default($props, 'color', 'primary');
-        $class      = $yz->tools->key_or_default($props, 'class', '');
-        $disabled   = $yz->tools->key_or_default($props, 'disabled', false);
+        $id         = $yz->tools->get_value($props, 'id');
+        $label      = $yz->tools->get_value($props, 'label');
+        $href       = $yz->tools->get_value($props, 'href');
+        $icon       = $yz->tools->get_value($props, 'icon');
+        $icon_style = $yz->tools->get_value($props, 'icon_appearance', 'duotone');
+        $type       = $yz->tools->get_value($props, 'type', 'button');
+        $size       = $yz->tools->get_value($props, 'size', 'medium');
+        $variant    = $yz->tools->get_value($props, 'variant', 'secondary');
+        $color      = $yz->tools->get_value($props, 'color', 'primary');
+        $class      = $yz->tools->get_value($props, 'class', '');
+        $disabled   = $yz->tools->get_value($props, 'disabled', false);
+        $data       = $yz->tools->get_value($props, 'data', []);
 
         assert(in_array($type,    Yz_Button::VALID_TYPES),    'Invalid button type');
         assert(in_array($size,    Yz_Button::VALID_SIZES),    'Invalid button size');
         assert(in_array($variant, Yz_Button::VALID_VARIANTS), 'Invalid button variant');
-        assert(in_array($color,   Yz_BUtton::VALID_COLORS),   'Invalid button color');
+        assert(in_array($color,   Yz_Button::VALID_COLORS),   'Invalid button color');
 
         $classes = [
             'yuzu',
@@ -72,6 +73,10 @@ class Yz_Button {
             $classes[] = $class;
         }
 
+        if (empty($label)) {
+            $classes[] = 'button-no-label';
+        }
+
         if ($type === 'link') {
             $yz->html->element('a', [
                 'id'    => $id,
@@ -79,6 +84,7 @@ class Yz_Button {
                 'attr'  => [
                     'href' => $href
                 ],
+                'data' => $data,
                 'children' => function() use($yz, $icon, $icon_style, $label) {
                     if ($icon) $yz->html->icon($icon, ['appearance' => $icon_style]);
                     if ($label) echo $label;
@@ -92,6 +98,7 @@ class Yz_Button {
                     'type'     => $type,
                     'disabled' => $disabled
                 ],
+                'data' => $data,
                 'children' => function() use($yz, $icon, $icon_style, $label) {
                     if ($icon) $yz->html->icon($icon, ['appearance' => $icon_style]);
                     if ($label) echo $label;
@@ -107,6 +114,7 @@ class Yz_Button {
                 align-items: center;
                 gap: 5px;
             }
+
             .yz.button .yz.icon {
                 width: 22px;
                 height: 22px;
@@ -134,6 +142,11 @@ class Yz_Button {
             .yz.button.button-size-large .icon {
                 width: 24px;
                 height: 24px;
+            }
+
+            .yz.button.button-color-danger {
+                border: 1px solid var(--yz-danger-color);
+                color: var(--yz-danger-color);
             }
         </style>
     <?php }

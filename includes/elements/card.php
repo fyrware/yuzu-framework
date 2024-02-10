@@ -5,11 +5,11 @@ class Yz_Card {
     public static function render(array $props = []): void {
         global $yz;
 
-        $id         = $yz->tools->key_or_default($props, 'id');
-        $class      = $yz->tools->key_or_default($props, 'class');
-        $alignment  = $yz->tools->key_or_default($props, 'alignment', 'start');
-        $children   = $yz->tools->key_or_default($props, 'children');
-        $padding    = $yz->tools->key_or_default($props, 'padding');
+        $id         = $yz->tools->get_value($props, 'id');
+        $class      = $yz->tools->get_value($props, 'class');
+        $alignment  = $yz->tools->get_value($props, 'alignment', 'start');
+        $children   = $yz->tools->get_value($props, 'children');
+        $padding    = $yz->tools->get_value($props, 'padding');
 
         $classes = [
             'yz',

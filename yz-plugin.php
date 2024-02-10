@@ -94,7 +94,7 @@ add_action('init', function() {
     global $yz;
 
     $yz->forms->register_async_form('yz_read_uploads_directory', function() use($yz) {
-        $path = $yz->tools->key_or_default($_GET, 'path');
+        $path = $yz->tools->get_value($_GET, 'path');
 
         if ($path === 'undefined') {
             $path = null;

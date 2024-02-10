@@ -5,7 +5,6 @@ class Yz_Html_Service {
     public array $dependency_queue = [];
 
     private function enqueue_dependency(string $action, callable $callback): void {
-        Yz_Script::console_log('enqueue_dependency', $action);
         if (!has_action($action)) {
             $this->dependency_queue[] = $action;
             add_action($action, $callback);
@@ -105,6 +104,15 @@ class Yz_Html_Service {
 
     public function icon(string $glyph, array $props = []): void {
         Yz_Icon::render($glyph, $props);
+    }
+
+    public function icon_picker(array $props = []): void {
+        Yz_Icon_Picker::render($props);
+
+        $this->enqueue_dependency('yz_icon_picker_dependencies', function() {
+            Yz_Icon_Picker::render_style();
+            Yz_Icon_Picker::render_script();
+        });
     }
 
     public function image(string $src, array $props = []): void {

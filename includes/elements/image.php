@@ -5,9 +5,10 @@ class Yz_Image {
     public static function render(string $src, array $props): void {
         global $yz;
 
-        $id    = $yz->tools->key_or_default($props, 'id');
-        $class = $yz->tools->key_or_default($props, 'class');
-        $alt   = $yz->tools->key_or_default($props, 'alt');
+        $id    = $yz->tools->get_value($props, 'id');
+        $class = $yz->tools->get_value($props, 'class');
+        $alt   = $yz->tools->get_value($props, 'alt');
+        $title = $yz->tools->get_value($props, 'title', $alt);
 
         $classes = [
             'yuzu',
@@ -23,7 +24,8 @@ class Yz_Image {
             'class' => $classes,
             'attr'  => [
                 'src' => $src,
-                'alt' => $alt
+                'alt' => $alt,
+                'title' => $title
             ]
         ]);
     }

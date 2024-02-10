@@ -5,11 +5,11 @@ class Yz_Box {
     public static function render(array $props): void {
         global $yz;
 
-        $id       = $yz->tools->key_or_default($props, 'id');
-        $class    = $yz->tools->key_or_default($props, 'class');
-        $children = $yz->tools->key_or_default($props, 'children');
-        $padding  = $yz->tools->key_or_default($props, 'padding', 0);
-        $margin   = $yz->tools->key_or_default($props, 'margin', 0);
+        $id       = $yz->tools->get_value($props, 'id');
+        $class    = $yz->tools->get_value($props, 'class');
+        $children = $yz->tools->get_value($props, 'children');
+        $padding  = $yz->tools->get_value($props, 'padding', 0);
+        $margin   = $yz->tools->get_value($props, 'margin', 0);
 
         if (is_numeric($padding)) {
             $padding .= 'px';

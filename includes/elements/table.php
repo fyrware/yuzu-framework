@@ -5,13 +5,13 @@ class Yz_Table {
     public static function render(array $props): void  {
         global $yz;
 
-        $id      = $yz->tools->key_or_default($props, 'id');
-        $class   = $yz->tools->key_or_default($props, 'class');
-        $fixed    = $yz->tools->key_or_default($props, 'fixed', true);
-        $striped = $yz->tools->key_or_default($props, 'striped', true);
-        $widths  = $yz->tools->key_or_default($props, 'widths', []);
-        $columns = $yz->tools->key_or_default($props, 'columns', []);
-        $rows    = $yz->tools->key_or_default($props, 'rows', []);
+        $id      = $yz->tools->get_value($props, 'id');
+        $class   = $yz->tools->get_value($props, 'class');
+        $fixed    = $yz->tools->get_value($props, 'fixed', true);
+        $striped = $yz->tools->get_value($props, 'striped', true);
+        $widths  = $yz->tools->get_value($props, 'widths', []);
+        $columns = $yz->tools->get_value($props, 'columns', []);
+        $rows    = $yz->tools->get_value($props, 'rows', []);
 
         $classes = [
             'yz',
@@ -45,6 +45,9 @@ class Yz_Table {
                                         'attr' => [
                                             'width' => $width
                                         ],
+                                        'data' => [
+                                            'column' => $key
+                                        ],
                                         'children' => $column
                                     ]);
                                 }
@@ -59,7 +62,10 @@ class Yz_Table {
                                 'children' => function() use($yz, $row) {
                                     foreach ($row as $key => $cell) {
                                         $yz->html->element('td', [
-                                            'children' => $cell
+                                            'children' => $cell,
+                                            'data' => [
+                                                'column' => $key
+                                            ]
                                         ]);
                                     }
                                 }

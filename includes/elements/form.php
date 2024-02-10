@@ -50,13 +50,13 @@ class Yz_Form {
     public static function render(array $props = []): void {
         global $yz;
 
-        $action     = $yz->tools->key_or_default($props, 'action');
-        $method     = $yz->tools->key_or_default($props, 'method', 'post');
-        $redirect   = $yz->tools->key_or_default($props, 'redirect');
-        $children   = $yz->tools->key_or_default($props, 'children');
-        $attributes = $yz->tools->key_or_default($props, 'attr', []);
-        $data_set   = $yz->tools->key_or_default($props, 'data', []);
-        $class      = $yz->tools->key_or_default($props, 'class');
+        $action     = $yz->tools->get_value($props, 'action');
+        $method     = $yz->tools->get_value($props, 'method', 'post');
+        $redirect   = $yz->tools->get_value($props, 'redirect');
+        $children   = $yz->tools->get_value($props, 'children');
+        $attributes = $yz->tools->get_value($props, 'attr', []);
+        $data_set   = $yz->tools->get_value($props, 'data', []);
+        $class      = $yz->tools->get_value($props, 'class');
 
         assert(in_array(strtolower($method), Yz_Form::VALID_METHODS), 'Invalid form method');
 

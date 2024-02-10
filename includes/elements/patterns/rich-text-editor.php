@@ -5,13 +5,13 @@ class Yz_Rich_Text_Editor {
     public static function render(array $props): void {
         global $yz;
 
-        $id                = $yz->tools->key_or_default($props, 'id');
-        $class             = $yz->tools->key_or_default($props, 'class');
-        $name              = $yz->tools->key_or_default($props, 'name', $id);
-        $value             = $yz->tools->key_or_default($props, 'value', '');
-        $rows              = $yz->tools->key_or_default($props, 'rows', 5);
-        $enable_media      = $yz->tools->key_or_default($props, 'enable_media', false);
-        $enable_raw_editor = $yz->tools->key_or_default($props, 'enable_raw_editor', false);
+        $id                = $yz->tools->get_value($props, 'id');
+        $class             = $yz->tools->get_value($props, 'class');
+        $name              = $yz->tools->get_value($props, 'name', $id);
+        $value             = $yz->tools->get_value($props, 'value', '');
+        $rows              = $yz->tools->get_value($props, 'rows', 5);
+        $enable_media      = $yz->tools->get_value($props, 'enable_media', false);
+        $enable_raw_editor = $yz->tools->get_value($props, 'enable_raw_editor', false);
 
         $classes = [
             'rich-text-editor'

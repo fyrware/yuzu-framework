@@ -78,13 +78,13 @@ class Yz_Pages_Service {
     public function add_admin_page(array $page_settings): string {
         global $yz;
 
-        $parent     = $yz->tools->key_or_default($page_settings, 'parent');
-        $title      = $yz->tools->key_or_default($page_settings, 'title');
-        $capability = $yz->tools->key_or_default($page_settings, 'capability');
-        $slug       = $yz->tools->key_or_default($page_settings, 'slug');
-        $children   = $yz->tools->key_or_default($page_settings, 'children');
-        $position   = $yz->tools->key_or_default($page_settings, 'position');
-        $icon       = $yz->tools->key_or_default($page_settings, 'icon');
+        $parent     = $yz->tools->get_value($page_settings, 'parent');
+        $title      = $yz->tools->get_value($page_settings, 'title');
+        $capability = $yz->tools->get_value($page_settings, 'capability');
+        $slug       = $yz->tools->get_value($page_settings, 'slug');
+        $children   = $yz->tools->get_value($page_settings, 'children');
+        $position   = $yz->tools->get_value($page_settings, 'position');
+        $icon       = $yz->tools->get_value($page_settings, 'icon');
 
         if (isset($icon) && str_starts_with($icon, '<svg')) {
             $icon = $yz->tools->format_data_url('image/svg+xml', $icon);

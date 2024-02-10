@@ -10,7 +10,7 @@ class Yz_Icon {
     public static function url(string $glyph, array $props): string {
         global $yz;
 
-        $appearance = $yz->tools->key_or_default($props, 'appearance', 'regular');
+        $appearance = $yz->tools->get_value($props, 'appearance', 'regular');
 
         $file_dir    = plugin_dir_url(__FILE__) . '../../icons/assets/' . $appearance;
         $file_name   = ($appearance === 'regular' ? $glyph : $glyph . '-' . $appearance) . '.svg';
@@ -21,9 +21,9 @@ class Yz_Icon {
     public static function render(string $glyph, array $props): void {
         global $yz;
         
-        $id         = $yz->tools->key_or_default($props, 'id', '');
-        $class      = $yz->tools->key_or_default($props, 'class', '');
-        $appearance = $yz->tools->key_or_default($props, 'appearance', 'regular');
+        $id         = $yz->tools->get_value($props, 'id', '');
+        $class      = $yz->tools->get_value($props, 'class', '');
+        $appearance = $yz->tools->get_value($props, 'appearance', 'regular');
 
         $classes = [
             'yz',

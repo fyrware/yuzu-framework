@@ -46,6 +46,14 @@ yz.icons = Object.seal({
     solid: undefined
 });
 
+yz.getIconSet = function yzGetIconSet(appearance) {
+    return yz.icons[appearance];
+}
+
+yz.setIconSet = function yzSetIconSet(appearance, iconSet) {
+    yz.icons[appearance] = iconSet;
+}
+
 yz.wordpress = Object.seal({
     ajax: '',
     nonce: '',
@@ -128,8 +136,10 @@ yz.spy = function spy(element, event) {
     return new YzEventObservable(element, event);
 }
 
-yz.do = function doEvent(element, event, options) {
-    return element.dispatchEvent(new Event('change', options));
+yz.do = function doEvent(element, event) {
+    return element.dispatchEvent(
+        event instanceof Event ? event : new Event(event)
+    );
 }
 
 /**

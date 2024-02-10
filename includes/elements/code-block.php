@@ -5,10 +5,10 @@ class Yz_Code_Block {
     public static function render(array $props): void {
         global $yz;
 
-        $id       = $yz->tools->key_or_default($props, 'id');
-        $class    = $yz->tools->key_or_default($props, 'class');
-        $code     = $yz->tools->key_or_default($props, 'code');
-        $language = $yz->tools->key_or_default($props, 'language', 'php');
+        $id       = $yz->tools->get_value($props, 'id');
+        $class    = $yz->tools->get_value($props, 'class');
+        $code     = $yz->tools->get_value($props, 'code');
+        $language = $yz->tools->get_value($props, 'language', 'php');
 
         $classes = [
             'code-block'

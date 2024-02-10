@@ -12,16 +12,16 @@ class Yz_Notice {
     public static function render(array $props): void {
         global $yz;
 
-        $id          = $yz->tools->key_or_default($props, 'id');
-        $class       = $yz->tools->key_or_default($props, 'class');
-        $alt         = $yz->tools->key_or_default($props, 'alt', false);
-        $dismissible = $yz->tools->key_or_default($props, 'dismissible', false);
-        $variant     = $yz->tools->key_or_default($props, 'variant', 'info');
-        $title       = $yz->tools->key_or_default($props, 'title');
-        $icon        = $yz->tools->key_or_default($props, 'icon');
-        $action      = $yz->tools->key_or_default($props, 'action');
-        $children    = $yz->tools->key_or_default($props, 'children');
-        $inline      = $yz->tools->key_or_default($props, 'inline', false);
+        $id          = $yz->tools->get_value($props, 'id');
+        $class       = $yz->tools->get_value($props, 'class');
+        $alt         = $yz->tools->get_value($props, 'alt', false);
+        $dismissible = $yz->tools->get_value($props, 'dismissible', false);
+        $variant     = $yz->tools->get_value($props, 'variant', 'info');
+        $title       = $yz->tools->get_value($props, 'title');
+        $icon        = $yz->tools->get_value($props, 'icon');
+        $action      = $yz->tools->get_value($props, 'action');
+        $children    = $yz->tools->get_value($props, 'children');
+        $inline      = $yz->tools->get_value($props, 'inline', false);
 
         assert(is_string($title), 'Title must be a string');
         assert(is_null($action) || is_array($action), 'Action must be an array');

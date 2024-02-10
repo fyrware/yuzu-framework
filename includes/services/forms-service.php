@@ -2,7 +2,7 @@
 
 class Yz_Form_Service {
 
-    public function register_form(string $action, callable $callback): null | bool {
+    public function register_action(string $action, callable $callback): null | bool {
         return add_action('admin_post_' . $action, function() use($action, $callback) {
             $nonce = $_POST['nonce'];
 

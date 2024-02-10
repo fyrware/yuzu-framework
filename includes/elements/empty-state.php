@@ -5,12 +5,12 @@ class Yz_Empty_State {
     public static function render(array $props): void {
         global $yz;
 
-        $id          = $yz->tools->key_or_default($props, 'id');
-        $class       = $yz->tools->key_or_default($props, 'class');
-        $title       = $yz->tools->key_or_default($props, 'title');
-        $description = $yz->tools->key_or_default($props, 'description');
-        $icon        = $yz->tools->key_or_default($props, 'icon');
-        $actions     = $yz->tools->key_or_default($props, 'actions', []);
+        $id          = $yz->tools->get_value($props, 'id');
+        $class       = $yz->tools->get_value($props, 'class');
+        $title       = $yz->tools->get_value($props, 'title');
+        $description = $yz->tools->get_value($props, 'description');
+        $icon        = $yz->tools->get_value($props, 'icon');
+        $actions     = $yz->tools->get_value($props, 'actions', []);
 
         $classes = [
             'empty-state'

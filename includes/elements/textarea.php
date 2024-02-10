@@ -5,15 +5,15 @@ class Yz_Text_Area {
     public static function render(array $props): void {
         global $yz;
 
-        $id          = $yz->tools->key_or_default($props, 'id');
-        $class       = $yz->tools->key_or_default($props, 'class');
-        $label       = $yz->tools->key_or_default($props, 'label');
-        $placeholder = $yz->tools->key_or_default($props, 'placeholder');
-        $value       = $yz->tools->key_or_default($props, 'value');
-        $name        = $yz->tools->key_or_default($props, 'name', $id);
-        $required    = $yz->tools->key_or_default($props, 'required', false);
-        $hidden      = $yz->tools->key_or_default($props, 'hidden', false);
-        $rows        = $yz->tools->key_or_default($props, 'rows', 3);
+        $id          = $yz->tools->get_value($props, 'id');
+        $class       = $yz->tools->get_value($props, 'class');
+        $label       = $yz->tools->get_value($props, 'label');
+        $placeholder = $yz->tools->get_value($props, 'placeholder');
+        $value       = $yz->tools->get_value($props, 'value');
+        $name        = $yz->tools->get_value($props, 'name', $id);
+        $required    = $yz->tools->get_value($props, 'required', false);
+        $hidden      = $yz->tools->get_value($props, 'hidden', false);
+        $rows        = $yz->tools->get_value($props, 'rows', 3);
 
         $classes = [
             'yz',

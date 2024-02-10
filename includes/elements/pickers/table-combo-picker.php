@@ -5,8 +5,8 @@ class Yz_Table_Combo_Picker {
     public static function render(array $props): void {
         global $yz;
 
-        $label = $yz->tools->key_or_default($props, 'label');
-        $fields = $yz->tools->key_or_default($props, 'fields', []);
+        $label = $yz->tools->get_value($props, 'label');
+        $fields = $yz->tools->get_value($props, 'fields', []);
 
         $yz->html->flex_layout([
             'gap' => 5,
@@ -30,15 +30,15 @@ class Yz_Table_Combo_Picker {
                 ]);
                 $yz->html->table([
                     'columns' => array_map(function($field) use($yz) {
-                        $label = $yz->tools->key_or_default($field, 'label');
+                        $label = $yz->tools->get_value($field, 'label');
                         return fn() => $yz->html->text($label);
                     }, $fields),
                     'rows' => [
                         array_map(function($key) use($yz, $fields) {
-                            $field = $yz->tools->key_or_default($fields, $key, []);
-                            $type = $yz->tools->key_or_default($field, 'type');
-                            $options = $yz->tools->key_or_default($field, 'options', []);
-                            $placeholder = $yz->tools->key_or_default($field, 'placeholder');
+                            $field = $yz->tools->get_value($fields, $key, []);
+                            $type = $yz->tools->get_value($field, 'type');
+                            $options = $yz->tools->get_value($field, 'options', []);
+                            $placeholder = $yz->tools->get_value($field, 'placeholder');
 
                             return match ($type) {
                                 'select' => fn() => $yz->html->select([

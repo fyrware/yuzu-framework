@@ -15,8 +15,8 @@ class Yz_Portal {
     public static function render(string $name, array $props): void {
         global $yz;
 
-        $id    = $yz->tools->key_or_default($props, 'id', $name);
-        $class = $yz->tools->key_or_default($props, 'class', '');
+        $id    = $yz->tools->get_value($props, 'id', $name);
+        $class = $yz->tools->get_value($props, 'class', '');
 
         $classes = [
             'yuzu',

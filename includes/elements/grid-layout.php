@@ -5,14 +5,14 @@ class Yz_Grid_Layout {
     public static function render(array $props): void {
         global $yz;
 
-        $id       = $yz->tools->key_or_default($props, 'id');
-        $class    = $yz->tools->key_or_default($props, 'class');
-        $data     = $yz->tools->key_or_default($props, 'data', []);
-        $rows     = $yz->tools->key_or_default($props, 'rows', 0);
-        $columns  = $yz->tools->key_or_default($props, 'columns', 0);
-        $gap      = $yz->tools->key_or_default($props, 'gap');
-        $children = $yz->tools->key_or_default($props, 'children');
-        $as       = $yz->tools->key_or_default($props, 'as', 'section');
+        $id       = $yz->tools->get_value($props, 'id');
+        $class    = $yz->tools->get_value($props, 'class');
+        $data     = $yz->tools->get_value($props, 'data', []);
+        $rows     = $yz->tools->get_value($props, 'rows', 0);
+        $columns  = $yz->tools->get_value($props, 'columns', 0);
+        $gap      = $yz->tools->get_value($props, 'gap');
+        $children = $yz->tools->get_value($props, 'children');
+        $as       = $yz->tools->get_value($props, 'as', 'section');
 
         if (is_int($gap) || is_double($gap)) {
             $gap .= 'px';

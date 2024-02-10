@@ -4,7 +4,7 @@ class Yz_Tools_Service {
 
     public function __construct() {}
 
-    public function key_or_default(array $array, mixed $key, mixed $default = null) {
+    public function get_value(array $array, mixed $key, mixed $default = null) {
         return array_key_exists($key, $array) ? $array[$key] : $default;
     }
 

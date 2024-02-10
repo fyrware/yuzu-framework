@@ -41,6 +41,7 @@ require_once __DIR__ . '/elements/patterns/calendar.php';
 require_once __DIR__ . '/elements/patterns/rich-text-editor.php';
 require_once __DIR__ . '/elements/patterns/stat-card.php';
 
+require_once __DIR__ . '/elements/pickers/icon-picker.php';
 require_once __DIR__ . '/elements/pickers/media-picker.php';
 require_once __DIR__ . '/elements/pickers/upload-picker.php';
 require_once __DIR__ . '/elements/pickers/table-combo-picker.php';

@@ -5,25 +5,26 @@ class Yz_Dialog {
     public static function render(array $props): void {
         global $yz;
 
-        $portal = $yz->tools->key_or_default($props, 'portal', 'default_portal');
+        $portal = $yz->tools->get_value($props, 'portal', 'default_portal');
 
         $yz->html->transport_source($portal, [
             'children' => function() use($yz, $props) {
-                $id          = $yz->tools->key_or_default($props, 'id');
-                $class       = $yz->tools->key_or_default($props, 'class');
-                $icon        = $yz->tools->key_or_default($props, 'icon');
-                $title       = $yz->tools->key_or_default($props, 'title');
-                $action      = $yz->tools->key_or_default($props, 'action');
-                $method      = $yz->tools->key_or_default($props, 'method', 'dialog');
-                $open        = $yz->tools->key_or_default($props, 'open', false);
-                $modal       = $yz->tools->key_or_default($props, 'modal', false);
-                $dismissible = $yz->tools->key_or_default($props, 'dismissible', true);
-                $fixed        = $yz->tools->key_or_default($props, 'fixed', false);
-                $full_size   = $yz->tools->key_or_default($props, 'full_size', false);
-                $width       = $yz->tools->key_or_default($props, 'width');
-                $children    = $yz->tools->key_or_default($props, 'children');
-                $attributes  = $yz->tools->key_or_default($props, 'attr', []);
-                $data_set    = $yz->tools->key_or_default($props, 'data', []);
+                $id          = $yz->tools->get_value($props, 'id');
+                $class       = $yz->tools->get_value($props, 'class');
+                $icon        = $yz->tools->get_value($props, 'icon');
+                $title       = $yz->tools->get_value($props, 'title');
+                $action      = $yz->tools->get_value($props, 'action');
+                $method      = $yz->tools->get_value($props, 'method', 'dialog');
+                $open        = $yz->tools->get_value($props, 'open', false);
+                $modal       = $yz->tools->get_value($props, 'modal', false);
+                $dismissible = $yz->tools->get_value($props, 'dismissible', true);
+                $fixed        = $yz->tools->get_value($props, 'fixed', false);
+                $full_size   = $yz->tools->get_value($props, 'full_size', false);
+                $grow_height = $yz->tools->get_value($props, 'grow_height', false);
+                $width       = $yz->tools->get_value($props, 'width');
+                $children    = $yz->tools->get_value($props, 'children');
+                $attributes  = $yz->tools->get_value($props, 'attr', []);
+                $data_set    = $yz->tools->get_value($props, 'data', []);
 
                 $classes = [
                     'yz',
@@ -33,6 +34,10 @@ class Yz_Dialog {
 
                 if ($fixed) {
                     $classes[] = 'dialog-fixed';
+                }
+
+                if ($grow_height) {
+                    $classes[] = 'dialog-grow-height';
                 }
 
                 if ($full_size) {
@@ -121,6 +126,12 @@ class Yz_Dialog {
                 z-index: 9991;
             }
 
+            .yz.dialog[open] {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
             .yz.dialog::backdrop {
                 background: rgba(0, 0, 0, 0.5);
             }
@@ -133,32 +144,43 @@ class Yz_Dialog {
                 position: fixed;
             }
 
+            .yz.dialog.grow-height {
+                height: 100%;
+            }
+
             .yz.dialog.dialog-full-size {
-                width: calc(100% - 60px);
-                height: calc(100% - 60px);
+                width: 100%;
+                height: 100%;
+            }
+
+            .yz.dialog.dialog-full-size > .yz.card {
+                flex-grow: 1;
+                width: 100%;
+                height: 100%;
             }
 
             .yz.dialog > .yz.card {
                 display: flex;
                 flex-direction: column;
                 width: 100%;
-                max-width: 100%;
-                height: 100%;
+                max-width: calc(100vw - 60px);
+                max-height: calc(100vh - 60px);
+                /*height: 100%;*/
                 border: none;
                 background: #f0f0f1;
                 padding: 0;
                 /*box-shadow: 0 5px 15px rgba(0,0,0,.7);*/
                 border-radius: 4px;
+                overflow: auto;
             }
 
             .yz.dialog .yz.form {
-                display: flex;
-                flex-direction: column;
-                flex-grow: 1;
+                display: contents;
             }
 
             .yz.dialog .yz.dialog-header {
                 display: flex;
+                flex-shrink: 0;
                 align-items: center;
                 gap: 10px;
                 background: #fff;
@@ -191,32 +213,21 @@ class Yz_Dialog {
             }
 
             .yz.dialog .yz.dialog-content {
-                /*flex-grow: 1;*/
-                /*flex-shrink: 1;*/
-                /*height: 0;*/
+                display: flex;
+                flex-direction: column;
                 padding: 20px;
                 overflow: auto;
+            }
+
+            .yz.dialog.grow-height .yz.dialog-content {
+                flex-grow: 1;
+                flex-shrink: 1;
+                height: 0;
             }
 
             .yz.dialog.dialog-full-size .yz.dialog-content {
                 flex-grow: 1;
             }
-
-            .yz.dialog .yz.dialog-footer {
-                display: flex;
-                align-items: center;
-                justify-content: end;
-                background: #fff;
-                gap: 10px;
-                height: 48px;
-                padding: 5px 20px;
-                border-top: 1px solid #dcdcde;
-                border-radius: 0 0 4px 4px;
-                position: sticky;
-                bottom: 0;
-                z-index: 1;
-            }
-
         </style>
     <?php }
 

@@ -5,11 +5,11 @@ class Yz_Calendar {
     public static function render(array $props): void {
         global $yz;
 
-        $id     = $yz->tools->key_or_default($props, 'id');
-        $month  = $yz->tools->key_or_default($props, 'month', date('n'));
-        $year   = $yz->tools->key_or_default($props, 'year', date('Y'));
-        $events = $yz->tools->key_or_default($props, 'events', []);
-        $today  = $yz->tools->key_or_default($props, 'today', 0);
+        $id     = $yz->tools->get_value($props, 'id');
+        $month  = $yz->tools->get_value($props, 'month', date('n'));
+        $year   = $yz->tools->get_value($props, 'year', date('Y'));
+        $events = $yz->tools->get_value($props, 'events', []);
+        $today  = $yz->tools->get_value($props, 'today', 0);
 
         $yz->html->grid_layout([
             'as'      => 'ol',

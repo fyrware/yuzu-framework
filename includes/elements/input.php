@@ -25,22 +25,22 @@ class Yz_Input {
     public static function render(array $props): void {
         global $yz;
 
-        $id            = $yz->tools->key_or_default($props, 'id');
-        $class         = $yz->tools->key_or_default($props, 'class');
-        $step          = $yz->tools->key_or_default($props, 'step');
-        $label         = $yz->tools->key_or_default($props, 'label');
-        $placeholder   = $yz->tools->key_or_default($props, 'placeholder');
-        $value         = $yz->tools->key_or_default($props, 'value');
-        $name          = $yz->tools->key_or_default($props, 'name', $id);
-        $type          = $yz->tools->key_or_default($props, 'type', 'text');
-        $checked       = $yz->tools->key_or_default($props, 'checked', false);
-        $required      = $yz->tools->key_or_default($props, 'required', false);
-        $disabled      = $yz->tools->key_or_default($props, 'disabled', false);
-        $hidden        = $yz->tools->key_or_default($props, 'hidden', false);
-        $layout        = $yz->tools->key_or_default($props, 'layout', 'column');
-        $width         = $yz->tools->key_or_default($props, 'width');
-        $autofocus     = $yz->tools->key_or_default($props, 'autofocus', false);
-        $data_set      = $yz->tools->key_or_default($props, 'data', []);
+        $id            = $yz->tools->get_value($props, 'id');
+        $class         = $yz->tools->get_value($props, 'class');
+        $step          = $yz->tools->get_value($props, 'step');
+        $label         = $yz->tools->get_value($props, 'label');
+        $placeholder   = $yz->tools->get_value($props, 'placeholder');
+        $value         = $yz->tools->get_value($props, 'value');
+        $name          = $yz->tools->get_value($props, 'name', $id);
+        $type          = $yz->tools->get_value($props, 'type', 'text');
+        $checked       = $yz->tools->get_value($props, 'checked', false);
+        $required      = $yz->tools->get_value($props, 'required', false);
+        $disabled      = $yz->tools->get_value($props, 'disabled', false);
+        $hidden        = $yz->tools->get_value($props, 'hidden', false);
+        $layout        = $yz->tools->get_value($props, 'layout', 'column');
+        $width         = $yz->tools->get_value($props, 'width');
+        $autofocus     = $yz->tools->get_value($props, 'autofocus', false);
+        $data_set      = $yz->tools->get_value($props, 'data', []);
 
         if ($type === 'currency') {
             $step = 'any';
@@ -64,7 +64,7 @@ class Yz_Input {
             $yz->html->element('label', [
                 'class'    => $yz->tools->join_values($label_classes),
                 'attr'     => [ 'for' => $id ],
-                'children' => function() use($yz, $id, $name, $classes, $type, $checked, $label, $disabled, $autofocus, $data_set) {
+                'children' => function() use($yz, $id, $name, $classes, $type, $checked, $label, $disabled, $autofocus, $hidden, $data_set) {
                     $yz->html->element('input', [
                         'id'    => $id,
                         'name'  => $name,
@@ -74,7 +74,8 @@ class Yz_Input {
                             'type'     => $type,
                             'checked'  => $checked,
                             'disabled' => $disabled,
-                            'autofocus' => $autofocus
+                            'autofocus' => $autofocus,
+                            'hidden'    => $hidden,
                         ]
                     ]);
                     $yz->html->text($label ?? '');
@@ -153,7 +154,7 @@ class Yz_Input {
                     'class'     => 'input-container-inner',
                     'width'     => $width,
                     'children'  => function() use($yz, $decoration, $input) {
-                        $input_decoration = $yz->tools->key_or_default(Yz_Input::INPUT_DECORATIONS, $decoration, 'text-aa');
+                        $input_decoration = $yz->tools->get_value(Yz_Input::INPUT_DECORATIONS, $decoration, 'text-aa');
 
                         $input_decoration_classes = [
                             'yz',
@@ -236,6 +237,10 @@ class Yz_Input {
             }
             .yz.input-container:has([disabled]) {
                 opacity: 0.55;
+            }
+            .yz.input[hidden],
+            .yz.input-label:has(.yz.input[hidden]) {
+                display: none;
             }
         </style>
     <?php }

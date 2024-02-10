@@ -7,18 +7,18 @@ class Yz_Tab_Group {
 
         $yz->html->element('div', [
             'children' => function() use($yz, $props) {
-                $id    = $yz->tools->key_or_default($props, 'id');
-                $class = $yz->tools->key_or_default($props, 'class');
-                $tabs  = $yz->tools->key_or_default($props, 'tabs', []);
+                $id    = $yz->tools->get_value($props, 'id');
+                $class = $yz->tools->get_value($props, 'class');
+                $tabs  = $yz->tools->get_value($props, 'tabs', []);
 
                 assert(is_array($tabs), 'Tabs must be an array');
 
                 $current_tab = $tabs[0];
 
                 foreach ($tabs as $tab) {
-                    $tab_param = $yz->tools->key_or_default($_GET, 'tab', '');
-                    $tab_label = $yz->tools->key_or_default($tab, 'label');
-                    $tab_slug  = $yz->tools->key_or_default($tab, 'slug', $yz->tools->format_field_name($tab_label));
+                    $tab_param = $yz->tools->get_value($_GET, 'tab', '');
+                    $tab_label = $yz->tools->get_value($tab, 'label');
+                    $tab_slug  = $yz->tools->get_value($tab, 'slug', $yz->tools->format_field_name($tab_label));
 
                     if ($tab_param === $tab_slug) {
                         $current_tab = $tab;
@@ -26,9 +26,9 @@ class Yz_Tab_Group {
                     }
                 }
 
-                $current_tab_label = $yz->tools->key_or_default($current_tab, 'label');
-                $current_tab_slug  = $yz->tools->key_or_default($current_tab, 'slug', $yz->tools->format_field_name($current_tab_label));
-                $current_tab_href  = $yz->tools->key_or_default($current_tab, 'href', '#' . $current_tab_slug);
+                $current_tab_label = $yz->tools->get_value($current_tab, 'label');
+                $current_tab_slug  = $yz->tools->get_value($current_tab, 'slug', $yz->tools->format_field_name($current_tab_label));
+                $current_tab_href  = $yz->tools->get_value($current_tab, 'href', '#' . $current_tab_slug);
 
                 $classes = [
                     'yuzu',
@@ -44,13 +44,13 @@ class Yz_Tab_Group {
                     'class' => $classes,
                     'children' => function() use($yz, $current_tab_slug, $tabs) {
                         foreach ($tabs as $tab) {
-                            $tab_id         = $yz->tools->key_or_default($tab, 'id');
-                            $tab_class      = $yz->tools->key_or_default($tab, 'class');
-                            $tab_label      = $yz->tools->key_or_default($tab, 'label');
-                            $tab_slug       = $yz->tools->key_or_default($tab, 'slug', $yz->tools->format_field_name($tab_label));
-                            $tab_href       = $yz->tools->key_or_default($tab, 'href', '#' . $tab_slug);
-                            $tab_icon       = $yz->tools->key_or_default($tab, 'icon');
-                            $tab_icon_style = $yz->tools->key_or_default($tab, 'icon_appearance', 'duotone');
+                            $tab_id         = $yz->tools->get_value($tab, 'id');
+                            $tab_class      = $yz->tools->get_value($tab, 'class');
+                            $tab_label      = $yz->tools->get_value($tab, 'label');
+                            $tab_slug       = $yz->tools->get_value($tab, 'slug', $yz->tools->format_field_name($tab_label));
+                            $tab_href       = $yz->tools->get_value($tab, 'href', '#' . $tab_slug);
+                            $tab_icon       = $yz->tools->get_value($tab, 'icon');
+                            $tab_icon_style = $yz->tools->get_value($tab, 'icon_appearance', 'duotone');
 
                             $tab_classes = [
                                 'yuzu',
@@ -86,8 +86,8 @@ class Yz_Tab_Group {
                     $yz->html->element('section', [
                         'children' => function () use ($yz, $tabs, $current_tab_slug) {
                             foreach ($tabs as $tab) {
-                                $tab_label = $yz->tools->key_or_default($tab, 'label');
-                                $tab_slug  = $yz->tools->key_or_default($tab, 'slug', $yz->tools->format_field_name($tab_label));
+                                $tab_label = $yz->tools->get_value($tab, 'label');
+                                $tab_slug  = $yz->tools->get_value($tab, 'slug', $yz->tools->format_field_name($tab_label));
 
                                 $tab_content_classes = [
                                     'yuzu',
@@ -104,7 +104,7 @@ class Yz_Tab_Group {
                                         'hash' => '#' . $tab_slug
                                     ],
                                     'children' => function() use($yz, $tab) {
-                                        $tab_children = $yz->tools->key_or_default($tab, 'children');
+                                        $tab_children = $yz->tools->get_value($tab, 'children');
 
                                         if (is_callable($tab_children)) {
                                             $tab_children();
@@ -127,7 +127,7 @@ class Yz_Tab_Group {
                             'hash' => '#' . $current_tab_href
                         ],
                         'children' => function() use($yz, $current_tab) {
-                            $current_tab_children = $yz->tools->key_or_default($current_tab, 'children');
+                            $current_tab_children = $yz->tools->get_value($current_tab, 'children');
 
                             if (is_callable($current_tab_children)) {
                                 $current_tab_children();

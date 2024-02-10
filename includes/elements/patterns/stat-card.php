@@ -5,12 +5,12 @@ class Yz_Stat_Card {
     public static function render(array $props): void {
         global $yz;
 
-        $id          = $yz->tools->key_or_default($props, 'id');
-        $class       = $yz->tools->key_or_default($props, 'class');
-        $icon        = $yz->tools->key_or_default($props, 'icon', 'question');
-        $value       = $yz->tools->key_or_default($props, 'value', '0');
-        $description = $yz->tools->key_or_default($props, 'description', '');
-        $children    = $yz->tools->key_or_default($props, 'children');
+        $id          = $yz->tools->get_value($props, 'id');
+        $class       = $yz->tools->get_value($props, 'class');
+        $icon        = $yz->tools->get_value($props, 'icon', 'question');
+        $value       = $yz->tools->get_value($props, 'value', '0');
+        $description = $yz->tools->get_value($props, 'description', '');
+        $children    = $yz->tools->get_value($props, 'children');
 
         $classes = [
             'stat-card'

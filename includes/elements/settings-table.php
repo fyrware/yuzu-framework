@@ -5,11 +5,11 @@ class Yz_Settings_Table {
     public static function render(array $props): void {
         global $yz;
 
-        $id          = $yz->tools->key_or_default($props, 'id');
-        $class       = $yz->tools->key_or_default($props, 'class');
-        $settings    = $yz->tools->key_or_default($props, 'settings', []);
-        $title       = $yz->tools->key_or_default($props, 'title');
-        $description = $yz->tools->key_or_default($props, 'description');
+        $id          = $yz->tools->get_value($props, 'id');
+        $class       = $yz->tools->get_value($props, 'class');
+        $settings    = $yz->tools->get_value($props, 'settings', []);
+        $title       = $yz->tools->get_value($props, 'title');
+        $description = $yz->tools->get_value($props, 'description');
 
         $classes = [
             'yz',
@@ -52,14 +52,14 @@ class Yz_Settings_Table {
                                     ]);
                                     $yz->html->element('td', [
                                         'children' => function() use($yz, $field) {
-                                            $id          = $yz->tools->key_or_default($field, 'id');
-                                            $name        = $yz->tools->key_or_default($field, 'name', $id);
-                                            $type        = $yz->tools->key_or_default($field, 'type', 'text');
-                                            $label       = $yz->tools->key_or_default($field, 'label');
-                                            $value       = $yz->tools->key_or_default($field, 'value');
-                                            $checked     = $yz->tools->key_or_default($field, 'checked', false);
-                                            $placeholder = $yz->tools->key_or_default($field, 'placeholder');
-                                            $description = $yz->tools->key_or_default($field, 'description');
+                                            $id          = $yz->tools->get_value($field, 'id');
+                                            $name        = $yz->tools->get_value($field, 'name', $id);
+                                            $type        = $yz->tools->get_value($field, 'type', 'text');
+                                            $label       = $yz->tools->get_value($field, 'label');
+                                            $value       = $yz->tools->get_value($field, 'value');
+                                            $checked     = $yz->tools->get_value($field, 'checked', false);
+                                            $placeholder = $yz->tools->get_value($field, 'placeholder');
+                                            $description = $yz->tools->get_value($field, 'description');
 
                                             $yz->html->input([
                                                 'id'    => $id,

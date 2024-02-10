@@ -5,12 +5,12 @@ class Yz_Title {
         public static function render(string $text, array $props = []): void {
             global $yz;
 
-            $id         = $yz->tools->key_or_default($props, 'id');
-            $class      = $yz->tools->key_or_default($props, 'class');
-            $level      = $yz->tools->key_or_default($props, 'level', 1);
-            $attributes = $yz->tools->key_or_default($props, 'attr', []);
-            $data_set   = $yz->tools->key_or_default($props, 'data', []);
-            $icon       = $yz->tools->key_or_default($props, 'icon');
+            $id         = $yz->tools->get_value($props, 'id');
+            $class      = $yz->tools->get_value($props, 'class');
+            $level      = $yz->tools->get_value($props, 'level', 1);
+            $attributes = $yz->tools->get_value($props, 'attr', []);
+            $data_set   = $yz->tools->get_value($props, 'data', []);
+            $icon       = $yz->tools->get_value($props, 'icon');
 
             $classes = [
                 'yz',

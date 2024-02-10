@@ -35,19 +35,19 @@ class Yz_Flex_Layout {
     public static function render(array $props): void {
         global $yz;
 
-        $id           = $yz->tools->key_or_default($props, 'id');
-        $as           = $yz->tools->key_or_default($props, 'as', 'section');
-        $inline       = $yz->tools->key_or_default($props, 'inline', false);
-        $direction    = $yz->tools->key_or_default($props, 'direction', 'row');
-        $justification = $yz->tools->key_or_default($props, 'justification', 'start');
-        $alignment    = $yz->tools->key_or_default($props, 'alignment', 'stretch');
-        $wrap         = $yz->tools->key_or_default($props, 'wrap', 'nowrap');
-        $class_name   = $yz->tools->key_or_default($props, 'class');
-        $style        = $yz->tools->key_or_default($props, 'style');
-        $data         = $yz->tools->key_or_default($props, 'data', []);
-        $gap          = $yz->tools->key_or_default($props, 'gap', 0);
-        $children     = $yz->tools->key_or_default($props, 'children');
-        $width        = $yz->tools->key_or_default($props, 'width');
+        $id           = $yz->tools->get_value($props, 'id');
+        $as           = $yz->tools->get_value($props, 'as', 'section');
+        $inline       = $yz->tools->get_value($props, 'inline', false);
+        $direction    = $yz->tools->get_value($props, 'direction', 'row');
+        $justification = $yz->tools->get_value($props, 'justification', 'start');
+        $alignment    = $yz->tools->get_value($props, 'alignment', 'stretch');
+        $wrap         = $yz->tools->get_value($props, 'wrap', 'nowrap');
+        $class_name   = $yz->tools->get_value($props, 'class');
+        $style        = $yz->tools->get_value($props, 'style');
+        $data         = $yz->tools->get_value($props, 'data', []);
+        $gap          = $yz->tools->get_value($props, 'gap', 0);
+        $children     = $yz->tools->get_value($props, 'children');
+        $width        = $yz->tools->get_value($props, 'width');
 
         assert(is_bool($inline));
         assert(in_array($direction,    Yz_Flex_Layout::VALID_DIRECTIONS));
@@ -180,7 +180,7 @@ class Yz_Flex_Layout {
                 align-items: baseline;
             }
 
-            .yz.flex-layout.flex-wrap {
+            .yz.flex-layout.flex-wrap-wrap {
                 flex-wrap: wrap;
             }
 

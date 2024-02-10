@@ -157,7 +157,7 @@ class Yz_Uploads_Service {
         $folders = array_filter($contents, fn($file) => is_dir($uploads_dir_path . '/' . $file));
         $files = array_filter($contents, fn($file) => is_file($uploads_dir_path . '/' . $file));
 
-        $ids = static::select_attachment_ids(isset($path) ? array_map(fn($file) => $path . $file, $files) : $files);
+        $ids = count($files) > 0 ? static::select_attachment_ids(isset($path) ? array_map(fn($file) => $path . $file, $files) : $files) : [];
 
         $query = new WP_Query([
             'post_type'      => static::ATTACHMENT_POST_TYPE,
@@ -171,7 +171,7 @@ class Yz_Uploads_Service {
         return new Yz_Uploads_Scanned_Dir(
             $uploads_dir_path,
             $folders,
-            array_map(fn($post) => new Yz_Uploads_File($post), $query->get_posts())
+            count($ids) > 0 ? array_map(fn($post) => new Yz_Uploads_File($post), $query->get_posts()) : []
         );
     }
 }
