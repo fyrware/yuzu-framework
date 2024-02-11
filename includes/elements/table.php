@@ -7,7 +7,7 @@ class Yz_Table {
 
         $id      = $yz->tools->get_value($props, 'id');
         $class   = $yz->tools->get_value($props, 'class');
-        $fixed    = $yz->tools->get_value($props, 'fixed', true);
+        $fixed    = $yz->tools->get_value($props, 'fixed', false);
         $striped = $yz->tools->get_value($props, 'striped', true);
         $widths  = $yz->tools->get_value($props, 'widths', []);
         $columns = $yz->tools->get_value($props, 'columns', []);

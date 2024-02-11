@@ -36,13 +36,17 @@ add_action('plugins_loaded', function() {
 }, 0);
 
 add_action('admin_enqueue_scripts', function() {
+    global $yz;
+
     wp_enqueue_script('d3js',  'https://cdn.jsdelivr.net/npm/d3@7');
     wp_enqueue_script('dayjs', 'https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js');
 
-    wp_enqueue_style('highlightjs', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css');
+    wp_enqueue_style('highlightjs-css', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css');
     wp_enqueue_script('highlightjs', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js');
     wp_enqueue_script('highlightjs-php', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js');
     wp_enqueue_script('highlightjs-line-numbers', 'https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js');
+
+    $yz->load_scripts();
 });
 
 add_action('admin_head', function() {
@@ -106,27 +110,7 @@ add_action('init', function() {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- *  Return true if on a page which uses Yuzu framework
- * @return bool
- */
-function is_yuzu(): bool {
-    return true;
-}
-
+// TODO: delete this, finish refactor in other plugins to remove legacy functions
 add_action('plugins_loaded', function() {
     require_once plugin_dir_path(__FILE__) . 'admin/utilities/action.php';
     require_once plugin_dir_path(__FILE__) . 'admin/utilities/array.php';
@@ -171,15 +155,3 @@ add_action('plugins_loaded', function() {
         require_once plugin_dir_path(__FILE__) . 'admin/elements/patterns/stat-card.php';
     }
 }, -1);
-
-add_action('admin_enqueue_scripts', function() {
-    wp_enqueue_script('yuzu-util-debounce-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/debounce.js');
-    wp_enqueue_script('yuzu-util-dialog-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/dialog.js');
-    wp_enqueue_script('yuzu-util-element-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/element.js');
-    wp_enqueue_script('yuzu-util-icon-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/icon.js');
-    wp_enqueue_script('yuzu-util-picker-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/picker.js');
-    wp_enqueue_script('yuzu-util-ready-js', plugin_dir_url(__FILE__) . 'admin/scripts/utilities/ready.js');
-
-    wp_enqueue_style('yuzu-framework-css', plugin_dir_url(__FILE__) . 'yz-plugin.css');
-    wp_enqueue_script('yuzu-framework-js', plugin_dir_url(__FILE__) . 'yz-plugin.js');
-});

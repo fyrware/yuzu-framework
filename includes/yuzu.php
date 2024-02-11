@@ -1,7 +1,5 @@
 <?php
 
-use JetBrains\PhpStorm\Deprecated;
-
 require_once __DIR__ . '/services/asset-service.php';
 require_once __DIR__ . '/services/forms-service.php';
 require_once __DIR__ . '/services/forum-service.php';
@@ -91,6 +89,18 @@ class Yz {
         $this->settings = new Yz_Settings_Service();
         $this->theme    = new Yz_Theme_Service();
         $this->tools    = new Yz_Tools_Service();
+    }
+
+    public function load_scripts(): void {
+        wp_enqueue_script('yuzu-framework-observable-js', plugin_dir_url(__FILE__) . 'scripts/observable.js');
+        wp_enqueue_script('yuzu-framework-action-service-js', plugin_dir_url(__FILE__) . 'scripts/services/action-service.js');
+        wp_enqueue_script('yuzu-framework-ajax-service-js', plugin_dir_url(__FILE__) . 'scripts/services/ajax-service.js');
+        wp_enqueue_script('yuzu-framework-cookie-service-js', plugin_dir_url(__FILE__) . 'scripts/services/cookie-service.js');
+        wp_enqueue_script('yuzu-framework-icon-service-js', plugin_dir_url(__FILE__) . 'scripts/services/icon-service.js');
+        wp_enqueue_script('yuzu-framework-notification-service-js', plugin_dir_url(__FILE__) . 'scripts/services/notification-service.js');
+        wp_enqueue_script('yuzu-framework-ys-js', plugin_dir_url(__FILE__) . 'scripts/yz.js');
+        wp_enqueue_script('yuzu-framework-template-service-js', plugin_dir_url(__FILE__) . 'scripts/services/template-service.js');
+        wp_enqueue_script('yuzu-framework-plugin-js', plugin_dir_url(__FILE__) . '../yz-plugin.js');
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

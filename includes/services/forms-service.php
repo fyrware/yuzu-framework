@@ -26,7 +26,13 @@ class Yz_Form_Service {
     }
 
     public function redirect(?string $location = null): bool {
-        return wp_safe_redirect($location ?? wp_get_referer());
+        if (isset($location) && str_starts_with($location, '#')) {
+            return wp_safe_redirect(wp_get_referer() . $location);
+        } else if (isset($location)) {
+            return wp_safe_redirect($location);
+        } else {
+            return wp_safe_redirect(wp_get_referer());
+        }
     }
 }
 

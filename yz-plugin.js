@@ -1,3 +1,31 @@
+yz.ajax = new YzAjaxService();
+yz.cookies = new YzCookieService();
+yz.icons = new YzIconService();
+yz.notifications = new YzNotificationService();
+yz.templates = new YzTemplateService();
+
+yz.ready = function ready() {
+    const observable = new YzObservable();
+
+    if (document.readyState === 'complete') {
+        window.requestAnimationFrame(() => {
+            observable.notify();
+        });
+    } else {
+        document.addEventListener('DOMContentLoaded', () => {
+            observable.notify();
+        });
+    }
+
+    return observable;
+}
+
+
+
+// OLD SHIT BELOW: =========================================================
+
+
+
 /**
  * @callback YzNodeListItem
  * @param { number } [index = 0]
@@ -9,19 +37,72 @@
  * @property { YzNodeListItem } item
  */
 
+// class YzObservable {
+//
+//     #observers = new Set();
+//
+//     observe(observer) {
+//         this.#observers.add(observer);
+//     }
+//
+//     cancel(observer) {
+//         this.#observers.delete(observer);
+//     }
+//
+//     notify(...args) {
+//         this.#observers.forEach(observer => observer(...args));
+//     }
+// }
+
+class YzEventObservable extends YzObservable {
+
+    /** @type { EventTarget | YzEventWatcher } */
+    #target;
+
+    /** @type { string } */
+    #event;
+
+    /**
+     * @param { EventTarget | YzEventWatcher } target
+     * @param { string } event
+     */
+    constructor(target, event) {
+        super();
+
+        this.#target = target;
+        this.#event = event;
+
+        if (this.#target.on) {
+            this.#target.on(this.#event, (...args) => {
+                this.notify(...args);
+            });
+        } else if (this.#target instanceof YzNodeReference) {
+            this.#target.forEach((element) => {
+                element.addEventListener(this.#event, (...args) => {
+                    this.notify(...args);
+                });
+            });
+        } else {
+            this.#target.addEventListener(this.#event, (...args) => {
+                this.notify(...args);
+            });
+        }
+    }
+}
+
 /**
  * Runs `ParentNode#querySelectorAll` against a given context (default is document)
  * @param selector
  * @param context
  * @returns YzNodeList
  */
-function yz(selector, context = document) {
-    return Object.assign(context.querySelectorAll(selector), {
-        item(index = 0) {
-            return NodeList.prototype.item.call(this, index);
-        }
-    });
-}
+// function yz(selector, context = document) {
+//     return Object.assign(context.querySelectorAll(selector), {
+//         item(index = 0) {
+//             return NodeList.prototype.item.call(this, index);
+//         }
+//     });
+// }
 
 /**
  * @typedef { object } YzIconLibrary
@@ -31,7 +112,7 @@ function yz(selector, context = document) {
  * @property { object | undefined } bold
  * @property { object | undefined } duotone
  * @property { object | undefined } solid
- *
+ */
 
 /**
  * Library of available icons (must be loaded server-side)
@@ -62,26 +143,6 @@ yz.wordpress = Object.seal({
 yz.dateLocale = 'en-US';
 
 /**
- * A bare-bones observable implementation
- */
-class YzObservable {
-
-    #observers = new Set();
-
-    observe(observer) {
-        this.#observers.add(observer);
-    }
-
-    cancel(observer) {
-        this.#observers.delete(observer);
-    }
-
-    notify(...args) {
-        this.#observers.forEach(observer => observer(...args));
-    }
-}
-
-/**
  * @callback YzEventWatcherFn
  * @param { string } event
  * @param { function } callback
@@ -92,39 +153,6 @@ class YzObservable {
  * @property { YzEventWatcherFn } on
  * @property { YzEventWatcherFn } off
  */
-
-/**
- * An observable which notifies its observers when a given event is triggered on its target
- */
-class YzEventObservable extends YzObservable {
-
-    /** @type { EventTarget | YzEventWatcher } */
-    #target;
-
-    /** @type { string } */
-    #event;
-
-    /**
-     * @param { EventTarget | YzEventWatcher } target
-     * @param { string } event
-     */
-    constructor(target, event) {
-        super();
-
-        this.#target = target;
-        this.#event = event;
-
-        if (this.#target.on) {
-            this.#target.on(this.#event, (...args) => {
-                this.notify(...args);
-            });
-        } else {
-            this.#target.addEventListener(this.#event, (...args) => {
-                this.notify(...args);
-            });
-        }
-    }
-}
 
 /**
  * Attaches an observable to a given element and event
@@ -140,22 +168,6 @@ yz.do = function doEvent(element, event) {
     return element.dispatchEvent(
         event instanceof Event ? event : new Event(event)
     );
-}
-
-/**
- * Attaches an observable to the `DOMContentLoaded` event
- * @returns { YzEventObservable }
- */
-yz.ready = function ready() {
-    const observable = yz.spy(document, 'DOMContentLoaded');
-
-    if (document.readyState === 'complete') {
-        window.requestAnimationFrame(() => {
-            observable.notify();
-        });
-    }
-
-    return observable;
 }
 
 /**
