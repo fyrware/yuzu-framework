@@ -4,8 +4,12 @@ class Yz_Pages_Service {
 
     public const PAGES_LOCATION = 'pages';
 
-    public function var(string $name): string | null {
-        return get_query_var($name);
+    public function var(string $name, mixed $default = null): mixed {
+        return get_query_var($name, yz()->tools->get_value($_GET, $name, $default));
+    }
+
+    public function get_page_by_slug(string $slug): ?WP_Post {
+        return get_page_by_path($slug);
     }
 
     public function add_virtual_page(string $path, ?string $template = null): void {
@@ -16,6 +20,21 @@ class Yz_Pages_Service {
         } else {
             $variables = [];
         }
+
+        $url = 'index.php?yz_virtual_page=' . $path;
+        $pattern = $path;
+
+        foreach ($variables as $index => $var) {
+            $url .= '&' . $var . '=$matches[' . $index + 1 . ']';
+            $pattern = str_replace(':' . $var, '([^/]+?)', $pattern);
+        }
+
+        if (!str_ends_with($pattern, '/')) {
+            $pattern .= '/';
+        }
+
+        add_rewrite_rule('^' . $pattern . '?$', $url, 'top');
+        flush_rewrite_rules(false);
 
         add_action('query_vars', function($vars) use($variables) {
 
@@ -30,23 +49,6 @@ class Yz_Pages_Service {
             }
 
             return $vars;
-        });
-
-        add_action('init', function() use($path, $variables) {
-            $url = 'index.php?yz_virtual_page=' . $path;
-            $pattern = $path;
-
-            foreach ($variables as $index => $var) {
-                $url .= '&' . $var . '=$matches[' . $index + 1 . ']';
-                $pattern = str_replace(':' . $var, '([^/]+?)', $pattern);
-            }
-
-            if (!str_ends_with($pattern, '/')) {
-                $pattern .= '/';
-            }
-
-            add_rewrite_rule('^' . $pattern . '?$', $url, 'top');
-            flush_rewrite_rules(false);
         });
 
         add_action('template_redirect', function() use($path, $template) {
@@ -88,6 +90,8 @@ class Yz_Pages_Service {
 
         if (isset($icon) && str_starts_with($icon, '<svg')) {
             $icon = $yz->tools->format_data_url('image/svg+xml', $icon);
+        } else if (isset($icon) && is_string($icon)) {
+            $icon = $yz->tools->format_data_url('image/svg+xml', Yz_Icon::svg($icon, [ 'appearance' => 'fill' ]));
         }
 
         if (isset($parent)) {

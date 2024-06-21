@@ -30,7 +30,7 @@ class Yz_Icon_Picker {
         $required   = $yz->tools->get_value($props, 'required', false);
 
         assert(is_string($value), 'Icon picker value must be a string');
-        assert(in_array($appearance, self::VALID_APPEARANCES), 'Icon picker appearance must be one of: ' . yz_join(self::VALID_APPEARANCES, ', '));
+        assert(in_array($appearance, self::VALID_APPEARANCES), 'Icon picker appearance must be one of: ' . $yz->tools->join_values(self::VALID_APPEARANCES, ', '));
 
         $id ??= $name;
 
@@ -143,7 +143,7 @@ class Yz_Icon_Picker {
         ]); ?>
 
         <script>
-            yz.setIconSet('<?= $appearance ?>',  <?= json_encode($icons) ?>);
+            yz.icons.learn('<?= $appearance ?>', <?= json_encode($icons) ?>);
         </script>
     <?php }
     
@@ -306,74 +306,75 @@ class Yz_Icon_Picker {
         <script>
             yz.ready().observe(() => {
                 yz('.icon-picker').forEach((iconPicker) => {
-                    const input        = yz('input', iconPicker).item();
-                    const searchInput  = yz(`#${ input.name }_search`).item();
-                    const gridLayout   = yz(`#${ input.name }_dialog_layout`).item();
-                    const submitButton = yz(`#${ input.name }_submit`).item();
-                    const dialog       = yz(`#${ input.name }_dialog`).item();
-                    const dialogForm   = yz('form', dialog).item();
+                    const input        = yz('input', iconPicker);
+                    const searchInput  = yz(`#${ input.name() }_search`);
+                    const gridLayout   = yz(`#${ input.name() }_dialog_layout`);
+                    const submitButton = yz(`#${ input.name() }_submit`);
+                    const dialog       = yz(`#${ input.name() }_dialog`);
+                    const dialogForm   = yz('form', dialog);
 
-                    yz.spy(iconPicker, 'click').observe((click) => {
-                        dialog.scrollTop      = 0;
-                        searchInput.value     = '';
-                        gridLayout.innerHTML  = '';
-                        submitButton.disabled = true;
+                    iconPicker.spy('click').observe(() => {
+                        const docFragment = yz.fragment();
 
-                        const docFragment = new DocumentFragment();
+                        dialog.prop('scrollTop', 0);
+                        searchInput.prop('value', '');
+                        gridLayout.html('');
+                        submitButton.prop('disabled', true);
 
-                        for (const [glyph, url] of Object.entries(yz.getIconSet(input.dataset.appearance))) {
-                            const label           = document.createElement('label');
-                            label.htmlFor         = input.name + '_option_' + glyph;
-                            label.className       = 'yz icon-picker-option';
-                            label.dataset.glyph   = glyph;
-                            label.dataset.iconUrl = url;
+                        Object.entries(yz.icons.library(input.data('appearance'))).forEach(([glyph, url]) => {
+                            const label = yz.element('label');
+                            label.attr('for', input.name() + '_option_' + glyph);
+                            label.class('yz icon-picker-option');
+                            label.data('glyph', glyph);
+                            label.data('iconUrl', url);
 
-                            const image     = document.createElement('img');
-                            image.className = 'yz icon-picker-image';
-                            image.loading   = 'lazy';
-                            image.src       = url;
+                            const image = yz.element('img');
+                            image.class('yz icon-picker-image');
+                            image.prop('loading', 'lazy');
+                            image.prop('src', url);
 
-                            const radio     = document.createElement('input');
-                            radio.id        = input.name + '_option_' + glyph;
-                            radio.className = 'yz icon-picker-radio';
-                            radio.type      = 'radio';
-                            radio.name      = input.name + '_option';
-                            radio.value     = glyph;
+                            const radio = yz.element('input');
+                            radio.id(input.name() + '_option_' + glyph);
+                            radio.name(input.name() + '_option');
+                            radio.class('yz icon-picker-radio');
+                            radio.type('radio');
+                            radio.value(glyph);
 
-                            radio.addEventListener('change', () => {
-                                if (submitButton.disabled) {
-                                    submitButton.disabled = false;
+                            radio.spy('change').observe(() => {
+                                if (submitButton.prop('disabled')) {
+                                    submitButton.prop('disabled', false);
                                 }
                             });
 
-                            label.appendChild(image);
-                            label.appendChild(radio);
-                            docFragment.appendChild(label);
-                        }
+                            label.append(image);
+                            label.append(radio);
 
-                        gridLayout.appendChild(docFragment);
-                        dialog.showModal();
+                            docFragment.append(label);
+                        });
+
+                        gridLayout.append(docFragment);
+                        dialog.item().showModal();
                     });
 
-                    yz.spy(searchInput, 'input').observe((input) => {
+                    searchInput.spy('input').observe((input) => {
                         const query = input.target.value.toLowerCase().trim().replaceAll(/\s+/g, '-');
 
-                        for (const icon of gridLayout.children) {
-                            if (icon.dataset.glyph.includes(query)) {
-                                icon.style.display = 'flex';
+                        gridLayout.children().forEach((icon) => {
+                            if (icon.data('glyph').includes(query)) {
+                                icon.style('display', 'flex');
                             } else {
-                                icon.style.display = 'none';
+                                icon.style('display', 'none');
                             }
-                        }
+                        });
                     });
 
-                    yz.spy(dialogForm, 'submit').observe((submit) => {
-                        const selectedGlyph     = yz(`input[name="${ input.name }_option"]:checked`).item().value;
-                        const selectedIcon      = yz(`label[for="${ input.id }_option_${ selectedGlyph }"]`).item();
-                        const selectedIconImage = yz(`input[name="${ input.name }"] + .flex-layout .selected-icon`).item();
+                    dialogForm.spy('submit').observe(() => {
+                        const selectedGlyph     = yz(`input[name="${ input.name() }_option"]:checked`).value();
+                        const selectedIcon      = yz(`label[for="${ input.id() }_option_${ selectedGlyph }"]`);
+                        const selectedIconImage = yz(`input[name="${ input.name() }"] + .flex-layout .selected-icon`);
 
-                        input.value = selectedIcon.dataset.glyph;
-                        selectedIconImage.src = selectedIcon.dataset.iconUrl;
+                        input.value(selectedIcon.data('glyph'));
+                        selectedIconImage.prop('src', selectedIcon.data('iconUrl'));
                     });
                 });
             });

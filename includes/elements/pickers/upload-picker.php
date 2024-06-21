@@ -5,10 +5,15 @@ class Yz_Upload_Picker {
     public static function render(array $props): void {
         global $yz;
 
-        $id    = $yz->tools->get_value($props, 'id');
-        $name  = $yz->tools->get_value($props, 'name', $id);
-        $class = $yz->tools->get_value($props, 'class');
-        $path  = $yz->tools->get_value($props, 'path');
+        $id       = $yz->tools->get_value($props, 'id');
+        $name     = $yz->tools->get_value($props, 'name', $id);
+        $class    = $yz->tools->get_value($props, 'class');
+        $path     = $yz->tools->get_value($props, 'path');
+        $label    = $yz->tools->get_value($props, 'label');
+        $value    = $yz->tools->get_value($props, 'value');
+        $preview  = $yz->tools->get_value($props, 'preview');
+        $hidden   = $yz->tools->get_value($props, 'hidden');
+        $required = $yz->tools->get_value($props, 'required');
 
         assert(isset($name), 'name is required');
 
@@ -22,15 +27,62 @@ class Yz_Upload_Picker {
 
         $unique_id = uniqid();
 
+        if (!$hidden) {
+            $yz->html->flex_layout([
+                'class' => 'upload-picker-trigger',
+                'direction' => 'column',
+                'data' => [
+                    'input' => $unique_id
+                ],
+                'children' => function() use($yz, $label, $value, $preview) {
+                    $yz->html->text($label, [ 'class' => 'upload-picker-label', 'variant' => 'label' ]);
+                    $yz->html->flex_layout([
+                        'class' => 'upload-picker-preview',
+                        'direction' => 'column',
+                        'alignment' => 'center',
+                        'justification' => 'center',
+                        'children' => function() use($yz, $value) {
+                            if ($value) {
+                                $yz->html->image($value);
+                            } else {
+                                $yz->html->flex_layout([
+                                    'class' => 'upload-picker-placeholder',
+                                    'children' => function() use($yz) {
+                                        $yz->html->icon('park', [ 'appearance' => 'light' ]);
+                                    }
+                                ]);
+                            }
+                        }
+                    ]);
+                    $yz->html->flex_layout([
+                        'class' => 'upload-picker-actions',
+                        'children' => function() use($yz) {
+                            $yz->html->button([
+                                'class' => 'upload-picker-select',
+                                'label' => 'Select File'
+                            ]);
+                            $yz->html->button([
+                                'class' => 'upload-picker-remove',
+                                'color' => 'danger',
+                                'icon' => 'x-circle'
+                            ]);
+                        }
+                    ]);
+                }
+            ]);
+        }
+
         $yz->html->input([
             'id' => $id,
             'name' => $name,
             'class' => $classes,
             'hidden' => true,
+            'required' => $required,
             'data' => [
-                'unique_id' => $unique_id,
+                'unique-id' => $unique_id,
             ]
         ]);
+
 
         $yz->html->dialog([
             'modal' => true,
@@ -39,8 +91,8 @@ class Yz_Upload_Picker {
             'title' => 'Choose A File',
             'class' => 'upload-picker-dialog',
             'data' => [
-                'upload_picker' => $name,
-                'unique_id' => $unique_id
+                'upload-picker' => $name,
+                'unique-id' => $unique_id
             ],
             'children' => function() use($path) {
                 global $yz;
@@ -251,6 +303,81 @@ class Yz_Upload_Picker {
 
     public static function render_style(): void { ?>
         <style>
+            .yz.upload-picker-trigger {
+                box-sizing: border-box;
+                width: 162px;
+                margin: 0;
+                min-width: 0;
+                position: relative;
+
+                & .yz.upload-picker-label {
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                }
+
+                & .yz.upload-picker-preview {
+                    cursor: pointer;
+                    width: 160px;
+                    height: 160px;
+                    border: 1px solid #8c8f94;
+                    border-bottom: none;
+                    border-radius: 4px 4px 0 0;
+                    background-color: #ffffff;
+                    background-image:
+                        repeating-linear-gradient(
+                            45deg,
+                            #f0f0f1 25%,
+                            transparent 25%,
+                            transparent 75%,
+                            #f0f0f1 75%,
+                            #f0f0f1
+                        ),
+                        repeating-linear-gradient(
+                            45deg,
+                            #f0f0f1 25%,
+                            #ffffff 25%,
+                            #ffffff 75%,
+                            #f0f0f1 75%,
+                            #f0f0f1
+                        );
+                    background-position: 0 0, 8px 8px;
+                    background-size: 16px 16px;
+                    overflow: hidden;
+
+                    & img {
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+
+                    & svg {
+                        display: block;
+                        width: 96px;
+                        height: 96px;
+                        fill: #c3c4c7;
+                    }
+                }
+
+                & .yz.upload-picker-actions {
+
+                    & .yz.button {
+                        border-radius: 0 0 4px 4px;
+                    }
+
+                    & .yz.upload-picker-select {
+                        width: 100%;
+                        border-right: 0;
+                        border-bottom-right-radius: 0;
+                        justify-content: center;
+                    }
+
+                    & .yz.upload-picker-remove {
+                        border-bottom-left-radius: 0;
+                    }
+                }
+            }
+
             .yz.upload-picker-layout {
                 margin: -20px;
                 height: calc(100% + 40px);
@@ -390,6 +517,52 @@ class Yz_Upload_Picker {
     public static function render_script(): void { ?>
         <script>
             yz.ready().observe(() => {
+                console.log('upload-picker')
+                yz('.upload-picker').forEach((uploadPicker) => {
+                    const uniqueId = uploadPicker.data('uniqueId');
+                    const uploadPickerTrigger = yz('.upload-picker-trigger[data-input="' + uniqueId + '"]');
+                    const uploadPickerDialog = yz('.upload-picker-dialog[data-unique-id="' + uniqueId + '"]');
+                    const uploadPickerClear = yz('.upload-picker-remove', uploadPickerTrigger)
+
+                    uploadPickerTrigger.spy('click').observe(() => {
+                        uploadPickerDialog.show({ modal: true });
+                    });
+
+                    uploadPickerClear.spy('click').observe((click) => {
+                        uploadPicker.value('').trigger('change');
+                        click.stopPropagation();
+                    });
+
+                    uploadPicker.spy('change').observe(() => {
+                        console.log('change', uploadPicker.value());
+                        if (uploadPicker.value()) {
+                            yz.ajax.query('yz_get_upload_url', { id: uploadPicker.value() }).observe((response) => {
+                                if (response.success) {
+                                    const preview = yz('.upload-picker-preview', uploadPickerTrigger).item();
+                                    const image = yz('img', preview).item() ?? document.createElement('img');
+                                    const icon = yz('svg', preview).item();
+
+                                    if (image.parentElement !== preview) {
+                                        preview.appendChild(image);
+                                    }
+
+                                    icon.style.display = 'none';
+                                    image.src = response.data.url;
+                                }
+                            });
+                        } else {
+                            const preview = yz('.upload-picker-preview', uploadPickerTrigger).item();
+                            const image = yz('img', preview).item() ?? document.createElement('img');
+                            const icon = yz('svg', preview).item();
+
+                            if (image) {
+                                image.remove();
+                            }
+
+                            icon.style.display = 'block';
+                        }
+                    });
+                });
                 yz('.upload-picker-dialog').forEach((dialog) => {
                     const picker         = yz('.upload-picker-viewer', dialog).item();
                     const backButton     = yz('.upload-picker-back-button', dialog).item();
@@ -487,7 +660,7 @@ class Yz_Upload_Picker {
                     }
 
                     function scanUploadsFolder(path = picker.dataset.path) {
-                        yz.query('yz_read_uploads_directory', { path }).observe((response) => {
+                        yz.ajax.query('yz_read_uploads_directory', { path }).observe((response) => {
                             if (response.success) {
                                 if (path) picker.dataset.path = path;
                                 pickerPath.textContent = 'file://uploads/' + (path ?? '');
@@ -503,12 +676,12 @@ class Yz_Upload_Picker {
                         scanUploadsFolder();
                     }
 
-                    yz.spy(backButton, 'click').observe((click) => {
+                    yz.spy(backButton, 'click').observe(() => {
                         const path = picker.dataset.path;
                         delete picker.dataset.path;
 
                         const pathParts = path.split('/');
-                        pathParts.pop(); // path ends with /
+                        pathParts.pop(); // path ends with /, so last part is empty
                         pathParts.pop();
 
                         const newPath = pathParts.length > 0 ? pathParts.join('/') + '/' : undefined;
@@ -516,8 +689,8 @@ class Yz_Upload_Picker {
                         scanUploadsFolder(newPath);
                     });
 
-                    yz.spy(submitButton, 'click').observe((click) => {
-                        const input = yz(`input[name="${ dialog.dataset.uploadPicker }"][data-unique-id="${ dialog.dataset.uniqueId }"]`).item();
+                    yz.spy(submitButton, 'click').observe(() => {
+                        const input = yz(`input[name="${ dialog.data('uploadPicker') }"][data-unique-id="${ dialog.data('uniqueId') }"]`).item();
 
                         input.value       = pickerState.selectedFiles.map((file) => file.id).join(',');
                         input.dataset.src = pickerState.selectedFiles.map((file) => file.url).join(',');

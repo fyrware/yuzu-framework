@@ -9,14 +9,20 @@ class Yz_Image {
         $class = $yz->tools->get_value($props, 'class');
         $alt   = $yz->tools->get_value($props, 'alt');
         $title = $yz->tools->get_value($props, 'title', $alt);
+        $width = $yz->tools->get_value($props, 'width');
+        $height = $yz->tools->get_value($props, 'height');
+        $object_fit = $yz->tools->get_value($props, 'object_fit');
 
         $classes = [
-            'yuzu',
             'image'
         ];
 
         if ($class) {
             $classes[] = $class;
+        }
+
+        if ($object_fit) {
+            $classes[] = 'object-fit-' . $object_fit;
         }
 
         $yz->html->element('img', [
@@ -25,8 +31,21 @@ class Yz_Image {
             'attr'  => [
                 'src' => $src,
                 'alt' => $alt,
-                'title' => $title
+                'title' => $title,
+                'width' => $width,
+                'height' => $height
             ]
         ]);
     }
+
+    public static function render_style(): void { ?>
+        <style data-yz-element="image">
+            .yz.image.object-fit-contain {
+                object-fit: contain;
+            }
+            .yz.image.object-fit-cover {
+                object-fit: cover;
+            }
+        </style>
+    <?php }
 }

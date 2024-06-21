@@ -1,5 +1,12 @@
 class YzCookieService {
 
+    jar() {
+        return document.cookie.split(';').reduce((dictionary, cookie) => {
+            const [key, value] = cookie.split('=');
+            dictionary[key.trim()] = value;
+            return dictionary;
+        }, {});
+    }
 
     get(name) {
         const cookie = document.cookie.split(';').find(cookie => {

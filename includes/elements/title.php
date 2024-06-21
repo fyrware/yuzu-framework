@@ -28,7 +28,7 @@ class Yz_Title {
                 'attr'     => $attributes,
                 'data'     => $data_set,
                 'children' => function() use($yz, $text, $icon) {
-                    if ($icon) $yz->html->icon($icon, [ 'appearance' => 'duotone' ]);
+                    if ($icon) $yz->html->icon($icon, [ 'appearance' => 'duotone', 'size' => '1.5em' ]);
                     echo $text;
                 }
             ]);
@@ -43,8 +43,6 @@ class Yz_Title {
                 }
 
                 .yuzu.title svg {
-                    width: 1.5em;
-                    height: 1.5em;
                     margin-right: 0.25em;
                 }
             </style>

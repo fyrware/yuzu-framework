@@ -234,26 +234,26 @@ class Yz_Dialog {
     public static function render_script() { ?>
         <script data-yz-element="dialog">
             yz.ready().observe(() => {
-                yz('.yuzu.dialog').forEach((dialog) => {
-                    const open        = 'open'        in dialog.dataset;
-                    const modal       = 'modal'       in dialog.dataset;
-                    const dismissible = 'dismissible' in dialog.dataset;
+                yz('.yz.dialog').forEach((dialog) => {
+                    const open        = 'open'        in dialog.item().dataset;
+                    const modal       = 'modal'       in dialog.item().dataset;
+                    const dismissible = 'dismissible' in dialog.item().dataset;
+
+                    console.log('dialog', dialog, open, modal, dismissible)
 
                     if (open && modal) {
-                        dialog.close();
-                        dialog.showModal();
+                        dialog.hide()
+                        dialog.show({ modal: true })
                     }
 
                     if (!dismissible) {
-                        dialog.addEventListener('cancel', (event) => {
-                            event.preventDefault();
+                        dialog.spy('cancel').observe((cancel) => {
+                            cancel.preventDefault();
                         });
                     }
 
-                    yz('form', dialog).forEach((form) => {
-                        form.addEventListener('reset', () => {
-                            dialog.close();
-                        });
+                    yz('form', dialog).spy('reset').observe(() => {
+                        dialog.hide();
                     });
                 });
             });

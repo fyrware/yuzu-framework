@@ -186,6 +186,9 @@ class Yz_Input {
                 gap: 5px;
                 font-weight: 700;
             }
+            .yz.input-container input[type="color"] {
+                height: 30px !important;
+            }
             .yz.input-label input[type="checkbox"],
             .yz.input-label input[type="radio"] {
                 margin: 0;
@@ -199,10 +202,14 @@ class Yz_Input {
                 overflow: hidden;
                 font-weight: normal;
             }
+            .yz.input-label.input-label-required {
+                gap: 0;
+            }
             .yz.input-label.input-label-required::after {
                 content: '*';
                 color: #d63638;
                 font-weight: bold;
+                font-size: 1.1em;
             }
             .yz.input-container-inner {
                 flex-grow: 1;

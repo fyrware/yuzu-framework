@@ -58,7 +58,7 @@ class Yz_Uploads_File {
 
         $uploads_dir = wp_get_upload_dir();
         $uploads_dir_url = $uploads_dir['baseurl'];
-        $relative_location = $yz->posts->get_post_meta($this->post->ID, static::ATTACHED_FILE);
+        $relative_location = $yz->posts->get_metadata($this->post->ID, static::ATTACHED_FILE);
 
         return $uploads_dir_url . '/' . $relative_location;
     }
@@ -101,7 +101,7 @@ class Yz_Uploads_File {
     public function get_upload_location(): string {
         global $yz;
 
-        return $yz->posts->get_post_meta($this->post->ID, static::UPLOAD_LOCATION);
+        return $yz->posts->get_metadata($this->post->ID, static::UPLOAD_LOCATION);
     }
 
     public function __construct(Wp_Post $post) {
@@ -128,6 +128,21 @@ class Yz_Uploads_Service {
 
     public const ATTACHMENT_POST_TYPE = 'attachment';
 
+    public function create_folder(string $path): void {
+        if (str_starts_with($path, '/')) {
+            $path = substr($path, 1);
+        }
+        if (str_ends_with($path, '/')) {
+            $path = substr($path, 0, -1);
+        }
+        if (!dir(wp_upload_dir()['basedir'] . '/' . $path)) {
+            mkdir(wp_upload_dir()['basedir'] . '/' . $path);
+        }
+    }
+
+    /**
+     * @deprecated
+     */
     private static function select_attachment_ids($paths): array {
         global $wpdb;
 
@@ -145,6 +160,9 @@ class Yz_Uploads_Service {
         return $wpdb->get_col($query);
     }
 
+    /**
+     * @deprecated
+     */
     public static function scan_uploads_dir(?string $path = null): Yz_Uploads_Scanned_Dir {
         $uploads_dir = wp_get_upload_dir();
         $uploads_dir_path = $uploads_dir['basedir'];

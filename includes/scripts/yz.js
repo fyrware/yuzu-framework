@@ -12,8 +12,8 @@ class YzNodeReferenceObservable extends YzObservable {
         this.#reference = reference;
         this.#event = event;
 
-        this.#reference.forEach((node) => {
-            node.addEventListener(this.#event, (...args) => {
+        this.#reference.forEach((ref) => {
+            ref.item().addEventListener(this.#event, (...args) => {
                 this.notify(...args);
             });
         });
@@ -29,10 +29,12 @@ class YzNodeReference {
 
     /**
      *
-     * @param { NodeList | Array | Set } nodes
+     * @param { Node | NodeList | Array | Set } nodes
      */
     constructor(nodes) {
-        if (nodes instanceof NodeList) {
+        if (nodes instanceof Node) {
+            this.#nodes = new Set([nodes]);
+        } else if (nodes instanceof NodeList) {
             this.#nodes = new Set(Array.from(nodes));
         } else if (Array.isArray(nodes)) {
             this.#nodes = new Set(nodes);
@@ -42,22 +44,23 @@ class YzNodeReference {
     }
 
     forEach(callback) {
-        this.#nodes.forEach(callback);
+        Array.from(this.#nodes).map(yz).forEach(callback);
     }
 
     /**
-     *
      * @param index
-     * @returns { YzNodeReference }
+     * @returns { any }
      */
     item(index = 0) {
-        const nodeArray = Array.from(this.#nodes);
-
-        if (nodeArray.length === 1 && nodeArray[0] instanceof DocumentFragment) {
-            return nodeArray[0].children[index];
-        }
-
         return Array.from(this.#nodes)[index];
+    }
+
+    first() {
+        return yz(this.item(0));
+    }
+
+    last() {
+        return yz(this.item(this.#nodes.size() - 1));
     }
 
     select(selector) {
@@ -78,27 +81,118 @@ class YzNodeReference {
     }
 
     trigger(event, options) {
-        this.forEach((element) => {
-            element.dispatchEvent(new Event(event, options));
+        this.forEach((ref) => {
+            ref.item().dispatchEvent(new Event(event, options));
         });
     }
 
     attr(name, value) {
         if (value) {
             this.forEach((element) => {
-                element.setAttribute(name, value);
+                element.item().setAttribute(name, value);
             });
+            return this;
         }
         return this.item()?.getAttribute(name);
     }
 
-    prop(name, value) {
-        if (value) {
+    unsetAttr(name) {
+        this.forEach((element) => {
+            element.item().removeAttribute(name);
+        });
+        return this;
+    }
+
+    data(name, value) {
+        if (value !== undefined) {
             this.forEach((element) => {
-                element[name] = value;
+                element.item().dataset[name] = value;
             });
+            return this;
+        }
+        return this.item()?.dataset[name];
+    }
+
+    unsetData(name) {
+        this.forEach((element) => {
+            delete element.item().dataset[name];
+        });
+        return this;
+    }
+
+    prop(name, value) {
+        if (value !== undefined) {
+            this.forEach((element) => {
+                element.item()[name] = value;
+            });
+            return this;
         }
         return this.item()?.[name];
+    }
+
+    unsetProp(name) {
+        this.forEach((element) => {
+            try {
+                delete element.item()[name];
+            } catch {
+                element.item()[name] = undefined;
+            }
+        });
+        return this;
+    }
+
+    id(id) {
+        return this.prop('id', id);
+    }
+
+    name(name) {
+        return this.prop('name', name);
+    }
+
+    html(html) {
+        return this.prop('innerHTML', html);
+    }
+
+    style(name, value) {
+        if (value) {
+            this.forEach((element) => {
+                element.item().style[name] = value;
+            });
+            return this;
+        }
+        return this.item()?.style[name];
+    }
+
+    text(text) {
+        return this.prop('textContent', text);
+    }
+
+    type(type) {
+        return this.prop('type', type);
+    }
+
+    checked(checked) {
+        return this.prop('checked', checked);
+    }
+
+    selected(selected) {
+        return this.prop('selected', selected);
+    }
+
+    value(value) {
+        return this.prop('value', value);
+    }
+
+    children() {
+        return new YzNodeReference(this.item()?.childNodes);
+    }
+
+    class(className) {
+        return this.prop('className', className);
+    }
+
+    classes() {
+        return this.item()?.classList;
     }
 
     append(node) {
@@ -108,32 +202,82 @@ class YzNodeReference {
             node.forEach((node) => {
                 this.item()?.append(node);
             });
-        } else {
+        } else if (node instanceof YzTemplateNodeReference) {
+            this.item()?.append(node.fragment);
+        } else if (node instanceof YzNodeReference) {
             this.item()?.append(node.item());
         }
+        return this;
     }
 
     remove() {
-        this.forEach((element) => {
-            element.remove();
+        this.forEach((ref) => {
+            ref.item().remove();
         });
+        return this;
+    }
+
+    show(options = {}) {
+        this.forEach((ref) => {
+            if (ref.is(HTMLDialogElement)) {
+                if (options.modal) {
+                    ref.item().showModal();
+                } else {
+                    ref.item().show();
+                }
+            } else {
+                ref.unsetAttr('hidden');
+            }
+        });
+        return this;
+    }
+
+    hide() {
+        this.forEach((ref) => {
+            if (ref.is(HTMLDialogElement)) {
+                ref.item().close();
+            } else {
+                ref.attr('hidden', '');
+            }
+        });
+        return this;
+    }
+
+    exists() {
+        return this.item() !== undefined;
+    }
+
+    is(type) {
+        return this.item() instanceof type;
     }
 }
 
 /**
  * Runs `ParentNode#querySelectorAll` against a given context (default is document)
  * @param target { string | Node | NodeList | YzNodeReference }
- * @param context { ParentNode }
+ * @param context { ParentNode | YzNodeReference }
  * @returns YzNodeReference
  */
 function yz(target, context = document) {
     if (target instanceof Node) {
-        return new YzNodeReference([target]);
+        return new YzNodeReference(target);
     } else if (target instanceof NodeList) {
         return new YzNodeReference(target);
     } else if (typeof target === 'string') {
-        return new YzNodeReference(context.querySelectorAll(target));
+        if (context instanceof Node) {
+            return new YzNodeReference(context.querySelectorAll(target));
+        } else {
+            return context.select(target);
+        }
     } else {
         return target;
     }
+}
+
+yz.element = function element(tag) {
+    return new YzNodeReference([document.createElement(tag)]);
+}
+
+yz.fragment = function fragment() {
+    return new YzNodeReference([new DocumentFragment()]);
 }

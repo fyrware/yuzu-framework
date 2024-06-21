@@ -208,28 +208,24 @@ class Yz_Tab_Group {
             yz.ready().observe(() => {
                 function syncTabGroup() {
                     yz('.yuzu.tab-group').forEach((tabGroup) => {
-                        const activeTab = yz('.yuzu.tab.tab-active', tabGroup).item();
-                        const nextTab   = yz(`.yuzu.tab[href="${window.location.hash}"]`, tabGroup).item();
+                        const activeTab = yz('.yuzu.tab.tab-active', tabGroup);
+                        const nextTab   = yz(`.yuzu.tab[href="${window.location.hash}"]`, tabGroup);
 
-                        if (nextTab) {
-
-                            if (activeTab) {
-                                activeTab.classList.remove('tab-active');
+                        if (nextTab.exists()) {
+                            if (activeTab.exists()) {
+                                activeTab.classes().remove('tab-active');
                             }
-
-                            nextTab.classList.add('tab-active');
+                            nextTab.classes().add('tab-active');
                         }
 
-                        const activeTabContent = yz('.yuzu.tab-content.tab-content-active').item();
-                        const nextTabContent   = yz(`.yuzu.tab-content[data-hash="${window.location.hash}"]`).item();
+                        const activeTabContent = yz('.yuzu.tab-content.tab-content-active');
+                        const nextTabContent   = yz(`.yuzu.tab-content[data-hash="${window.location.hash}"]`);
 
-                        if (nextTabContent) {
-
-                            if (activeTabContent) {
-                                activeTabContent.classList.remove('tab-content-active');
+                        if (nextTabContent.exists()) {
+                            if (activeTabContent.exists()) {
+                                activeTabContent.classes().remove('tab-content-active');
                             }
-
-                            nextTabContent.classList.add('tab-content-active');
+                            nextTabContent.classes().add('tab-content-active');
                         }
                     });
                 }

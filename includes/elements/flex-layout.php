@@ -48,6 +48,11 @@ class Yz_Flex_Layout {
         $gap          = $yz->tools->get_value($props, 'gap', 0);
         $children     = $yz->tools->get_value($props, 'children');
         $width        = $yz->tools->get_value($props, 'width');
+        $height       = $yz->tools->get_value($props, 'height');
+        $padding      = $yz->tools->get_value($props, 'padding');
+        $grow         = $yz->tools->get_value($props, 'grow');
+        $shrink       = $yz->tools->get_value($props, 'shrink');
+        $overflow      = $yz->tools->get_value($props, 'overflow');
 
         assert(is_bool($inline));
         assert(in_array($direction,    Yz_Flex_Layout::VALID_DIRECTIONS));
@@ -63,8 +68,28 @@ class Yz_Flex_Layout {
             $style['gap'] = $gap;
         }
 
-        if ($width) {
+        if (isset($width)) {
             $style['width'] = is_string($width) ? $width : $width . 'px';
+        }
+
+        if (isset($height)) {
+            $style['height'] = is_string($height) ? $height : $height . 'px';
+        }
+
+        if (isset($padding)) {
+            $style['padding'] = is_string($padding) ? $padding : $padding . 'px';
+        }
+
+        if (isset($grow)) {
+            $style['flex-grow'] = (int)$grow;
+        }
+
+        if (isset($shrink)) {
+            $style['flex-shrink'] = (int)$shrink;
+        }
+
+        if (isset($overflow)) {
+            $style['overflow'] = $overflow;
         }
 
         $classes = [

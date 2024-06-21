@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/services/asset-service.php';
+require_once __DIR__ . '/services/database-service.php';
 require_once __DIR__ . '/services/forms-service.php';
 require_once __DIR__ . '/services/forum-service.php';
 require_once __DIR__ . '/services/html-service.php';
@@ -8,6 +9,7 @@ require_once __DIR__ . '/services/pages-service.php';
 require_once __DIR__ . '/services/posts-service.php';
 require_once __DIR__ . '/services/roles-service.php';
 require_once __DIR__ . '/services/settings-service.php';
+require_once __DIR__ . '/services/shop-service.php';
 require_once __DIR__ . '/services/theme-service.php';
 require_once __DIR__ . '/services/tools-service.php';
 require_once __DIR__ . '/services/uploads-service.php';
@@ -18,6 +20,7 @@ require_once __DIR__ . '/elements/button.php';
 require_once __DIR__ . '/elements/card.php';
 require_once __DIR__ . '/elements/code-block.php';
 require_once __DIR__ . '/elements/dialog.php';
+require_once __DIR__ . '/elements/divider.php';
 require_once __DIR__ . '/elements/empty-state.php';
 require_once __DIR__ . '/elements/flex-layout.php';
 require_once __DIR__ . '/elements/form.php';
@@ -68,6 +71,7 @@ class Yz {
     public static Yz $instance;
 
     public Yz_Asset_Service $assets;
+    public Yz_Database_Service $database;
     public Yz_Form_Service $forms;
     public Yz_Forum_Service $forums;
     public Yz_Html_Service $html;
@@ -75,11 +79,14 @@ class Yz {
     public Yz_Posts_Service $posts;
     public Yz_Roles_Service $roles;
     public Yz_Settings_Service $settings;
+    public Yz_Shop_Service $shop;
     public Yz_Theme_Service $theme;
     public Yz_Tools_Service $tools;
+    public Yz_Uploads_Service $uploads;
 
     public function __construct() {
         $this->assets   = new Yz_Asset_Service();
+        $this->database = new Yz_Database_Service();
         $this->forms    = new Yz_Form_Service();
         $this->forums   = new Yz_Forum_Service();
         $this->html     = new Yz_Html_Service();
@@ -87,8 +94,10 @@ class Yz {
         $this->posts    = new Yz_Posts_Service();
         $this->roles    = new Yz_Roles_Service();
         $this->settings = new Yz_Settings_Service();
+        $this->shop     = new Yz_Shop_Service();
         $this->theme    = new Yz_Theme_Service();
         $this->tools    = new Yz_Tools_Service();
+        $this->uploads  = new Yz_Uploads_Service();
     }
 
     public function load_scripts(): void {
@@ -577,3 +586,8 @@ class Yz {
 }
 
 $yz = Yz::$instance = new Yz();
+
+function yz(): Yz {
+    global $yz;
+    return $yz;
+}

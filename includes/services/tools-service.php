@@ -5,7 +5,11 @@ class Yz_Tools_Service {
     public function __construct() {}
 
     public function get_value(array $array, mixed $key, mixed $default = null) {
-        return array_key_exists($key, $array) ? $array[$key] : $default;
+        return array_key_exists($key, $array) ? $array[$key] ?? $default : $default;
+    }
+
+    public function get_query_arg(string $key, mixed $default = null) {
+        return $this->get_value($_GET, $key, $default);
     }
 
     public function join_values(array $array, string $glue = ' '): string {
@@ -34,6 +38,20 @@ class Yz_Tools_Service {
 
     public function format_field_name(string $name): string {
         return strtolower(str_replace(' ', '_', str_replace('&', 'and', $name)));
+    }
+
+    public function format_url_slug(string $slug): string {
+        return strtolower(str_replace(' ', '-', str_replace('&', 'and', $slug)));
+    }
+
+    public function format_currency(
+        $value,
+        $currency = '$',
+        $decimals = 2,
+        $decimal_separator = '.',
+        $thousands_separator = ','
+    ): string {
+        return $currency . number_format($value, $decimals, $decimal_separator, $thousands_separator);
     }
 
     public function filter_array($array, $callback): array {

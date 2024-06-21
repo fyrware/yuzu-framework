@@ -5,26 +5,30 @@ class Yz_Table_Combo_Picker {
     public static function render(array $props): void {
         global $yz;
 
-        $label = $yz->tools->get_value($props, 'label');
-        $fields = $yz->tools->get_value($props, 'fields', []);
+        $id     = $yz->tools->get_value($props, 'id');
+        $label  = $yz->tools->get_value($props, 'label');
+        $fields  = $yz->tools->get_value($props, 'fields', []);
+        $entity = $yz->tools->get_value($props, 'entity', 'Variation');
 
         $yz->html->flex_layout([
-            'gap' => 5,
+            'id'        => $id,
+            'gap'       => 5,
             'class'     => 'table-combo-picker',
             'direction' => 'column',
-            'children'  => function() use($yz, $label, $fields) {
+            'children'  => function() use($yz, $label, $fields, $entity) {
                 $yz->html->flex_layout([
                     'alignment' => 'center',
                     'justification' => 'space-between',
-                    'children' => function() use($yz, $label) {
+                    'children' => function() use($yz, $label, $entity) {
                         $yz->html->text($label, [
                             'class'   => 'table-combo-picker-label',
                             'variant' => 'label'
                         ]);
                         $yz->html->button([
+                            'class' => 'add-variation',
                             'icon'  => 'plus-circle',
                             'size' => 'small',
-                            'label' => 'Add Row'
+                            'label' => 'Add ' . $entity
                         ]);
                     }
                 ]);
@@ -78,12 +82,12 @@ class Yz_Table_Combo_Picker {
         <script>
             yz.ready().observe(() => {
                 yz('.table-combo-picker').forEach(container => {
-                    const button = yz('button', container).item();
-                    const tbody  = yz('tbody', container).item();
-                    const row    = yz('tr', tbody).item().cloneNode(true);
+                    const button = yz('button.add-variation', container);
+                    const tbody  = yz('tbody', container);
+                    const row    = yz('tr', tbody);
 
-                    button.addEventListener('click', () => {
-                        tbody.appendChild(row.cloneNode(true));
+                    button.spy('click').observe(() => {
+                        tbody.append(row.item().cloneNode(true));
                     });
                 });
             });

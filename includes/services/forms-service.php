@@ -2,6 +2,15 @@
 
 class Yz_Form_Service {
 
+    public function data(string $name, mixed $default = null): mixed {
+        global $yz;
+        return $yz->tools->get_value($_POST, $name, $default);
+    }
+
+    public function data_exists(): bool {
+        return !empty($_POST);
+    }
+
     public function register_action(string $action, callable $callback): null | bool {
         return add_action('admin_post_' . $action, function() use($action, $callback) {
             $nonce = $_POST['nonce'];

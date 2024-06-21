@@ -69,7 +69,6 @@ class Yz_Code_Block {
                 hljs.highlightAll();
 
                 yz('.code-block').forEach((container) => {
-
                     yz('.hljs', container).forEach((block) => {
                         hljs.lineNumbersBlock(block, { singleLine: true });
                     });

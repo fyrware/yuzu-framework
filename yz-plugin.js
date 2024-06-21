@@ -1,3 +1,4 @@
+yz.actions = new YzActionService();
 yz.ajax = new YzAjaxService();
 yz.cookies = new YzCookieService();
 yz.icons = new YzIconService();
@@ -20,7 +21,32 @@ yz.ready = function ready() {
     return observable;
 }
 
+yz.nextFrame = function nextFrame() {
+    const observable = new YzObservable();
 
+    window.requestAnimationFrame(() => {
+        observable.notify();
+    });
+
+    return observable;
+}
+
+Object.defineProperty(yz, 'address', {
+    get() {
+        return {
+            host: window.location.host,
+            port: window.location.port,
+            href: window.location.href,
+            path: window.location.pathname,
+            origin: window.location.origin,
+            protocol: window.location.protocol,
+            query: new URLSearchParams(window.location.search),
+            redirect(url) {
+                window.location.href = url;
+            }
+        }
+    }
+})
 
 // OLD SHIT BELOW: =========================================================
 
@@ -54,6 +80,7 @@ yz.ready = function ready() {
 //     }
 // }
 
+/** @deprecated */
 class YzEventObservable extends YzObservable {
 
     /** @type { EventTarget | YzEventWatcher } */
@@ -77,8 +104,8 @@ class YzEventObservable extends YzObservable {
                 this.notify(...args);
             });
         } else if (this.#target instanceof YzNodeReference) {
-            this.#target.forEach((element) => {
-                element.addEventListener(this.#event, (...args) => {
+            this.#target.forEach((ref) => {
+                ref.item().addEventListener(this.#event, (...args) => {
                     this.notify(...args);
                 });
             });
@@ -118,28 +145,14 @@ class YzEventObservable extends YzObservable {
  * Library of available icons (must be loaded server-side)
  * @type YzIconLibrary
  */
-yz.icons = Object.seal({
-    thin: undefined,
-    light: undefined,
-    regular: undefined,
-    bold: undefined,
-    duotone: undefined,
-    solid: undefined
-});
 
-yz.getIconSet = function yzGetIconSet(appearance) {
-    return yz.icons[appearance];
-}
-
-yz.setIconSet = function yzSetIconSet(appearance, iconSet) {
-    yz.icons[appearance] = iconSet;
-}
-
+/** @deprecated */
 yz.wordpress = Object.seal({
     ajax: '',
     nonce: '',
 });
 
+/** @deprecated */
 yz.dateLocale = 'en-US';
 
 /**
@@ -160,10 +173,12 @@ yz.dateLocale = 'en-US';
  * @param { string } event
  * @returns { YzEventObservable }
  */
+/** @deprecated */
 yz.spy = function spy(element, event) {
     return new YzEventObservable(element, event);
 }
 
+/** @deprecated */
 yz.do = function doEvent(element, event) {
     return element.dispatchEvent(
         event instanceof Event ? event : new Event(event)
@@ -176,6 +191,7 @@ yz.do = function doEvent(element, event) {
  * @param { FormData | object } data
  * @returns { YzObservable }
  */
+/** @deprecated */
 yz.submit = function request(action, data = new FormData()) {
     const observable = new YzObservable();
 
@@ -211,6 +227,7 @@ yz.submit = function request(action, data = new FormData()) {
  * @param { object } params
  * @returns { YzObservable }
  */
+/** @deprecated */
 yz.query = function query(action, params = {}) {
     const observable = new YzObservable();
 
@@ -233,6 +250,7 @@ yz.query = function query(action, params = {}) {
 /**
  * @param { HTMLTemplateElement } template
  */
+/** @deprecated */
 yz.instance = function instance(template) {
     return document.importNode(template.content, true);
 }
@@ -242,6 +260,7 @@ yz.instance = function instance(template) {
  * @param { Date | string | number } date
  * @param { DateTimeFormatOptions } options
  */
+/** @deprecated */
 yz.date = function date(date = Date.now(), options = {}) {
     return new Date(date).toLocaleDateString(yz.dateLocale, options);
 }
@@ -252,6 +271,7 @@ yz.date = function date(date = Date.now(), options = {}) {
  * @param { number } delay
  * @returns { (function(...[*]): void) | * }
  */
+/** @deprecated */
 yz.debounce = function debounce(fn, delay = 250) {
     let timeout;
 
@@ -267,6 +287,7 @@ yz.debounce = function debounce(fn, delay = 250) {
  * @param delay
  * @returns {(function(...[*]): void)|*}
  */
+/** @deprecated */
 yz.throttle = function throttle(fn, delay = 250) {
     let timeout;
 
@@ -285,6 +306,7 @@ yz.throttle = function throttle(fn, delay = 250) {
  * @param value
  * @returns { boolean }
  */
+/** @deprecated */
 yz.defined = function defined(value) {
     return value !== undefined;
 }
@@ -294,6 +316,7 @@ yz.defined = function defined(value) {
  * @param element
  * @param options
  */
+/** @deprecated */
 yz.pickMedia = function pickMedia(element, options = {}) {
     const mediaFrame = wp.media(options);
     const observable = new YzObservable();
@@ -312,6 +335,7 @@ yz.pickMedia = function pickMedia(element, options = {}) {
     return observable;
 }
 
+/** @deprecated */
 yz.ux = {
     /**
      * Make a list element reorderable, triggered on drag & drop

@@ -7,7 +7,11 @@ class YzIconService {
     #duotone;
     #solid;
 
-    list(appearance) {
+    /**
+     * @param { string } appearance
+     * @returns { object }
+     */
+    library(appearance) {
         switch (appearance) {
             case 'thin':
                 return this.#thin;
@@ -41,7 +45,7 @@ class YzIconService {
         }
     }
 
-    set(appearance, iconSet) {
+    learn(appearance, iconSet) {
         switch (appearance) {
             case 'thin':
                 this.#thin = iconSet;

@@ -11,6 +11,21 @@ class Yz_Calendar {
         $events = $yz->tools->get_value($props, 'events', []);
         $today  = $yz->tools->get_value($props, 'today', 0);
 
+        foreach ($events as &$event) {
+
+            for ($i = 0; $i < count($event['dates']); $i++) {
+                $date = $event['dates'][$i];
+
+                if (is_string($date)) {
+                    $event['dates'][$i] = [
+                        'year'  => (int)date('Y', strtotime($date)),
+                        'month' => (int)date('n', strtotime($date)),
+                        'day'   => (int)date('j', strtotime($date))
+                    ];
+                }
+            }
+        }
+
         $yz->html->grid_layout([
             'as'      => 'ol',
             'id'      => $id,
@@ -28,14 +43,17 @@ class Yz_Calendar {
 
                 for ($i = 0; $i < 7 * 5; $i++) {
                     $day_number = $i;
+                    $month_number = $current_month;
 
                     if ($i < $first_day_offset) {
                         $previous_month      = $current_month - 1;
                         $previous_month_year = (int)date('Y', strtotime("$current_year-$current_month-1 -1 month"));
                         $previous_month_days = (int)date('t', strtotime("$previous_month_year-$previous_month-1"));
                         $day_number          = $previous_month_days - $first_day_offset + $i + 1;
+                        $month_number        = $previous_month;
                     } else if ($i > $current_month_days + $first_day_offset - 1) {
                         $day_number = $i - $current_month_days - $first_day_offset + 1;
+                        $month_number = $current_month + 1;
                     } else {
                         $day_number -= $first_day_offset - 1;
                     }
@@ -56,7 +74,8 @@ class Yz_Calendar {
                     $yz->html->element('li', [
                         'class' => 'yz calendar-day',
                         'data' => [
-                            'day' => $day_number
+                            'day'   => $day_number,
+                            'month' => $month_number,
                         ],
                         'children' => function() use($yz, $today, $current_year, $current_month, $day_number, $day_events) {
                             $yz->html->flex_layout([
@@ -105,10 +124,11 @@ class Yz_Calendar {
                                             'gap'   => 5,
                                             'class' => $day_classes,
                                             'data'  => [
-                                                'event_id' => $event['id']
+                                                'event_id' => $event['id'],
+                                                'event_date' => $event_date['year'] . '-' . $event_date['month'] . '-' . $event_date['day'],
                                             ],
                                             'children' => function() use($yz, $event, $event_date) {
-                                                $yz->html->text($event['title'], [ 'class' => 'calendar day-event-name' ]);
+                                                $yz->html->text($event['title'], [ 'class' => 'calendar-day-event-name' ]);
 
                                                 if (count($event['dates']) > 1) {
                                                     $yz->html->text($yz->tools->index_of($event['dates'], $event_date) + 1 . '/' . count($event['dates']), [ 'class' => 'calendar-day-event-count' ]);

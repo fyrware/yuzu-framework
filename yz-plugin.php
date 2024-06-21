@@ -18,7 +18,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/utilities/markup.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/page.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/plugin.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/post.php';
-require_once plugin_dir_path(__FILE__) . 'includes/utilities/schema.php';
+//require_once plugin_dir_path(__FILE__) . 'includes/utilities/schema.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/script.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/string.php';
 require_once plugin_dir_path(__FILE__) . 'includes/utilities/style.php';
@@ -107,6 +107,17 @@ add_action('init', function() {
         $scanned_directory = Yz_Uploads_Service::scan_uploads_dir($path);
 
         wp_send_json_success($scanned_directory->to_array());
+    });
+
+    $yz->forms->register_async_form('yz_get_upload_url', function() use($yz) {
+        $id  = $yz->tools->get_value($_GET, 'id');
+        $url = wp_get_attachment_url(intval($id));
+
+        if (!$url) {
+            wp_send_json_error('Upload not found');
+        } else {
+            wp_send_json_success([ 'url' => $url ]);
+        }
     });
 });
 

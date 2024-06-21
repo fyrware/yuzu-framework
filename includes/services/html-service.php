@@ -74,6 +74,14 @@ class Yz_Html_Service {
         });
     }
 
+    public function divider(array $props = []): void {
+        Yz_Divider::render($props);
+
+        $this->enqueue_dependency('yz_divider_dependencies', function() {
+            Yz_Divider::render_style();
+        });
+    }
+
     public function empty_state(array $props = []): void {
         Yz_Empty_State::render($props);
 
@@ -117,6 +125,10 @@ class Yz_Html_Service {
 
     public function image(string $src, array $props = []): void {
         Yz_Image::render($src, $props);
+
+        $this->enqueue_dependency('yz_image_dependencies', function() {
+            Yz_Image::render_style();
+        });
     }
 
     public function input(array $props = []): void {
@@ -222,7 +234,7 @@ class Yz_Html_Service {
         });
     }
 
-    public function transport_destination(string $name, array $props = []): void {
+    public function transport_destination(string $name = 'default_portal', array $props = []): void {
         Yz_Portal::render($name, $props);
     }
 

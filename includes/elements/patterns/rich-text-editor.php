@@ -9,7 +9,9 @@ class Yz_Rich_Text_Editor {
         $class             = $yz->tools->get_value($props, 'class');
         $name              = $yz->tools->get_value($props, 'name', $id);
         $value             = $yz->tools->get_value($props, 'value', '');
+        $label             = $yz->tools->get_value($props, 'label');
         $rows              = $yz->tools->get_value($props, 'rows', 5);
+        $height            = $yz->tools->get_value($props, 'height');
         $enable_media      = $yz->tools->get_value($props, 'enable_media', false);
         $enable_raw_editor = $yz->tools->get_value($props, 'enable_raw_editor', false);
 
@@ -23,11 +25,21 @@ class Yz_Rich_Text_Editor {
 
         $yz->html->element('div', [
             'class' => $classes,
-            'children' => function() use($id, $name, $value, $rows, $enable_media, $enable_raw_editor) {
+            'children' => function() use($id, $name, $value, $label, $rows, $height, $enable_media, $enable_raw_editor) {
+                if ($label) {
+                    yz()->html->text($label, [
+                        'class' => 'text-area-label',
+                        'variant' => 'label'
+                    ]);
+                    yz()->html->element('div', [
+                        'style' => 'height: 5px'
+                    ]);
+                }
                 wp_editor($value, $id, [
                     'quicktags'     => $enable_raw_editor,
                     'media_buttons' => $enable_media,
                     'textarea_rows' => $rows,
+                    'editor_height' => $height,
                     'textarea_name' => $name,
                     'editor_class'  => 'yz rich-text-editor-textarea'
                 ]);
