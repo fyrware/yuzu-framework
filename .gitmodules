@@ -1,6 +1,7 @@
 [submodule "icons"]
 	path = icons
 	url = https://github.com/fyrware/phosphor-icons.git
+	branch = yz-plugin
 [submodule "colors"]
 	path = colors
 	url = https://github.com/mexitek/phpColors.git
