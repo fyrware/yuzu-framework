@@ -79,12 +79,28 @@ class Yz_Posts_Service {
         return $query->get_posts();
     }
 
+    public function query_posts(array $query_options): WP_Query {
+        if (!array_key_exists('posts_per_page', $query_options)) {
+            $query_options['posts_per_page'] = -1;
+        }
+
+        return new WP_Query($query_options);
+    }
+
     public function get_metadata(int $post_id, string $key, bool $single = true): mixed {
         return get_post_meta($post_id, $key, $single);
     }
 
+    public function has_featured_image(int $post_id): bool {
+        return has_post_thumbnail($post_id);
+    }
+
     public function get_featured_image_url(int $post_id, string $size = 'full'): string {
         return wp_get_attachment_image_url(get_post_thumbnail_id($post_id), $size);
+    }
+
+    public function get_featured_image_id(int $post_id): int {
+        return get_post_thumbnail_id($post_id);
     }
 
     public function create_post(string $post_type, array $post_options): int {

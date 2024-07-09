@@ -517,7 +517,6 @@ class Yz_Upload_Picker {
     public static function render_script(): void { ?>
         <script>
             yz.ready().observe(() => {
-                console.log('upload-picker')
                 yz('.upload-picker').forEach((uploadPicker) => {
                     const uniqueId = uploadPicker.data('uniqueId');
                     const uploadPickerTrigger = yz('.upload-picker-trigger[data-input="' + uniqueId + '"]');

@@ -126,6 +126,7 @@ class Yz_Calendar {
                                             'data'  => [
                                                 'event_id' => $event['id'],
                                                 'event_date' => $event_date['year'] . '-' . $event_date['month'] . '-' . $event_date['day'],
+                                                'event'      => esc_attr(json_encode($event))
                                             ],
                                             'children' => function() use($yz, $event, $event_date) {
                                                 $yz->html->text($event['title'], [ 'class' => 'calendar-day-event-name' ]);

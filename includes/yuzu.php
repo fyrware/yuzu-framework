@@ -1,9 +1,11 @@
 <?php
 
 require_once __DIR__ . '/services/asset-service.php';
+require_once __DIR__ . '/services/calendar-service.php';
 require_once __DIR__ . '/services/database-service.php';
 require_once __DIR__ . '/services/forms-service.php';
 require_once __DIR__ . '/services/forum-service.php';
+require_once __DIR__ . '/services/geolocation-service.php';
 require_once __DIR__ . '/services/html-service.php';
 require_once __DIR__ . '/services/pages-service.php';
 require_once __DIR__ . '/services/posts-service.php';
@@ -71,9 +73,11 @@ class Yz {
     public static Yz $instance;
 
     public Yz_Asset_Service $assets;
+    public Yz_Calendar_Service $calendar;
     public Yz_Database_Service $database;
     public Yz_Form_Service $forms;
     public Yz_Forum_Service $forums;
+    public Yz_Geolocation_Service $geolocation;
     public Yz_Html_Service $html;
     public Yz_Pages_Service $pages;
     public Yz_Posts_Service $posts;
@@ -85,19 +89,21 @@ class Yz {
     public Yz_Uploads_Service $uploads;
 
     public function __construct() {
-        $this->assets   = new Yz_Asset_Service();
-        $this->database = new Yz_Database_Service();
-        $this->forms    = new Yz_Form_Service();
-        $this->forums   = new Yz_Forum_Service();
-        $this->html     = new Yz_Html_Service();
-        $this->pages    = new Yz_Pages_Service();
-        $this->posts    = new Yz_Posts_Service();
-        $this->roles    = new Yz_Roles_Service();
-        $this->settings = new Yz_Settings_Service();
-        $this->shop     = new Yz_Shop_Service();
-        $this->theme    = new Yz_Theme_Service();
-        $this->tools    = new Yz_Tools_Service();
-        $this->uploads  = new Yz_Uploads_Service();
+        $this->assets      = new Yz_Asset_Service();
+        $this->calendar    = new Yz_Calendar_Service();
+        $this->database    = new Yz_Database_Service();
+        $this->forms       = new Yz_Form_Service();
+        $this->forums      = new Yz_Forum_Service();
+        $this->geolocation = new Yz_Geolocation_Service();
+        $this->html        = new Yz_Html_Service();
+        $this->pages       = new Yz_Pages_Service();
+        $this->posts       = new Yz_Posts_Service();
+        $this->roles       = new Yz_Roles_Service();
+        $this->settings    = new Yz_Settings_Service();
+        $this->shop        = new Yz_Shop_Service();
+        $this->theme       = new Yz_Theme_Service();
+        $this->tools       = new Yz_Tools_Service();
+        $this->uploads     = new Yz_Uploads_Service();
     }
 
     public function load_scripts(): void {

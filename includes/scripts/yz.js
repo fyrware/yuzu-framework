@@ -55,6 +55,10 @@ class YzNodeReference {
         return Array.from(this.#nodes)[index];
     }
 
+    count() {
+        return this.#nodes.size;
+    }
+
     first() {
         return yz(this.item(0));
     }
