@@ -241,7 +241,7 @@ class YzNodeReference {
             if (ref.is(HTMLDialogElement)) {
                 ref.item().close();
             } else {
-                ref.attr('hidden', '');
+                ref.prop('hidden', true);
             }
         });
         return this;

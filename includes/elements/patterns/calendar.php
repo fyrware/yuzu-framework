@@ -76,6 +76,7 @@ class Yz_Calendar {
                         'data' => [
                             'day'   => $day_number,
                             'month' => $month_number,
+                            'year'  => $current_year
                         ],
                         'children' => function() use($yz, $today, $current_year, $current_month, $day_number, $day_events) {
                             $yz->html->flex_layout([

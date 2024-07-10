@@ -119,7 +119,7 @@ class Yz_Posts_Service {
             'post_status'  => $post_status
         ]);
 
-        if (isset($post_image)) $this->update_featured_image($post_id, $post_image);
+        if (!empty($post_image)) $this->update_featured_image($post_id, $post_image);
 
         foreach ($post_meta as $key => $value) {
             $this->update_metadata($post_id, $key, $value);
@@ -144,7 +144,7 @@ class Yz_Posts_Service {
             'post_status'  => $post_status
         ]);
 
-        if (isset($post_image)) $this->update_featured_image($post_id, $post_image);
+        if (!empty($post_image)) $this->update_featured_image($post_id, $post_image);
 
         foreach ($post_meta as $key => $value) {
             $this->update_metadata($post_id, $key, $value);
