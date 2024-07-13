@@ -44,6 +44,7 @@ class Yz_Calendar {
                 for ($i = 0; $i < 7 * 5; $i++) {
                     $day_number = $i;
                     $month_number = $current_month;
+                    $year_number = $current_year;
 
                     if ($i < $first_day_offset) {
                         $previous_month      = $current_month - 1;
@@ -53,14 +54,20 @@ class Yz_Calendar {
                         $month_number        = $previous_month;
                     } else if ($i > $current_month_days + $first_day_offset - 1) {
                         $day_number = $i - $current_month_days - $first_day_offset + 1;
-                        $month_number = $current_month + 1;
+
+                        if ($current_month === 12) {
+                            $year_number = $current_year + 1;
+                            $month_number = 1;
+                        } else {
+                            $month_number = $current_month + 1;
+                        }
                     } else {
                         $day_number -= $first_day_offset - 1;
                     }
 
-                    $day_events = $yz->tools->filter_array($events, function($event) use($current_year, $current_month, $day_number) {
+                    $day_events = $yz->tools->filter_array($events, function($event) use($year_number, $month_number, $day_number) {
                         foreach ($event['dates'] as $date) {
-                            if ($date['year'] === $current_year && $date['month'] === $current_month && $date['day'] === $day_number) {
+                            if ($date['year'] === $year_number && $date['month'] === $month_number && $date['day'] === $day_number) {
                                 return true;
                             }
                         }

@@ -16,7 +16,8 @@ class YzAjaxService {
         }).join('&');
 
         fetch(this.url + queryString, options).then(async response => {
-            observable.notify(await response.json());
+            const body = await response.text();
+            observable.notify(body ? JSON.parse(body) : { success: true });
         });
 
         return observable;

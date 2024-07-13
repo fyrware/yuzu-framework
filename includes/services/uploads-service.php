@@ -83,14 +83,12 @@ class Yz_Uploads_File {
         return $this->post->post_mime_type;
     }
 
-    public function get_width(): int {
-        $meta = wp_get_attachment_metadata($this->post->ID);
-        return $meta['width'];
+    public function get_width(): ?int {
+        return yz()->tools->get_value(wp_get_attachment_metadata($this->post->ID), 'width');
     }
 
-    public function get_height(): int {
-        $meta = wp_get_attachment_metadata($this->post->ID);
-        return $meta['height'];
+    public function get_height(): ?int {
+        return yz()->tools->get_value(wp_get_attachment_metadata($this->post->ID), 'height');
     }
 
     public function get_file_size(): int {
@@ -128,16 +126,87 @@ class Yz_Uploads_Service {
 
     public const ATTACHMENT_POST_TYPE = 'attachment';
 
+    public function resolve_path(...$paths): string {
+        return yz()->tools->get_value(wp_upload_dir(), 'basedir') . '/' . implode('/', $paths);
+    }
+
+    public function resolve_url(...$paths): string {
+        return yz()->tools->get_value(wp_upload_dir(), 'baseurl') . '/' . implode('/', $paths);
+    }
+
     public function create_folder(string $path): void {
+        $path = preg_replace('/[^a-zA-Z0-9\/-]/', '', $path);
+
         if (str_starts_with($path, '/')) {
             $path = substr($path, 1);
         }
+
         if (str_ends_with($path, '/')) {
             $path = substr($path, 0, -1);
         }
+
         if (!dir(wp_upload_dir()['basedir'] . '/' . $path)) {
             mkdir(wp_upload_dir()['basedir'] . '/' . $path);
         }
+    }
+
+    public function save_file_from_url(string $path, string $url, ?string $file_name = null): bool {
+        $uploads_dir = wp_get_upload_dir();
+        $uploads_dir_path = yz()->tools->get_value($uploads_dir, 'basedir');
+
+        if (is_null($file_name)) {
+            $file_name = basename($url);
+        }
+
+        $file_name_parts = yz()->tools->split_string($file_name, '.');
+        $file_name = yz()->tools->get_first($file_name_parts);
+        $file_extension = yz()->tools->get_last($file_name_parts);
+
+        $upload_location = $uploads_dir_path . '/' . $path . '/' . $file_name . '.' . $file_extension;
+        $download_file_response  = wp_remote_get($url);
+
+        if (is_wp_error($download_file_response)) {
+            return false;
+        }
+
+        $download_file_body = wp_remote_retrieve_body($download_file_response);
+        $uploaded_file      = file_put_contents($upload_location, $download_file_body);
+
+        if (!$uploaded_file) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function save_file(string $path, array $file): void {
+        $uploads_dir = wp_get_upload_dir();
+        $uploads_dir_path = $uploads_dir['basedir'];
+
+        $file_path = $uploads_dir_path . '/' . $path . $file['name'];
+
+        if (file_exists($file_path)) {
+            wp_send_json_error('File already exists');
+        }
+
+        if (!move_uploaded_file($file['tmp_name'], $file_path)) {
+            wp_send_json_error('Failed to save file');
+        }
+
+        $attachment_id = wp_insert_attachment([
+            'post_title'     => $file['name'],
+            'post_content'   => '',
+            'post_status'    => 'inherit',
+            'post_mime_type' => $file['type']
+        ], $file_path);
+
+        if (is_wp_error($attachment_id)) {
+            wp_send_json_error($attachment_id->get_error_message());
+        }
+
+        wp_update_attachment_metadata($attachment_id, wp_generate_attachment_metadata($attachment_id, $file_path));
+
+        wp_send_json_success([ 'id' => $attachment_id ]);
     }
 
     /**

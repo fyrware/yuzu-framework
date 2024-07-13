@@ -119,6 +119,17 @@ add_action('init', function() {
             wp_send_json_success([ 'url' => $url ]);
         }
     });
+
+    yz()->forms->register_async_form('yz_create_upload_folder', function() {
+        yz()->uploads->create_folder(yz()->tools->get_value($_GET, 'path'));
+    });
+
+    yz()->forms->register_async_form('yz_upload_file', function() {
+        $path = yz()->tools->get_value($_POST, 'path');
+        $file  = yz()->tools->get_value($_FILES, 'file');
+
+        yz()->uploads->save_file($path, $file);
+    });
 });
 
 // TODO: delete this, finish refactor in other plugins to remove legacy functions

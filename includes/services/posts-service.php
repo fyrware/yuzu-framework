@@ -131,11 +131,13 @@ class Yz_Posts_Service {
     public function update_post(int $post_id, array $post_options): void {
         global $yz;
 
-        $post_title   = $yz->tools->get_value($post_options, 'title', '');
-        $post_content = $yz->tools->get_value($post_options, 'content', '');
+        $post_title   = $yz->tools->get_value($post_options, 'title');
+        $post_content = $yz->tools->get_value($post_options, 'content');
         $post_status  = $yz->tools->get_value($post_options, 'status', 'publish');
         $post_image   = $yz->tools->get_value($post_options, 'image');
         $post_meta    = $yz->tools->get_value($post_options, 'metadata', []);
+
+//        var_dump($post_title);
 
         wp_update_post([
             'ID'           => $post_id,
@@ -143,6 +145,10 @@ class Yz_Posts_Service {
             'post_content' => $post_content,
             'post_status'  => $post_status
         ]);
+
+        // TODO: why is this call necessary in order for the title to actually be set!???
+//        get_the_title($post_id);
+//        wp_die();
 
         if (!empty($post_image)) $this->update_featured_image($post_id, $post_image);
 

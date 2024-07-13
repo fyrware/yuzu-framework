@@ -80,6 +80,10 @@ class YzNodeReference {
         return new YzNodeReference(nodes);
     }
 
+    closest(selector) {
+        return new YzNodeReference(Array.from(this.#nodes).map((node) => node.closest(selector)).filter(Boolean));
+    }
+
     spy(event) {
         return new YzNodeReferenceObservable(this, event);
     }

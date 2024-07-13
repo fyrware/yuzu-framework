@@ -8,8 +8,20 @@ class Yz_Tools_Service {
         return array_key_exists($key, $array) ? $array[$key] ?? $default : $default;
     }
 
+    public function get_first(array $array, mixed $default = null) {
+        return reset($array) ?: $default;
+    }
+
+    public function get_last(array $array, mixed $default = null) {
+        return end($array) ?: $default;
+    }
+
     public function get_query_arg(string $key, mixed $default = null) {
         return $this->get_value($_GET, $key, $default);
+    }
+
+    public function split_string(string $string, string $delimiter = ' '): array {
+        return explode($delimiter, $string);
     }
 
     public function join_values(array $array, string $glue = ' '): string {
@@ -81,6 +93,10 @@ class Yz_Tools_Service {
                 return $value;
             }
         }
+    }
+
+    public function has_value(array $array, callable $callback): bool {
+        return $this->find_value($array, $callback) !== null;
     }
 
     public function console_log(mixed ...$values) { ?>

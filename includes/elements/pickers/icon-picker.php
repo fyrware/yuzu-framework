@@ -313,6 +313,13 @@ class Yz_Icon_Picker {
                     const dialog       = yz(`#${ input.name() }_dialog`);
                     const dialogForm   = yz('form', dialog);
 
+                    input.spy('change').observe(change => {
+                        const selectedIconImage = yz(`input[name="${ input.name() }"] + .flex-layout .selected-icon`);
+                        const rootSrc = selectedIconImage.prop('src').split('/').slice(0, -1).join('/');
+
+                        selectedIconImage.prop('src', rootSrc + '/' + change.currentTarget.value + '.svg');
+                    });
+
                     iconPicker.spy('click').observe(() => {
                         const docFragment = yz.fragment();
 
