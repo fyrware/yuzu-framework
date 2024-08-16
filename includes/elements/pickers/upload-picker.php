@@ -209,10 +209,17 @@ class Yz_Upload_Picker {
                                         ]);
                                     }
                                 ]);
-                                $yz->html->grid_layout([
-                                    'gap' => 20,
-                                    'class' => 'upload-picker-grid',
-                                    'columns' => 4,
+                                yz()->html->flex_layout([
+                                    'grow' => true,
+                                    'padding' => 20,
+                                    'overflow' => 'auto',
+                                    'children' => function() {
+                                        yz()->html->grid_layout([
+                                            'gap' => 20,
+                                            'class' => 'upload-picker-grid',
+                                            'columns' => 4,
+                                        ]);
+                                    }
                                 ]);
                                 $yz->html->empty_state([
                                     'icon' => 'file-dashed',
@@ -468,6 +475,8 @@ class Yz_Upload_Picker {
 
             .yz.upload-picker-viewer {
                 flex-grow: 1;
+                flex-shrink: 1;
+                height: 0;
             }
 
             .yz.upload-picker-details-empty {
@@ -534,9 +543,8 @@ class Yz_Upload_Picker {
             }
 
             .yz.upload-picker-grid {
+                align-self: start;
                 flex-grow: 1;
-                height: fit-content;
-                padding: 20px;
             }
 
             .yz.upload-picker-entry-wrapper {

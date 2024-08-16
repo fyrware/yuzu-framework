@@ -28,10 +28,12 @@ class Yz_Text_Area {
             'gap'       => 5,
             'direction' => 'column',
             'children'  => function() use($yz, $label, $id, $name, $classes, $placeholder, $required, $hidden, $value, $rows) {
-                $yz->html->text($label, [
-                    'class'   => 'text-area-label',
-                    'variant' => 'label'
-                ]);
+                if (!$hidden) {
+                    $yz->html->text($label, [
+                        'class'   => 'text-area-label',
+                        'variant' => 'label'
+                    ]);
+                }
                 $yz->html->element('textarea', [
                     'id'    => $id,
                     'name'  => $name,

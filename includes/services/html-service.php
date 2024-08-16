@@ -165,6 +165,7 @@ class Yz_Html_Service {
 
         $this->enqueue_dependency('yz_rich_text_editor_dependencies', function() {
             Yz_Rich_Text_Editor::render_style();
+            Yz_Rich_Text_Editor::render_script();
         });
     }
 

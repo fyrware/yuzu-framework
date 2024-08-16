@@ -454,6 +454,7 @@ class Yz {
 
         static::use_once(static::RICH_TEXT_EDITOR_DEPENDENCIES, function() {
             Yz_Rich_Text_Editor::render_style();
+            Yz_Rich_Text_Editor::render_script();
         });
     }
 

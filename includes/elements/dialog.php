@@ -239,8 +239,6 @@ class Yz_Dialog {
                     const modal       = 'modal'       in dialog.item().dataset;
                     const dismissible = 'dismissible' in dialog.item().dataset;
 
-                    console.log('dialog', dialog, open, modal, dismissible)
-
                     if (open && modal) {
                         dialog.hide()
                         dialog.show({ modal: true })
