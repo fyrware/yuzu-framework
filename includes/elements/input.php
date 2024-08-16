@@ -41,6 +41,7 @@ class Yz_Input {
         $width         = $yz->tools->get_value($props, 'width');
         $autofocus     = $yz->tools->get_value($props, 'autofocus', false);
         $data_set      = $yz->tools->get_value($props, 'data', []);
+        $no_validate    = $yz->tools->get_value($props, 'no_validate', false);
 
         if ($type === 'currency') {
             $step = 'any';
@@ -98,7 +99,7 @@ class Yz_Input {
                 'class' => $classes,
                 'data'  => $data_set,
                 'attr'  => [
-                    'type'        => $type,
+                    'type'        => $no_validate ? 'text' : $type,
                     'value'       => $value,
                     'placeholder' => $placeholder,
                     'required'    => $required,
