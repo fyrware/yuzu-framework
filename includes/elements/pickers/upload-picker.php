@@ -5,15 +5,15 @@ class Yz_Upload_Picker {
     public static function render(array $props): void {
         global $yz;
 
-        $id       = $yz->tools->get_value($props, 'id');
-        $name     = $yz->tools->get_value($props, 'name', $id);
-        $class    = $yz->tools->get_value($props, 'class');
-        $path     = $yz->tools->get_value($props, 'path');
-        $label    = $yz->tools->get_value($props, 'label');
-        $value    = $yz->tools->get_value($props, 'value');
-        $preview  = $yz->tools->get_value($props, 'preview');
-        $hidden   = $yz->tools->get_value($props, 'hidden');
-        $required = $yz->tools->get_value($props, 'required');
+        $id       = yz()->tools->get_value($props, 'id');
+        $name     = yz()->tools->get_value($props, 'name', $id);
+        $class    = yz()->tools->get_value($props, 'class');
+        $path     = yz()->tools->get_value($props, 'path');
+        $label    = yz()->tools->get_value($props, 'label');
+        $value    = yz()->tools->get_value($props, 'value');
+        $preview  = yz()->tools->get_value($props, 'preview');
+        $hidden   = yz()->tools->get_value($props, 'hidden');
+        $required = yz()->tools->get_value($props, 'required');
 
         assert(isset($name), 'name is required');
 
@@ -28,40 +28,40 @@ class Yz_Upload_Picker {
         $unique_id = uniqid();
 
         if (!$hidden) {
-            $yz->html->flex_layout([
+            yz()->html->flex_layout([
                 'class' => 'upload-picker-trigger',
                 'direction' => 'column',
                 'data' => [
                     'input' => $unique_id
                 ],
                 'children' => function() use($yz, $label, $value, $preview) {
-                    $yz->html->text($label, [ 'class' => 'upload-picker-label', 'variant' => 'label' ]);
-                    $yz->html->flex_layout([
+                    yz()->html->text($label, [ 'class' => 'upload-picker-label', 'variant' => 'label' ]);
+                    yz()->html->flex_layout([
                         'class' => 'upload-picker-preview',
                         'direction' => 'column',
                         'alignment' => 'center',
                         'justification' => 'center',
                         'children' => function() use($yz, $value) {
                             if ($value) {
-                                $yz->html->image($value);
+                                yz()->html->image($value);
                             } else {
-                                $yz->html->flex_layout([
+                                yz()->html->flex_layout([
                                     'class' => 'upload-picker-placeholder',
-                                    'children' => function() use($yz) {
-                                        $yz->html->icon('park', [ 'appearance' => 'light' ]);
+                                    'children' => function() {
+                                        yz()->html->icon('park', [ 'appearance' => 'light' ]);
                                     }
                                 ]);
                             }
                         }
                     ]);
-                    $yz->html->flex_layout([
+                    yz()->html->flex_layout([
                         'class' => 'upload-picker-actions',
-                        'children' => function() use($yz) {
-                            $yz->html->button([
+                        'children' => function() {
+                            yz()->html->button([
                                 'class' => 'upload-picker-select',
                                 'label' => 'Select File'
                             ]);
-                            $yz->html->button([
+                            yz()->html->button([
                                 'class' => 'upload-picker-remove',
                                 'color' => 'danger',
                                 'icon' => 'x-circle'
@@ -72,7 +72,7 @@ class Yz_Upload_Picker {
             ]);
         }
 
-        $yz->html->input([
+        yz()->html->input([
             'id' => $id,
             'name' => $name,
             'class' => $classes,
@@ -83,7 +83,7 @@ class Yz_Upload_Picker {
             ]
         ]);
 
-        $yz->html->dialog([
+        yz()->html->dialog([
             'modal' => true,
             'full_size' => true,
             'icon' => 'folders',
@@ -94,221 +94,327 @@ class Yz_Upload_Picker {
                 'unique-id' => $unique_id
             ],
             'children' => function() use($path, $unique_id) {
-                global $yz;
+                yz()->html->element('template', [
+                    'data' => [ 'template' => 'folder' ],
+                    'children' => function() {
+                        yz()->html->card([
+                            'padding' => 20,
+                            'class' => 'upload-picker-entry-wrapper',
+                            'children' => function() {
+                                yz()->html->flex_layout([
+                                    'gap' => 10,
+                                    'class' => 'upload-picker-entry upload-picker-folder',
+                                    'direction' => 'column',
+                                    'alignment' => 'center',
+                                    'children' => function() {
+                                        yz()->html->icon('folder-open', [ 'appearance' => 'duotone' ]);
+                                        yz()->html->flex_layout([
+                                            'alignment' => 'center',
+                                            'direction' => 'column',
+                                            'children' => function() {
+                                                yz()->html->text('', [ 'class' => 'upload-picker-entry-name', 'variant' => 'strong' ]);
+                                                yz()->html->text('FOLDER', [ 'class' => 'upload-picker-entry-meta' ]);
+                                            }
+                                        ]);
+                                    }
+                                ]);
+                            }
+                        ]);
+                    }
+                ]);
 
-                $yz->html->flex_layout([
+                yz()->html->element('template', [
+                    'data' => [ 'template' => 'file' ],
+                    'children' => function() {
+                        yz()->html->card([
+                            'class'    => 'upload-picker-entry-wrapper',
+                            'children' => function() {
+                                yz()->html->flex_layout([
+                                    'gap'       => 10,
+                                    'class'     => 'upload-picker-entry upload-picker-file',
+                                    'direction' => 'column',
+                                    'alignment' => 'center',
+                                    'children'  => function() {
+                                        yz()->html->card([
+                                            'padding' => 5,
+                                            'children' => function() {
+                                                yz()->html->image('', [ 'class' => 'upload-picker-entry-image' ]);
+                                            }
+                                        ]);
+                                        yz()->html->flex_layout([
+                                            'alignment' => 'center',
+                                            'direction' => 'column',
+                                            'width'     => '100%',
+                                            'children'  => function() {
+                                                yz()->html->text('', [ 'class' => 'upload-picker-entry-name', 'variant' => 'strong' ]);
+                                                yz()->html->text('', [ 'class' => 'upload-picker-entry-meta' ]);
+                                            }
+                                        ]);
+                                    }
+                                ]);
+                            }
+                        ]);
+                    }
+                ]);
+
+                yz()->html->flex_layout([
                     'direction' => 'column',
                     'class' => 'upload-picker-layout',
                     'children' => function () use ($path, $unique_id) {
-                        global $yz;
-
-                        $yz->html->flex_layout([
-                            'gap' => 10,
-                            'alignment' => 'center',
-                            'class' => 'upload-picker-toolbar',
-                            'children' => function () use ($path, $unique_id) {
-                                global $yz;
-
-                                $yz->html->button([
-                                    'class' => 'upload-picker-back-button',
-                                    'icon' => 'arrow-fat-left',
-                                ]);
-                                $yz->html->element('div', [
-                                    'class' => 'upload-picker-toolbar-path',
-                                    'children' => function () use ($path) {
-                                        global $yz;
-
-                                        $yz->html->text('file://uploads/' . ($path ?? ''));
-                                    }
-                                ]);
-                                $yz->html->button([
-                                    'class' => 'upload-picker-new-folder',
-                                    'icon' => 'folder-plus',
-                                    'label' => 'New Folder'
-                                ]);
-                                yz()->html->input([
-                                    'id'     => $unique_id . '_upload-picker-file-input',
-                                    'class'  => 'upload-picker-file-input',
-                                    'type'   => 'file',
-                                    'hidden' => true,
-                                ]);
-                                yz()->html->element('label', [
-                                    'class' => 'upload-picker-upload',
-                                    'attr' => [
-                                        'for' => $unique_id . '_upload-picker-file-input'
-                                    ],
+                        yz()->html->element('div', [
+                            'style' => [
+                                'height' => '8px'
+                            ]
+                        ]);
+                        yz()->html->tab_group([
+                            'nolink' => true,
+                            'nopad' => true,
+                            'tabs' => [
+                                [
+                                    'icon' => 'camera',
+                                    'label' => 'All Media',
                                     'children' => function() {
-                                        yz()->html->icon('upload', [ 'appearance' => 'duotone' ]);
-                                        yz()->html->text('Upload File');
+                                        yz()->html->flex_layout([
+                                            'class' => 'upload-picker-viewer-all',
+                                            'children' => function() {
+                                                yz()->html->flex_layout([
+                                                    'grow' => true,
+                                                    'direction' => 'column',
+                                                    'padding' => 20,
+                                                    'overflow' => 'auto',
+                                                    'children' => function() {
+                                                        yz()->html->grid_layout([
+                                                            'gap' => 20,
+                                                            'class' => 'upload-picker-grid-all',
+                                                            'columns' => 4,
+                                                        ]);
+                                                    }
+                                                ]);
+                                                yz()->html->empty_state([
+                                                    'icon' => 'file-dashed',
+                                                    'title' => 'No File Selected',
+                                                    'description' => 'Select an uploaded file to see more details',
+                                                    'class' => 'upload-picker-details-empty-all'
+                                                ]);
+                                                yz()->html->flex_layout([
+                                                    'gap' => 20,
+                                                    'alignment' => 'center',
+                                                    'direction' => 'column',
+                                                    'class' => 'upload-picker-details-all',
+                                                    'style' => [
+                                                        'display' => 'none'
+                                                    ],
+                                                    'children' => function() {
+                                                        yz()->html->card([
+                                                            'padding' => 10,
+                                                            'class' => 'upload-picker-details-preview',
+                                                            'children' => function() {
+                                                                yz()->html->card([
+                                                                    'padding' => '0px',
+                                                                    'children' => function() {
+                                                                        yz()->html->image('');
+                                                                        yz()->html->element('object', [
+                                                                            'attr' => [
+                                                                                'hidden' => true
+                                                                            ]
+                                                                        ]);
+                                                                    }
+                                                                ]);
+                                                            }
+                                                        ]);
+                                                        yz()->html->flex_layout([
+                                                            'gap' => 5,
+                                                            'alignment' => 'start',
+                                                            'direction' => 'column',
+                                                            'children' => function() {
+                                                                yz()->html->title('Image Name', [ 'level' => 3, 'class' => 'upload-picker-details-title' ]);
+                                                                yz()->html->text('Ext - 0x0', [ 'class' => 'upload-picker-details-meta' ]);
+                                                            }
+                                                        ]);
+                                                        yz()->html->grid_layout([
+                                                            'columns' => 3,
+                                                            'gap' => 20,
+                                                            'children' => function() {
+                                                                yz()->html->flex_layout([
+                                                                    'direction' => 'column',
+                                                                    'children' => function() {
+                                                                        yz()->html->text('File Type', [ 'variant' => 'strong' ]);
+                                                                        yz()->html->text('image/png', [ 'class' => 'upload-picker-details-file-type' ]);
+                                                                    }
+                                                                ]);
+                                                                yz()->html->flex_layout([
+                                                                    'direction' => 'column',
+                                                                    'children' => function() {
+                                                                        yz()->html->text('Dimensions', [ 'variant' => 'strong' ]);
+                                                                        yz()->html->text('0x0', [ 'class' => 'upload-picker-details-dimensions' ]);
+                                                                    }
+                                                                ]);
+                                                                yz()->html->flex_layout([
+                                                                    'direction' => 'column',
+                                                                    'children' => function() {
+                                                                        yz()->html->text('File Size', [ 'variant' => 'strong' ]);
+                                                                        yz()->html->text('0.0 MB', [ 'class' => 'upload-picker-details-file-size' ]);
+                                                                    }
+                                                                ]);
+                                                            }
+                                                        ]);
+                                                    }
+                                                ]);
+                                            }
+                                        ]);
                                     }
-                                ]);
-                            }
+                                ],
+                                [
+                                    'icon' => 'files',
+                                    'label' => 'Browse Uploads',
+                                    'children' => function() use($path, $unique_id) {
+                                        yz()->html->flex_layout([
+                                            'gap' => 10,
+                                            'alignment' => 'center',
+                                            'class' => 'upload-picker-toolbar',
+                                            'children' => function () use ($path, $unique_id) {
+                                                yz()->html->button([
+                                                    'class' => 'upload-picker-back-button',
+                                                    'icon' => 'arrow-fat-left',
+                                                ]);
+                                                yz()->html->element('div', [
+                                                    'class' => 'upload-picker-toolbar-path',
+                                                    'children' => function () use ($path) {
+                                                        yz()->html->text('file://uploads/' . ($path ?? ''));
+                                                    }
+                                                ]);
+                                                yz()->html->button([
+                                                    'class' => 'upload-picker-new-folder',
+                                                    'icon' => 'folder-plus',
+                                                    'label' => 'New Folder'
+                                                ]);
+                                                yz()->html->input([
+                                                    'id'     => $unique_id . '_upload-picker-file-input',
+                                                    'class'  => 'upload-picker-file-input',
+                                                    'type'   => 'file',
+                                                    'hidden' => true,
+                                                ]);
+                                                yz()->html->element('label', [
+                                                    'class' => 'upload-picker-upload',
+                                                    'attr' => [
+                                                        'for' => $unique_id . '_upload-picker-file-input'
+                                                    ],
+                                                    'children' => function() {
+                                                        yz()->html->icon('upload', [ 'appearance' => 'duotone' ]);
+                                                        yz()->html->text('Upload File');
+                                                    }
+                                                ]);
+                                            }
+                                        ]);
+
+                                        yz()->html->flex_layout([
+                                            'class' => 'upload-picker-viewer',
+                                            'data' => [ 'path' => $path ],
+                                            'children' => function() {
+                                                yz()->html->flex_layout([
+                                                    'grow' => true,
+                                                    'padding' => 20,
+                                                    'overflow' => 'auto',
+                                                    'children' => function() {
+                                                        yz()->html->grid_layout([
+                                                            'gap' => 20,
+                                                            'class' => 'upload-picker-grid',
+                                                            'columns' => 4,
+                                                        ]);
+                                                    }
+                                                ]);
+                                                yz()->html->empty_state([
+                                                    'icon' => 'file-dashed',
+                                                    'title' => 'No File Selected',
+                                                    'description' => 'Select an uploaded file to see more details',
+                                                    'class' => 'upload-picker-details-empty'
+                                                ]);
+                                                yz()->html->flex_layout([
+                                                    'gap' => 20,
+                                                    'alignment' => 'center',
+                                                    'direction' => 'column',
+                                                    'class' => 'upload-picker-details',
+                                                    'style' => [
+                                                        'display' => 'none'
+                                                    ],
+                                                    'children' => function() {
+                                                        yz()->html->card([
+                                                            'padding' => 10,
+                                                            'class' => 'upload-picker-details-preview',
+                                                            'children' => function() {
+                                                                yz()->html->card([
+                                                                    'padding' => '0px',
+                                                                    'children' => function() {
+                                                                        yz()->html->image('');
+                                                                        yz()->html->element('object', [
+                                                                            'attr' => [
+                                                                                'hidden' => true
+                                                                            ]
+                                                                        ]);
+                                                                    }
+                                                                ]);
+                                                            }
+                                                        ]);
+                                                        yz()->html->flex_layout([
+                                                            'gap' => 5,
+                                                            'alignment' => 'start',
+                                                            'direction' => 'column',
+                                                            'children' => function() {
+                                                                yz()->html->title('Image Name', [ 'level' => 3, 'class' => 'upload-picker-details-title' ]);
+                                                                yz()->html->text('Ext - 0x0', [ 'class' => 'upload-picker-details-meta' ]);
+                                                            }
+                                                        ]);
+                                                        yz()->html->grid_layout([
+                                                            'columns' => 3,
+                                                            'gap' => 20,
+                                                            'children' => function() {
+                                                                yz()->html->flex_layout([
+                                                                    'direction' => 'column',
+                                                                    'children' => function() {
+                                                                        yz()->html->text('File Type', [ 'variant' => 'strong' ]);
+                                                                        yz()->html->text('image/png', [ 'class' => 'upload-picker-details-file-type' ]);
+                                                                    }
+                                                                ]);
+                                                                yz()->html->flex_layout([
+                                                                    'direction' => 'column',
+                                                                    'children' => function() {
+                                                                        yz()->html->text('Dimensions', [ 'variant' => 'strong' ]);
+                                                                        yz()->html->text('0x0', [ 'class' => 'upload-picker-details-dimensions' ]);
+                                                                    }
+                                                                ]);
+                                                                yz()->html->flex_layout([
+                                                                    'direction' => 'column',
+                                                                    'children' => function() {
+                                                                        yz()->html->text('File Size', [ 'variant' => 'strong' ]);
+                                                                        yz()->html->text('0.0 MB', [ 'class' => 'upload-picker-details-file-size' ]);
+                                                                    }
+                                                                ]);
+                                                            }
+                                                        ]);
+                                                    }
+                                                ]);
+                                            }
+                                        ]);
+                                    }
+                                ]
+                            ]
                         ]);
 
-                        $yz->html->flex_layout([
-                            'class' => 'upload-picker-viewer',
-                            'data' => [ 'path' => $path ],
-                            'children' => function() use($yz) {
-                                $yz->html->element('template', [
-                                    'data' => [ 'template' => 'folder' ],
-                                    'children' => function() use($yz) {
-                                        $yz->html->card([
-                                            'padding' => 20,
-                                            'class' => 'upload-picker-entry-wrapper',
-                                            'children' => function() use($yz) {
-                                                $yz->html->flex_layout([
-                                                    'gap' => 10,
-                                                    'class' => 'upload-picker-entry upload-picker-folder',
-                                                    'direction' => 'column',
-                                                    'alignment' => 'center',
-                                                    'children' => function() use($yz) {
-                                                        $yz->html->icon('folder-open', [ 'appearance' => 'duotone' ]);
-                                                        $yz->html->flex_layout([
-                                                            'alignment' => 'center',
-                                                            'direction' => 'column',
-                                                            'children' => function() use($yz) {
-                                                                $yz->html->text('', [ 'class' => 'upload-picker-entry-name', 'variant' => 'strong' ]);
-                                                                $yz->html->text('FOLDER', [ 'class' => 'upload-picker-entry-meta' ]);
-                                                            }
-                                                        ]);
-                                                    }
-                                                ]);
-                                            }
-                                        ]);
-                                    }
-                                ]);
-                                $yz->html->element('template', [
-                                    'data' => [ 'template' => 'file' ],
-                                    'children' => function() use($yz) {
-                                        $yz->html->card([
-                                            'class'    => 'upload-picker-entry-wrapper',
-                                            'children' => function() use($yz) {
-                                                $yz->html->flex_layout([
-                                                    'gap'       => 10,
-                                                    'class'     => 'upload-picker-entry upload-picker-file',
-                                                    'direction' => 'column',
-                                                    'alignment' => 'center',
-                                                    'children'  => function() use($yz) {
-                                                        $yz->html->card([
-                                                            'padding' => 5,
-                                                            'children' => function() use($yz) {
-                                                                $yz->html->image('', [ 'class' => 'upload-picker-entry-image' ]);
-                                                            }
-                                                        ]);
-                                                        $yz->html->flex_layout([
-                                                            'alignment' => 'center',
-                                                            'direction' => 'column',
-                                                            'children'  => function() use($yz) {
-                                                                $yz->html->text('', [ 'class' => 'upload-picker-entry-name', 'variant' => 'strong' ]);
-                                                                $yz->html->text('', [ 'class' => 'upload-picker-entry-meta' ]);
-                                                            }
-                                                        ]);
-                                                    }
-                                                ]);
-                                            }
-                                        ]);
-                                    }
-                                ]);
-                                yz()->html->flex_layout([
-                                    'grow' => true,
-                                    'padding' => 20,
-                                    'overflow' => 'auto',
-                                    'children' => function() {
-                                        yz()->html->grid_layout([
-                                            'gap' => 20,
-                                            'class' => 'upload-picker-grid',
-                                            'columns' => 4,
-                                        ]);
-                                    }
-                                ]);
-                                $yz->html->empty_state([
-                                    'icon' => 'file-dashed',
-                                    'title' => 'No File Selected',
-                                    'description' => 'Select an uploaded file to see more details',
-                                    'class' => 'upload-picker-details-empty'
-                                ]);
-                                $yz->html->flex_layout([
-                                    'gap' => 20,
-                                    'alignment' => 'center',
-                                    'direction' => 'column',
-                                    'class' => 'upload-picker-details',
-                                    'style' => [
-                                        'display' => 'none'
-                                    ],
-                                    'children' => function() use($yz) {
-                                        $yz->html->card([
-                                            'padding' => 10,
-                                            'class' => 'upload-picker-details-preview',
-                                            'children' => function() use($yz) {
-                                                $yz->html->card([
-                                                    'padding' => '0px',
-                                                    'children' => function() use($yz) {
-                                                        $yz->html->image('');
-                                                        $yz->html->element('object', [
-                                                            'attr' => [
-                                                                'hidden' => true
-                                                            ]
-                                                        ]);
-                                                    }
-                                                ]);
-                                            }
-                                        ]);
-                                        $yz->html->flex_layout([
-                                            'gap' => 5,
-                                            'alignment' => 'start',
-                                            'direction' => 'column',
-                                            'children' => function() use($yz) {
-                                                $yz->html->title('Image Name', [ 'level' => 3, 'class' => 'upload-picker-details-title' ]);
-                                                $yz->html->text('Ext - 0x0', [ 'class' => 'upload-picker-details-meta' ]);
-                                            }
-                                        ]);
-                                        $yz->html->grid_layout([
-                                            'columns' => 3,
-                                            'gap' => 20,
-                                            'children' => function() use($yz) {
-                                                $yz->html->flex_layout([
-                                                    'direction' => 'column',
-                                                    'children' => function() use($yz) {
-                                                        $yz->html->text('File Type', [ 'variant' => 'strong' ]);
-                                                        $yz->html->text('image/png', [ 'class' => 'upload-picker-details-file-type' ]);
-                                                    }
-                                                ]);
-                                                $yz->html->flex_layout([
-                                                    'direction' => 'column',
-                                                    'children' => function() use($yz) {
-                                                        $yz->html->text('Dimensions', [ 'variant' => 'strong' ]);
-                                                        $yz->html->text('0x0', [ 'class' => 'upload-picker-details-dimensions' ]);
-                                                    }
-                                                ]);
-                                                $yz->html->flex_layout([
-                                                    'direction' => 'column',
-                                                    'children' => function() use($yz) {
-                                                        $yz->html->text('File Size', [ 'variant' => 'strong' ]);
-                                                        $yz->html->text('0.0 MB', [ 'class' => 'upload-picker-details-file-size' ]);
-                                                    }
-                                                ]);
-                                            }
-                                        ]);
-                                    }
-                                ]);
-                            }
-                        ]);
-
-                        $yz->html->flex_layout([
+                        yz()->html->flex_layout([
                             'gap' => 10,
                             'alignment' => 'center',
                             'justification' => 'space-between',
                             'class' => 'upload-picker-footer',
-                            'children' => function() use($yz) {
-                                $yz->html->text('1 file selected');
-                                $yz->html->flex_layout([
+                            'children' => function() {
+                                yz()->html->text('');
+                                yz()->html->flex_layout([
                                     'gap' => 10,
-                                    'children' => function() use($yz) {
-                                        $yz->html->button([
+                                    'children' => function() {
+                                        yz()->html->button([
                                             'type' => 'reset',
                                             'label' => 'Cancel'
                                         ]);
-                                        $yz->html->button([
+                                        yz()->html->button([
                                             'class' => 'upload-picker-submit',
                                             'type' => 'submit',
                                             'variant' => 'primary',
@@ -324,7 +430,7 @@ class Yz_Upload_Picker {
             }
         ]);
 
-        $yz->html->dialog([
+        yz()->html->dialog([
             'title' => 'New Folder',
             'icon' => 'folder-plus',
             'class' => 'upload-picker-new-folder-dialog',
@@ -470,22 +576,25 @@ class Yz_Upload_Picker {
                 flex-shrink: 0;
                 height: 48px;
                 padding: 0 20px;
-                border-top: 1px solid var(--yz-section-border-color);
+                /*border-top: 1px solid var(--yz-section-border-color);*/
             }
 
-            .yz.upload-picker-viewer {
+            .yz.upload-picker-viewer,
+            .yz.upload-picker-viewer-all {
                 flex-grow: 1;
                 flex-shrink: 1;
                 height: 0;
             }
 
-            .yz.upload-picker-details-empty {
+            .yz.upload-picker-details-empty,
+            .yz.upload-picker-details-empty-all {
                 flex-shrink: 0;
                 width: 30%;
                 border-left: 1px solid var(--yz-section-border-color);
             }
 
-            .yz.upload-picker-details {
+            .yz.upload-picker-details,
+            .yz.upload-picker-details-all {
                 flex-shrink: 0;
                 width: 30%;
                 padding: 20px;
@@ -495,6 +604,9 @@ class Yz_Upload_Picker {
 
             .yz.upload-picker-entry-name {
                 text-align: center;
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .yz.upload-picker-details-preview {
@@ -545,6 +657,20 @@ class Yz_Upload_Picker {
             .yz.upload-picker-grid {
                 align-self: start;
                 flex-grow: 1;
+            }
+
+            .yz.upload-picker-grid-all + ul.pagination {
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                margin: 16px 0 0;
+                padding: 0;
+                list-style: none;
+
+                button[aria-current] {
+                    background: #2271b1;
+                    color: white;
+                }
             }
 
             .yz.upload-picker-entry-wrapper {
@@ -684,8 +810,11 @@ class Yz_Upload_Picker {
                     const uploadGrid      = yz('.upload-picker-grid', picker).item();
                     const submitButton    = yz('.upload-picker-submit', dialog).item();
 
-                    const folderTemplate  = yz('template[data-template="folder"]', picker).item();
-                    const fileTemplate     = yz('template[data-template="file"]', picker).item();
+                    const pickerAll     = yz('.upload-picker-viewer-all', dialog).item();
+                    const uploadGridAll = yz('.upload-picker-grid-all', pickerAll).item();
+
+                    const folderTemplate  = yz('template[data-template="folder"]', dialog).item();
+                    const fileTemplate     = yz('template[data-template="file"]', dialog).item();
 
                     const newFolderButton = yz('button.upload-picker-new-folder', dialog);
                     const newFolderDialog = yz('dialog.upload-picker-new-folder-dialog');
@@ -696,6 +825,7 @@ class Yz_Upload_Picker {
                     const uploadInput = dialog.select('input.upload-picker-file-input');
 
                     const pickerState = {
+                        allMediaPage: 1,
                         selectedFiles: []
                     };
 
@@ -741,22 +871,6 @@ class Yz_Upload_Picker {
                                 alert('Failed to upload files');
                             }
                         });
-
-                        // if (files.length > 0) {
-                        //     const formData = new FormData();
-                        //
-                        //     for (let i = 0; i < files.length; i++) {
-                        //         formData.append('file[]', files[i]);
-                        //     }
-                        //
-                        //     yz.ajax.upload('yz_upload_files', formData).observe((response) => {
-                        //         if (response.success) {
-                        //             scanUploadsFolder();
-                        //         } else {
-                        //             alert('Failed to upload files');
-                        //         }
-                        //     });
-                        // }
                     });
 
                     function renderFolder(folder) {
@@ -776,7 +890,7 @@ class Yz_Upload_Picker {
                         uploadGrid.append(folderInstance);
                     }
 
-                    function renderFile(file) {
+                    function renderFile(file, grid) {
                         const fileInstance = yz.instance(fileTemplate);
                         const fileWrapper  = yz('.upload-picker-entry-wrapper', fileInstance).item();
                         const fileImage    = yz('.upload-picker-entry-image', fileInstance).item();
@@ -788,17 +902,102 @@ class Yz_Upload_Picker {
                         fileMeta.textContent = `${ file.extension } - ${ file.width } x ${ file.height }`;
 
                         yz.spy(fileWrapper, 'click').observe(() => {
-                            yz('.upload-picker-entry-wrapper[data-selected="true"]', picker).forEach((wrapper) => {
-                                wrapper.data('selected', String(false));
-                            });
+
+                            if (grid.classList.contains('upload-picker-grid-all')) {
+                                yz('.upload-picker-entry-wrapper[data-selected="true"]', pickerAll).forEach((wrapper) => {
+                                    wrapper.data('selected', String(false));
+                                });
+                                updateDetailsAllSection(file);
+                            } else {
+                                yz('.upload-picker-entry-wrapper[data-selected="true"]', picker).forEach((wrapper) => {
+                                    wrapper.data('selected', String(false));
+                                });
+                                updateDetailsSection(file);
+                            }
 
                             pickerState.selectedFiles = [ file ];
                             fileWrapper.dataset.selected = String(true);
-
-                            updateDetailsSection(file);
                         });
 
-                        uploadGrid.appendChild(fileInstance);
+                        grid.appendChild(fileInstance);
+                    }
+
+                    function updateAllPagination(mediaPagination) {
+                        const container = uploadGridAll.parentElement;
+                        const pagination = yz('ul.pagination', container).item() ?? document.createElement('ul');
+                        const buttonClass = 'yz button button-size-small button-secondary button-color-primary';
+
+                        if (mediaPagination.page_count === 1) {
+                            pagination.remove();
+                            return;
+                        }
+
+                        if (pagination.parentElement !== container) {
+                            pagination.className = 'pagination';
+                            container.append(pagination);
+                        } else while (pagination.firstChild) {
+                            pagination.removeChild(pagination.firstChild);
+                        }
+
+                        if (mediaPagination.current_page > 1) {
+                            const previousPage = document.createElement('li');
+
+                            previousPage.innerHTML = `
+                                <button type="button" class="${ buttonClass }" data-page="previous">Back</button>
+                            `;
+
+                            pagination.append(previousPage);
+
+                            previousPage.addEventListener('click', () => {
+                                pickerState.allMediaPage -= 1;
+                                listAllUploads();
+                            });
+                        }
+
+                        for (let i = 1; i <= mediaPagination.page_count; i++) {
+                            const page = document.createElement('li');
+                            const isCurrentPage = i === mediaPagination.current_page;
+
+                            page.innerHTML = `
+                                <button type="button" class="${ buttonClass }" data-page="${ i }" ${ isCurrentPage ? 'aria-current' : '' }>
+                                    ${ i }
+                                </button>
+                            `;
+
+                            pagination.append(page);
+
+                            page.addEventListener('click', () => {
+                                pickerState.allMediaPage = i;
+                                listAllUploads();
+                            });
+                        }
+
+                        if (mediaPagination.current_page < mediaPagination.page_count) {
+                            const nextPage = document.createElement('li');
+
+                            nextPage.innerHTML = `
+                                <button type="button" class="${ buttonClass }" data-page="next">Next</button>
+                            `;
+
+                            pagination.append(nextPage);
+
+                            nextPage.addEventListener('click', () => {
+                                pickerState.allMediaPage += 1;
+                                listAllUploads();
+                            });
+                        }
+                    }
+
+                    function clearAllUploadGrid() {
+                        while (uploadGridAll.firstChild) {
+                            uploadGridAll.removeChild(uploadGridAll.firstChild);
+                        }
+                    }
+
+                    function updateAllUploadGrid(mediaPagination) {
+                        clearAllUploadGrid();
+                        updateAllPagination(mediaPagination);
+                        mediaPagination.files.forEach((file) => renderFile(file, uploadGridAll));
                     }
 
                     function clearUploadGrid() {
@@ -809,9 +1008,47 @@ class Yz_Upload_Picker {
 
                     function updateUploadGrid(contents) {
                         clearUploadGrid();
-
                         contents.folders.forEach(renderFolder);
-                        contents.files.forEach(renderFile);
+                        contents.files.forEach((file) => renderFile(file, uploadGrid));
+                    }
+
+                    function updateDetailsAllSection(file = undefined) {
+                        const emptyPlaceholder = yz('.upload-picker-details-empty-all', pickerAll).item();
+                        const detailsContainer = yz('.upload-picker-details-all', pickerAll).item();
+                        const previewImage     = yz('.upload-picker-details-preview .yz.image', detailsContainer).item();
+                        const previewObject    = yz('.upload-picker-details-preview object', detailsContainer).item();
+                        const detailsTitle     = yz('.upload-picker-details-title', detailsContainer).item();
+                        const detailsMeta      = yz('.upload-picker-details-meta', detailsContainer).item();
+                        const fileType          = yz('.upload-picker-details-file-type', detailsContainer).item();
+                        const fileDimensions    = yz('.upload-picker-details-dimensions', detailsContainer).item();
+                        const fileSize          = yz('.upload-picker-details-file-size', detailsContainer).item();
+
+                        emptyPlaceholder.style.display = 'none';
+                        detailsContainer.style.display = 'flex';
+
+                        if (file) {
+
+                            if (file.mime_type.startsWith('image/')) {
+                                previewImage.src = file.url;
+                                previewImage.hidden = false;
+                                previewObject.hidden = true;
+                            } else {
+                                previewObject.type = file.mime_type;
+                                previewObject.data = file.url;
+                                previewObject.hidden = false;
+                                previewImage.hidden = true;
+                            }
+
+                            detailsTitle.textContent = file.title;
+                            detailsMeta.textContent  = `Uploaded ${ yz.date(file.upload_date, { month: 'long', day: 'numeric', year: 'numeric' }) }`;
+
+                            fileType.textContent       = file.mime_type;
+                            fileDimensions.textContent = `${ file.width } x ${ file.height }`;
+                            fileSize.textContent       = `${ (file.file_size / 1024).toFixed(2) } KB`;
+                        } else {
+                            emptyPlaceholder.style.display = 'flex';
+                            detailsContainer.style.display = 'none';
+                        }
                     }
 
                     function updateDetailsSection(file = undefined) {
@@ -853,6 +1090,14 @@ class Yz_Upload_Picker {
                         }
                     }
 
+                    function listAllUploads(page = pickerState.allMediaPage, per_page = 20) {
+                        yz.ajax.query('yz_list_uploads', { page, per_page }).observe((response) => {
+                            if (response.success) {
+                                updateAllUploadGrid(response.data);
+                            }
+                        });
+                    }
+
                     function scanUploadsFolder(path = picker.dataset.path) {
                         yz.ajax.query('yz_read_uploads_directory', { path }).observe((response) => {
                             if (response.success) {
@@ -864,10 +1109,15 @@ class Yz_Upload_Picker {
                     }
 
                     function resetPickerState() {
+                        pickerState.allMediaPage = 1;
                         pickerState.selectedFiles = [];
+
                         delete picker.dataset.path;
+
                         updateDetailsSection();
+                        updateDetailsAllSection();
                         scanUploadsFolder();
+                        listAllUploads();
                     }
 
                     newFolderButton.spy('click').observe(() => {
@@ -899,6 +1149,7 @@ class Yz_Upload_Picker {
                     });
 
                     scanUploadsFolder();
+                    listAllUploads();
                 });
             });
         </script>

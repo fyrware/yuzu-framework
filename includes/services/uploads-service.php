@@ -38,6 +38,55 @@ class Yz_Uploads_Scanned_Dir {
     }
 }
 
+class Yz_Uploads_Media_Pagination {
+
+    private int $total_uploads = 0;
+    private int $uploads_per_page = 20;
+    private int $current_page = 1;
+
+    /** @var Yz_Uploads_File[] */
+    private array $files = [];
+
+    public function get_total_upload_count(): int {
+        return $this->total_uploads;
+    }
+
+    public function get_page_count(): int {
+        return ceil($this->total_uploads / $this->uploads_per_page);
+    }
+
+    public function get_page_number(): int {
+        return $this->current_page;
+    }
+
+    public function has_next_page(): bool {
+        return $this->current_page * $this->uploads_per_page < $this->total_uploads;
+    }
+
+    /** @return Yz_Uploads_File[] */
+    public function get_files(): array {
+        return $this->files;
+    }
+
+    public function __construct(int $total_uploads, int $uploads_per_page, int $current_page, array $files = []) {
+        $this->total_uploads = $total_uploads;
+        $this->uploads_per_page = $uploads_per_page;
+        $this->current_page = $current_page;
+        $this->files = $files;
+    }
+
+    public function to_array(): array {
+        return [
+            'total_uploads'    => $this->get_total_upload_count(),
+            'uploads_per_page' => $this->uploads_per_page,
+            'current_page'     => $this->current_page,
+            'page_count'       => $this->get_page_count(),
+            'has_next_page'    => $this->has_next_page(),
+            'files'            => array_map(fn($file) => $file->to_array(), $this->get_files())
+        ];
+    }
+}
+
 class Yz_Uploads_File {
 
     public const UPLOAD_LOCATION = 'yz_upload_location';
@@ -64,11 +113,11 @@ class Yz_Uploads_File {
     }
 
     public function get_path(): string {
-        return get_attached_file($this->post->ID);
+        return get_attached_file($this->post->ID) ?: '';
     }
 
     public function get_thumbnail_url(): string {
-        return wp_get_attachment_image_src($this->post->ID)[0];
+        return wp_get_attachment_image_src($this->post->ID)[0] ?: '';
     }
 
     public function get_upload_date(): string {
@@ -108,16 +157,16 @@ class Yz_Uploads_File {
 
     public function to_array(): array {
         return [
-            'id'              => $this->get_id(),
-            'title'           => $this->get_title(),
-            'url'             => $this->get_url(),
-            'thumbnail_url'   => $this->get_thumbnail_url(),
-            'upload_date'     => $this->get_upload_date(),
-            'extension'       => $this->get_extension(),
-            'mime_type'       => $this->get_mime_type(),
-            'width'           => $this->get_width(),
-            'height'          => $this->get_height(),
-            'file_size'        => $this->get_file_size()
+            'id'            => $this->get_id(),
+            'title'         => $this->get_title(),
+            'url'           => $this->get_url(),
+            'thumbnail_url' => $this->get_thumbnail_url(),
+            'upload_date'   => $this->get_upload_date(),
+            'extension'     => $this->get_extension(),
+            'mime_type'     => $this->get_mime_type(),
+            'width'         => $this->get_width(),
+            'height'        => $this->get_height(),
+            'file_size'     => $this->get_file_size()
         ];
     }
 }
@@ -207,6 +256,29 @@ class Yz_Uploads_Service {
         wp_update_attachment_metadata($attachment_id, wp_generate_attachment_metadata($attachment_id, $file_path));
 
         wp_send_json_success([ 'id' => $attachment_id ]);
+    }
+
+    /**
+     * @param int $page
+     * @param int $per_page
+     * @return Yz_Uploads_File[]
+     */
+    public function list_uploads(int $page = 1, int $per_page = 20): Yz_Uploads_Media_Pagination {
+        wp_reset_postdata();
+        wp_reset_query();
+
+        $count = (int)wp_count_posts(static::ATTACHMENT_POST_TYPE)->inherit;
+
+        $query = new WP_Query([
+            'post_type'      => static::ATTACHMENT_POST_TYPE,
+            'post_status'    => 'inherit',
+            'posts_per_page' => $per_page,
+            'paged'          => $page,
+            'orderby'        => 'date',
+            'order'          => 'DESC'
+        ]);
+
+        return new Yz_Uploads_Media_Pagination($count, $per_page, $page, array_map(fn($post) => new Yz_Uploads_File($post), $query->get_posts()));
     }
 
     /**

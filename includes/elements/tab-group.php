@@ -6,10 +6,17 @@ class Yz_Tab_Group {
         global $yz;
 
         $yz->html->element('div', [
+            'style' => [
+                'display' => 'flex',
+                'flex_direction' => 'column',
+                'flex_grow' => 1
+            ],
             'children' => function() use($yz, $props) {
-                $id    = $yz->tools->get_value($props, 'id');
-                $class = $yz->tools->get_value($props, 'class');
-                $tabs  = $yz->tools->get_value($props, 'tabs', []);
+                $id     = $yz->tools->get_value($props, 'id');
+                $class  = $yz->tools->get_value($props, 'class');
+                $tabs   = $yz->tools->get_value($props, 'tabs', []);
+                $nolink = $yz->tools->get_value($props, 'nolink', false);
+                $nopad  = $yz->tools->get_value($props, 'nopad', false);
 
                 assert(is_array($tabs), 'Tabs must be an array');
 
@@ -39,10 +46,18 @@ class Yz_Tab_Group {
                     $classes[] = $class;
                 }
 
+                if ($nolink) {
+                    $classes[] = 'nolink';
+                }
+
+                if ($nopad) {
+                    $classes[] = 'nopad';
+                }
+
                 $yz->html->element('nav', [
                     'id' => $id,
                     'class' => $classes,
-                    'children' => function() use($yz, $current_tab_slug, $tabs) {
+                    'children' => function() use($yz, $current_tab_slug, $tabs, $nolink) {
                         foreach ($tabs as $tab) {
                             $tab_id         = $yz->tools->get_value($tab, 'id');
                             $tab_class      = $yz->tools->get_value($tab, 'class');
@@ -68,7 +83,9 @@ class Yz_Tab_Group {
                             $yz->html->element('a', [
                                 'id'    => $tab_id,
                                 'class' => $tab_classes,
-                                'attr'  => [
+                                'attr'  => $nolink ? [
+                                    'data-hash' => $tab_href
+                                ] : [
                                     'href' => $tab_href
                                 ],
                                 'children' => function() use($yz, $tab_icon, $tab_icon_style, $tab_label) {
@@ -84,6 +101,10 @@ class Yz_Tab_Group {
 
                 if (str_starts_with($current_tab_href, '#')) {
                     $yz->html->element('section', [
+                        'style' => [
+                            'display' => 'flex',
+                            'flex_grow' => 1
+                        ],
                         'children' => function () use ($yz, $tabs, $current_tab_slug) {
                             foreach ($tabs as $tab) {
                                 $tab_label = $yz->tools->get_value($tab, 'label');
@@ -102,6 +123,9 @@ class Yz_Tab_Group {
                                     'class' => $tab_content_classes,
                                     'data'  => [
                                         'hash' => '#' . $tab_slug
+                                    ],
+                                    'style' => [
+                                        'flex_grow' => 1
                                     ],
                                     'children' => function() use($yz, $tab) {
                                         $tab_children = $yz->tools->get_value($tab, 'children');
@@ -147,9 +171,16 @@ class Yz_Tab_Group {
                 gap:           8px;
                 padding:       0 8px;
                 margin:        0 0 -1px 0;
+                position:      relative;
+
+                &.nopad + .yz.tab-content,
+                &.nopad + section > .yz.tab-content {
+                    padding: 0;
+                }
             }
 
             .yuzu.tab {
+                cursor:        pointer;
                 display:       flex;
                 align-items:   center;
                 gap:           4px;
@@ -186,7 +217,8 @@ class Yz_Tab_Group {
             }
 
             .yuzu.tab-content.tab-content-active[data-hash] {
-                display: block;
+                display: flex;
+                flex-direction: column;
             }
 
             .yuzu.tab-group-divider-vertical {
@@ -209,7 +241,7 @@ class Yz_Tab_Group {
                 function syncTabGroup() {
                     yz('.yuzu.tab-group').forEach((tabGroup) => {
                         const activeTab = yz('.yuzu.tab.tab-active', tabGroup);
-                        const nextTab   = yz(`.yuzu.tab[href="${window.location.hash}"]`, tabGroup);
+                        const nextTab   = yz(`.yuzu.tab[href="${window.location.hash}"]`, tabGroup) ?? yz('.yuzu.tab', tabGroup).first();
 
                         if (nextTab.exists()) {
                             if (activeTab.exists()) {
@@ -232,6 +264,32 @@ class Yz_Tab_Group {
 
                 window.requestAnimationFrame(syncTabGroup);
                 window.addEventListener('hashchange', syncTabGroup);
+
+                yz('.yz.tab-group').forEach((tabGroup) => {
+                    if (tabGroup.classes().contains('nolink')) {
+                        yz('.yz.tab', tabGroup).forEach((tab, i) => {
+                            tab.spy('click').observe(() => {
+                                const activeTab = yz('.yz.tab.tab-active', tabGroup);
+
+                                if (activeTab.exists()) {
+                                    activeTab.classes().remove('tab-active');
+                                }
+
+                                tab.classes().add('tab-active');
+
+                                const activeTabContent = yz('.yz.tab-content.tab-content-active', tabGroup.parent());
+                                const nextTabContent   = yz(`.yz.tab-content[data-hash="${tab.attr('data-hash')}"]`, tabGroup.parent());
+
+                                if (nextTabContent.exists()) {
+                                    if (activeTabContent.exists()) {
+                                        activeTabContent.classes().remove('tab-content-active');
+                                    }
+                                    nextTabContent.classes().add('tab-content-active');
+                                }
+                            });
+                        });
+                    }
+                });
             });
         </script>
     <?php }

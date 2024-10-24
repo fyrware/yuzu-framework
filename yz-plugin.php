@@ -97,6 +97,15 @@ add_action('admin_head', function() {
 add_action('init', function() {
     global $yz;
 
+    $yz->forms->register_async_form('yz_list_uploads', function() use($yz) {
+        $page     = $yz->tools->get_value($_GET, 'page', 1);
+        $per_page = $yz->tools->get_value($_GET, 'per_page', 20);
+
+        $uploads = $yz->uploads->list_uploads($page, $per_page);
+
+        wp_send_json_success($uploads->to_array());
+    });
+
     $yz->forms->register_async_form('yz_read_uploads_directory', function() use($yz) {
         $path = $yz->tools->get_value($_GET, 'path');
 

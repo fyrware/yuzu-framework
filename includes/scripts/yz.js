@@ -71,6 +71,10 @@ class YzNodeReference {
         return new YzNodeReference(Array.from(this.#nodes).map((node) => node.nextElementSibling).filter(Boolean));
     }
 
+    parent() {
+        return new YzNodeReference(Array.from(this.#nodes).map((node) => node.parentElement).filter(Boolean));
+    }
+
     select(selector) {
         const nodes = [];
 
