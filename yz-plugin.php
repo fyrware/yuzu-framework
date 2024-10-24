@@ -4,7 +4,7 @@
  * Plugin URI: https://fyrware.com/
  * Description: Quickly and elegantly build WordPress plugins
  * Author: Fyrware
- * Version: 0.2.1
+ * Version: 0.3.0
  * Author URI: https://fyrware.com
  * Text Domain: yuzu
  */
